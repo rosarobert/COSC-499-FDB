@@ -26,3 +26,8 @@ hs_err_pid*
 
 *.iml
 *.idea
+
+
+#Specific Files
+
+FdbApi/src/LocalDatabaseConnection.java

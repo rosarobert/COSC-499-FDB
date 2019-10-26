@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 public class LocalDatabaseConnection {
     public static void main(String[] args) {
+        //Add hostname and portnumber to url
         String url = "jdbc:sqlserver://HOSTNAME[:portNumber]; databaseName=FDB;integratedSecurity=true";
         try {
             Connection connection = DriverManager.getConnection(url);
