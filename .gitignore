@@ -30,4 +30,4 @@ hs_err_pid*
 
 #Specific Files
 
-FdbApi/src/LocalDatabaseConnection.java
+*LocalDatabaseConnection.java
