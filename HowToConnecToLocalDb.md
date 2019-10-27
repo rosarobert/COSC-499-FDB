@@ -4,7 +4,7 @@ Note that these instructions are specific to Windows, but should not be far off 
 
 1) Download the SQL Server Driver from [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-ver15)
 2) Find the .jar file in the download and add it to your build path
-   - Should be mssql-jdbc-7.4.1.jre8.jar, mssql-jdbc-7.4.1.jre11.jar, or mssql-jdbc-7.4.1.jre12.jar in the enu folder
+   - You don't need to do this if you use the source code in the project because of Maven
    - To add it to your build path in Inteliji go File > Project Structure > Libraries and then click on the "+" button and navigate to the jar file. Then click apply.
 3) Determine whether you have a 32-bit version of Java or a 64-bit version of java
    - On windows, if you have a Java folder under C:\\Program Files(x86), then it is a 64-bit version. If its C:\\Program Files(x64), its a 32-bit version. If its in C:\\Program Files, it is probably 64-bit, but its the opposite of the other Program Files folder. 
