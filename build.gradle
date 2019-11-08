@@ -26,6 +26,16 @@ dependencies {
 
     // Use TestNG framework, also requires calling test.useTestNG() below
     testImplementation 'org.testng:testng:6.14.3'
+
+    //jooq
+    compile group: 'org.jooq', name: 'jooq', version: '3.12.3'
+
+    //Database driver
+    testCompile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.4.1.jre8'
+
+
+    //JMockit
+    testCompile group: 'org.jmockit', name: 'jmockit', version: '1.48'
 }
 
 test {
