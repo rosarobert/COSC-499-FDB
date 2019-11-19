@@ -1,9 +1,9 @@
-package FdbApi;
+package Prescriber;
 
 /**
  * Container class for storing Drug Infomation
  */
-class Drug {
+public class Drug {
     private final int CLINICAL_FORMATION_ID;
     private final String BRAND_NAME;
     private final String LABEL_NAME;
