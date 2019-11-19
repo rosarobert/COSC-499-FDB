@@ -1,7 +1,7 @@
 package Prescriber;
 
 /**
- * Container class for storing Drug Infomation
+ * Container class for storing drug information
  */
 public class Drug {
     private final int CLINICAL_FORMATION_ID;

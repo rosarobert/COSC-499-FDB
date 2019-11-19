@@ -6,6 +6,18 @@ import java.util.List;
  * An object that can gather the necessary information in order to make a prescription
  */
 public interface Prescriber {
+
+    /**
+     * Creates a {@code Prescriber} for the FDB database
+     * <p>
+     * Note this method will probably change significantly, but the main idea will stay the same. We want our end users
+     * to only look at what our system will do (aka the interface) and not at our specific implementation
+     * (FdbPresciber), so we hide our implementation and only allow our end user to create objects through here
+     */
+    static Prescriber createFdbPrescriber() {
+        return new FdbPrescriber();
+    }
+
     /**
      * Returns all drugs in FDB database which have a name that starts with the given prefix
      * <p>
