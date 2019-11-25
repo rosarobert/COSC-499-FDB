@@ -28,8 +28,11 @@ hs_err_pid*
 *.idea
 
 #VSCode
-
 *.vscode
+*.project
+*bin
+*.settings
+*.classpath
 
 # Ignore Gradle project-specific cache directory
 .gradle
