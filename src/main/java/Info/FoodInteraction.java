@@ -61,7 +61,5 @@ public class FoodInteraction {
         public FoodInteraction buildFoodInteraction() {
             return new FoodInteraction(this);
         }
-        }
     }
-
 }
