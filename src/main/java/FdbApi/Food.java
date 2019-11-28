@@ -14,9 +14,10 @@ public class Food {
 
         PreparedStatement pstmt = con.prepareStatement(
                 "SELECT GC.GCN_SEQNO, DF.FDCDE, DNAME, RESULT "+
-                "FROM RDFIMGC0 AS DF , RGCNSEQ4 AS GC , RDFIMMA0 AS DFI "+
-                "WHERE DF.GCN_SEQNO = GC.[GCN_SEQNO] " +
-                        "AND DF.FDCDE = DFI.FDCDE AND GC.GCN_SEQNO = ?");
+                        "FROM RDFIMGC0 AS DF " +
+                        "JOIN RGCNSEQ4 AS GC ON (DF.GCN_SEQNO = GC.GCN_SEQNO)" +
+                        "JOIN RDFIMMA0 AS DFI ON (DF.FDCDE = DFI.FDCDE) "+
+                        "WHERE GC.GCN_SEQNO = ?");
         pstmt.setInt(1,GCN);
 
         StringBuilder output = new StringBuilder();
@@ -45,9 +46,10 @@ public class Food {
 
         PreparedStatement pstmt = con.prepareStatement(
                 "SELECT RMI.ROUTED_MED_ID, DF.FDCDE, DNAME, RESULT "+
-                "FROM RDFIMRM0 AS DF , RMIRMID1 AS RMI , RDFIMMA0 AS DFI "+
-                "WHERE DF.ROUTED_MED_ID = RMI.ROUTED_MED_ID " +
-                        "AND DF.FDCDE = DFI.FDCDE AND RMI.ROUTED_MED_ID = ?");
+                        "FROM RDFIMRM0 AS DF " +
+                        "JOIN RMIRMID1 AS RMI ON (DF.ROUTED_MED_ID = RMI.ROUTED_MED_ID) " +
+                        "JOIN RDFIMMA0 AS DFI ON  (DF.FDCDE = DFI.FDCDE)"+
+                        "WHERE RMI.ROUTED_MED_ID = ?");
         pstmt.setInt(1,RMI);
 
         StringBuilder output = new StringBuilder();

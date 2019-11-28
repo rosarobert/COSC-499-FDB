@@ -1,4 +1,4 @@
-package Prescriber;
+package Info;
 
 /**
  * Container class for storing drug information

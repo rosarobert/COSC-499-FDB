@@ -1,6 +1,11 @@
 package Prescriber;
 
 
+import Info.Allergy;
+import Info.Drug;
+import Info.Food;
+import Info.Patient;
+
 import java.util.List;
 
 /**
