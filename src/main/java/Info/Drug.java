@@ -1,83 +1,92 @@
 package Info;
 
-/**
- * Container class for storing drug information
- */
-public class Drug {
-    private final int CLINICAL_FORMATION_ID;
-    private final String BRAND_NAME;
-    private final String LABEL_NAME;
-    private final String CANADIAN_PRODUCT_NAME;
-    private final String DESCRIPTION;
+import java.sql.Date;
 
-    private Drug(final DrugBuilder builder) {
-        CLINICAL_FORMATION_ID = builder.clinicalFormulationId;
-        BRAND_NAME = builder.brandName;
-        LABEL_NAME = builder.labelName;
-        CANADIAN_PRODUCT_NAME = builder.candadianProductName;
-        DESCRIPTION = builder.description;
+public abstract class Drug {
+    //GCN_SEQNO in relation RICAIDC1
+    private final int CLINICAL_FORMULATION_ID;
+
+    //HICL_SEQNO in relation RGCNSEQ4
+    private final int INGREDIENT_LIST_IDENTIFIER;
+    //LN in relation RICAIDC1
+    private final String DISPLAY_NAME;
+    //IADDDTE in relation RICAIDC1
+    private final Date ADD_DATE;
+    //IOBSDTE in relation RICAIDC1
+    private final Date OBSELETE_DATE;
+
+     Drug(DrugBuilder drugBuilder) {
+        CLINICAL_FORMULATION_ID = drugBuilder.clinicalFormulationId;
+        INGREDIENT_LIST_IDENTIFIER = drugBuilder.ingredientListIdentifier;
+        DISPLAY_NAME = drugBuilder.displayName;
+        ADD_DATE = drugBuilder.addDate;
+        OBSELETE_DATE = drugBuilder.obseleteDate;
     }
 
-    int getClinicalFormationId() {
-        return CLINICAL_FORMATION_ID;
+    public int getClinicalFormulationId() {
+         return CLINICAL_FORMULATION_ID;
     }
 
-    public String getBrandName() {
-        return BRAND_NAME;
+    public int getIngredientListIdentifier() {
+         return INGREDIENT_LIST_IDENTIFIER;
     }
 
-    public String getLableName() {
-        return LABEL_NAME;
+    public String getDisplayName() {
+         return DISPLAY_NAME;
     }
 
-    public String getCanadianProductName() {
-        return CANADIAN_PRODUCT_NAME;
+    public Date getAddDate() {
+         return ADD_DATE;
     }
 
-    public String getDescription() {
-        return DESCRIPTION;
+    public Date getObseleteDate() {
+         return OBSELETE_DATE;
     }
+
 
     /**
      * Class for building a Drug instance
-     * 
-     * @implNote This builder class is implemented similar to the examples in
-     *           Chapter 2 Item 2 of Effective Java, 3rd Edition, by Joshua Bloch
+     * <p>
+     * Note: This builder class is implemented similar to the generic example in Chapter 2 Item 2 of Effective Java, 3rd
+     * Edition, by Joshua Bloch
      */
-    static class DrugBuilder {
+    public abstract static class DrugBuilder<T extends DrugBuilder<T>> {
+
         private int clinicalFormulationId;
-        private String brandName;
-        private String labelName;
-        private String candadianProductName;
-        private String description;
+        private int ingredientListIdentifier;
+        private String displayName;
+        private Date addDate;
+        private Date obseleteDate;
 
-        DrugBuilder setClinicalFormulationId(int clinicalFormulationId) {
+        public T setClinicalFormulationId(int clinicalFormulationId) {
             this.clinicalFormulationId = clinicalFormulationId;
-            return this;
+            return self();
         }
 
-        DrugBuilder setBrandName(String brandName) {
-            this.brandName = brandName;
-            return this;
+
+        public T setIngredientListIdentifier(int ingredientListIdentifier) {
+            this.ingredientListIdentifier = ingredientListIdentifier;
+            return self();
         }
 
-        DrugBuilder setLabelName(String labelName) {
-            this.labelName = labelName;
-            return this;
+        public T setDisplayName(String displayName) {
+            this.displayName = displayName.trim();
+            return self();
         }
 
-        DrugBuilder setCanadianProductName(String canadianProductName) {
-            this.candadianProductName = canadianProductName;
-            return this;
+        public T setAddDate(Date addDate) {
+            this.addDate = addDate;
+            return self();
         }
 
-        DrugBuilder setDescription(String description) {
-            this.description = description;
-            return this;
+        public T setObseleteDate(Date obseleteDate) {
+            this.obseleteDate = obseleteDate;
+            return self();
         }
 
-        Drug build() {
-            return new Drug(this);
-        }
+        abstract T self();
+
+        abstract Drug buildDrug();
     }
+
 }

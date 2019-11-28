@@ -1,9 +1,6 @@
 package Prescriber;
 
-import Info.Allergy;
-import Info.Drug;
-import Info.Food;
-import Info.Patient;
+import Info.*;
 
 import java.util.List;
 
@@ -26,7 +23,7 @@ public interface Prescriber {
     /**
      * Returns all drugs in FDB database which have a name that starts with the given prefix
      * <p>
-     * Note that a drug will be compared on multiple names such as a Brand Name, Label Name, etc. See {@link Drug}
+     * Note that a drug will be compared on multiple names such as a Brand Name, Label Name, etc. See {@link ManufacturedDrug}
      *
      * @param prefix string that all drug names should start with
      * @return a list of all drugs that start with {@code prefix}
@@ -41,7 +38,7 @@ public interface Prescriber {
      * @param patient the patient whose allergies are being checked
      * @return list of patient allergies that would be provoked by {@code drug}
      */
-    List<Allergy> queryAllergyInteractionsOfDrug(Drug drug, Patient patient);
+    List<AllergyInteraction> queryAllergyInteractionsOfDrug(Drug drug, Patient patient);
 
     /**
      * Finds all foods in FDB database that interact badly with a given drug in FDB database
@@ -49,7 +46,7 @@ public interface Prescriber {
      * @param drug the drug being checked
      * @return a list of foods that would interact badly with {@code drug}
      */
-    List<Food> queryFoodInteractionsOfDrug(Drug drug);
+    List<FoodInteraction> queryFoodInteractionsOfDrug(Drug drug);
 
     /**
      * Finds all drugs in FDB database that would interact badly with a given drug in FDB database
@@ -57,6 +54,13 @@ public interface Prescriber {
      * @param drug the drug being checked
      * @return a list of drug that interact badly with {@code drug}
      */
-    List<Drug> queryDrugInteractionsWithOtherDrugs(Drug drug);
+    List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug);
+
+    /**
+     * @param url url to the database corresponding to the
+     */
+    void initializePrescriber(String url);
+
+    void destroyPrescriber();
 
 }
