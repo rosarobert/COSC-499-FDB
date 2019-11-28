@@ -13,6 +13,7 @@ public class DrugNaming {
     public String drugNamingManufactured(String namePrefix) throws SQLException{
 
         namePrefix += "%";
+        System.out.println(namePrefix);
 
         PreparedStatement pstmt = con.prepareStatement(
                 "SELECT t1.LN, t3.HICL_SEQNO, t1.GCN_SEQNO, t1.DIN, t1.IADDDTE, t1.IOBSDTE, t2.MFG "+

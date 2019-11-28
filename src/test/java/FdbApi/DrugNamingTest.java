@@ -32,7 +32,7 @@ public class DrugNamingTest {
         String answer;
 
         //Test Drug with ROUTED_MED_ID: 1
-        System.out.println("Test Drug with ROUTED_MED_ID: 1");
+        System.out.println("Test Manufactured Drug Naming");
         answer = "LN, HICL_SEQNO, GCN_SEQNO, DIN, IADDTE, IOBSDTE, MFG"
                 +"\nPLACIDYL 200 MG CAPSULE, 1580, 3661, 00000019, 1992-12-16 00:00:00.0, 1999-09-08 00:00:00.0, ABBOTT LABS";
         try{
