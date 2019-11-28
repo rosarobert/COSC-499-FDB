@@ -28,7 +28,7 @@ public class FoodTest {
      * Cases: 34, 1, 'A', 6649
      */
     @Test
-    public void GCNtoFDCDETest() {
+    public void testSomeFoodMethod2() {
 
         String result = null;
         String answer;

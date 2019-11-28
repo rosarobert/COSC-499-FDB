@@ -1,83 +1,40 @@
 package Info;
 
-/**
- * Container class for storing drug information
- */
-public class Drug {
-    private final int CLINICAL_FORMATION_ID;
-    private final String BRAND_NAME;
-    private final String LABEL_NAME;
-    private final String CANADIAN_PRODUCT_NAME;
-    private final String DESCRIPTION;
+public class ManufacturedDrug extends Drug {
+    //DIN in relation RICAIDC1
+    private final String CANADIAN_DRUG_ID;
+    //MFG in relation RLBLRCA1
+    private final String MANUFACTURER_NAME;
 
-    private Drug(final DrugBuilder builder) {
-        CLINICAL_FORMATION_ID = builder.clinicalFormulationId;
-        BRAND_NAME = builder.brandName;
-        LABEL_NAME = builder.labelName;
-        CANADIAN_PRODUCT_NAME = builder.candadianProductName;
-        DESCRIPTION = builder.description;
+    private ManufacturedDrug(ManufacturedDrugBuilder drugBuilder) {
+        super(drugBuilder);
+        CANADIAN_DRUG_ID = drugBuilder.canadianDrugId;
+        MANUFACTURER_NAME = drugBuilder.manufacturerName;
     }
 
-    int getClinicalFormationId() {
-        return CLINICAL_FORMATION_ID;
-    }
 
-    public String getBrandName() {
-        return BRAND_NAME;
-    }
+    public static class ManufacturedDrugBuilder extends DrugBuilder<ManufacturedDrugBuilder> {
+        private String canadianDrugId;
+        private String manufacturerName;
 
-    public String getLableName() {
-        return LABEL_NAME;
-    }
+        public ManufacturedDrugBuilder setCanadianDrugId(String canadianDrugId) {
+            this.canadianDrugId = canadianDrugId;
+            return self();
+        }
 
-    public String getCanadianProductName() {
-        return CANADIAN_PRODUCT_NAME;
-    }
+        public ManufacturedDrugBuilder setManufacturerName(String manufacturerName) {
+            this.manufacturerName = manufacturerName;
+            return self();
+        }
 
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    /**
-     * Class for building a Drug instance
-     * 
-     * @implNote This builder class is implemented similar to the examples in
-     *           Chapter 2 Item 2 of Effective Java, 3rd Edition, by Joshua Bloch
-     */
-    static class DrugBuilder {
-        private int clinicalFormulationId;
-        private String brandName;
-        private String labelName;
-        private String candadianProductName;
-        private String description;
-
-        DrugBuilder setClinicalFormulationId(int clinicalFormulationId) {
-            this.clinicalFormulationId = clinicalFormulationId;
+        ManufacturedDrugBuilder self() {
             return this;
         }
 
-        DrugBuilder setBrandName(String brandName) {
-            this.brandName = brandName;
-            return this;
-        }
-
-        DrugBuilder setLabelName(String labelName) {
-            this.labelName = labelName;
-            return this;
-        }
-
-        DrugBuilder setCanadianProductName(String canadianProductName) {
-            this.candadianProductName = canadianProductName;
-            return this;
-        }
-
-        DrugBuilder setDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        Drug build() {
-            return new Drug(this);
+        @Override
+        public Drug buildDrug() {
+            return new ManufacturedDrug(this);
         }
     }
+
 }
