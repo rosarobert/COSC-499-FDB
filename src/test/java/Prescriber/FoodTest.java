@@ -13,8 +13,8 @@ import java.util.List;
 public class FoodTest {
 
     private FdbPrescriber fdbPrescriber;
-    private int size;
-    private String foodInteractionResult;
+    private int size = 0;
+    private String foodInteractionResult = null;
 
     //Requests a connection to the database
     @BeforeClass
@@ -33,7 +33,6 @@ public class FoodTest {
     public void testSizeOfQueryFoodInteractionsWithOnlyOneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("ELIXOPHYLLIN K1 ELIXIR");
         List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
-        size = 0;
         if(!queryFoodResult.isEmpty()) {
             size = queryFoodResult.size();
         }
@@ -44,7 +43,6 @@ public class FoodTest {
     public void testNameOfQueryingFoodInteractionWithOnlyOneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("ELIXOPHYLLIN K1 ELIXIR");
         List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
-        foodInteractionResult = null;
         if(!queryFoodResult.isEmpty()) {
             foodInteractionResult = queryFoodResult.get(0).getDrugFoodInteractionResult();
         }
@@ -55,7 +53,6 @@ public class FoodTest {
     public void testSizeOfQueryFoodInteractionsWithNoneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("DIGITALIS PURP GRN 3-30CH");
         List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
-        size = 0;
         if(!queryFoodResult.isEmpty()) {
             size = queryFoodResult.size();
         }
@@ -66,7 +63,6 @@ public class FoodTest {
     public void testNameOfQueryingFoodInteractionWithNoneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("DIGITALIS PURP GRN 3-30CH");
         List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
-        foodInteractionResult = null;
         if(!queryFoodResult.isEmpty()) {
             foodInteractionResult = queryFoodResult.get(0).getDrugFoodInteractionResult();
         }
