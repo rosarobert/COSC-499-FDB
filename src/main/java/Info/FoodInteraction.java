@@ -32,6 +32,10 @@ public class FoodInteraction {
         return DRUG_FOOD_INTERACTION_RESULT;
     }
 
+    public int getDrugInteractionCode() {
+        return DRUG_FOOD_INTERACTION_CODE;
+    }
+
 
     public static class FoodInteractionBuilder {
         private final Drug DRUG_ITERACTING;

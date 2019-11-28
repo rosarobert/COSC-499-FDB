@@ -77,6 +77,7 @@ public class CsvComparision {
                 lineFromFile2 = reader2.readLine();
             }
             resultWriter.flush();
+            resultWriter.close();
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage());
         }

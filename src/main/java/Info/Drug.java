@@ -15,7 +15,7 @@ public abstract class Drug {
     //IOBSDTE in relation RICAIDC1
     private final Date OBSELETE_DATE;
 
-    Drug(DrugBuilder drugBuilder) {
+    Drug(DrugBuilder<?> drugBuilder) {
         CLINICAL_FORMULATION_ID = drugBuilder.clinicalFormulationId;
         INGREDIENT_LIST_IDENTIFIER = drugBuilder.ingredientListIdentifier;
         DISPLAY_NAME = drugBuilder.displayName;
