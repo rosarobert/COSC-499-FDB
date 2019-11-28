@@ -15,7 +15,7 @@ public abstract class Drug {
     //IOBSDTE in relation RICAIDC1
     private final Date OBSELETE_DATE;
 
-     Drug(DrugBuilder drugBuilder) {
+    Drug(DrugBuilder drugBuilder) {
         CLINICAL_FORMULATION_ID = drugBuilder.clinicalFormulationId;
         INGREDIENT_LIST_IDENTIFIER = drugBuilder.ingredientListIdentifier;
         DISPLAY_NAME = drugBuilder.displayName;
@@ -24,23 +24,23 @@ public abstract class Drug {
     }
 
     public int getClinicalFormulationId() {
-         return CLINICAL_FORMULATION_ID;
+        return CLINICAL_FORMULATION_ID;
     }
 
     public int getIngredientListIdentifier() {
-         return INGREDIENT_LIST_IDENTIFIER;
+        return INGREDIENT_LIST_IDENTIFIER;
     }
 
     public String getDisplayName() {
-         return DISPLAY_NAME;
+        return DISPLAY_NAME;
     }
 
     public Date getAddDate() {
-         return ADD_DATE;
+        return ADD_DATE;
     }
 
     public Date getObseleteDate() {
-         return OBSELETE_DATE;
+        return OBSELETE_DATE;
     }
 
 

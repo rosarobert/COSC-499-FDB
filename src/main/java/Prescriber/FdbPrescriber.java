@@ -54,8 +54,8 @@ class FdbPrescriber implements Prescriber {
             while (foodInteractionsAsRst.next()) {
                 FoodInteraction foodInteraction = new FoodInteraction.FoodInteractionBuilder(drug)
                         .setDrugFoodInteractionCode(foodInteractionsAsRst.getInt(2))
-                        .setDrugFoodInteractionName(foodInteractionsAsRst.getString(3))
-                        .setDrugFoodInteractionResult(foodInteractionsAsRst.getString(4))
+                        .setDrugFoodInteractionName(foodInteractionsAsRst.getString(3).trim())
+                        .setDrugFoodInteractionResult(foodInteractionsAsRst.getString(4).trim())
                         .buildFoodInteraction();
                 foodInteractionsAsObjects.add(foodInteraction);
             }
@@ -97,13 +97,13 @@ class FdbPrescriber implements Prescriber {
             //For each SQL result, create a Java object representing that drug
             while (drugsAsRst.next()) {
                 Drug manufacturedDrug = new ManufacturedDrug.ManufacturedDrugBuilder()
-                        .setDisplayName(drugsAsRst.getString(1))
+                        .setDisplayName(drugsAsRst.getString(1).trim())
                         .setIngredientListIdentifier(drugsAsRst.getInt(2))
                         .setClinicalFormulationId(drugsAsRst.getInt(3))
-                        .setCanadianDrugId(drugsAsRst.getString(4))
+                        .setCanadianDrugId(drugsAsRst.getString(4).trim())
                         .setAddDate(drugsAsRst.getDate(5))
                         .setObseleteDate(drugsAsRst.getDate(6))
-                        .setManufacturerName(drugsAsRst.getString(7))
+                        .setManufacturerName(drugsAsRst.getString(7).trim())
                         .buildDrug();
                 drugsAsObjects.add(manufacturedDrug);
             }

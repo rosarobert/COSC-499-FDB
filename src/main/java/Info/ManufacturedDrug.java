@@ -10,7 +10,6 @@ public class ManufacturedDrug extends Drug {
         super(drugBuilder);
         CANADIAN_DRUG_ID = drugBuilder.canadianDrugId;
         MANUFACTURER_NAME = drugBuilder.manufacturerName;
-
     }
 
 
@@ -37,6 +36,5 @@ public class ManufacturedDrug extends Drug {
             return new ManufacturedDrug(this);
         }
     }
-
 
 }

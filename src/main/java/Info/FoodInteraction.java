@@ -62,5 +62,4 @@ public class FoodInteraction {
             return new FoodInteraction(this);
         }
     }
-
 }
