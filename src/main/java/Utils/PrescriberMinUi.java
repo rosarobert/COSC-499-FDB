@@ -11,26 +11,26 @@ public class PrescriberMinUi {
 
     public static void main(String[] args) {
         Prescriber fdbPresriber = Prescriber.createFdbPrescriber();
+        fdbPresriber.initializePrescriber("jdbc:sqlserver://localhost:1433; databaseName=FDB;integratedSecurity=true");
         String prefix = "";
         List<Drug> drugResults;
         List<FoodInteraction> foodInteractionList;
         Scanner input = new Scanner(System.in);
-            printInitialMenu();
-        int code = input.nextInt();
-        input.nextLine();
-        while (code != 2) {
-            if (code == 1) {
-                System.out.println("Enter a prefix: ");
-                prefix = input.nextLine();
-                drugResults = fdbPresriber.queryDrugs(prefix);
-                System.out.println("Choose a drug: ");
-                int drugIndex = input.nextInt();
-                input.nextLine();
-                Drug drugChosen = drugResults.get(drugIndex);
-                List<FoodInteraction> foodInteractions = fdbPresriber.queryFoodInteractionsOfDrug(drugChosen);
-                for (FoodInteraction foodInteraction : foodInteractions)
-                    System.out.println(foodInteraction.getDrugFoodInteractionResult());
-            }
+        printInitialMenu();
+        String code = input.nextLine();
+        while (code.equals("1")) {
+            System.out.println("Enter a prefix: ");
+            prefix = input.nextLine();
+            drugResults = fdbPresriber.queryDrugs(prefix);
+            for(Drug drug : drugResults)
+                System.out.println(drug.getDisplayName());
+            System.out.println("Choose a drug: ");
+            String drugIndex = input.nextLine();
+            Drug drugChosen = drugResults.get(Integer.parseInt(drugIndex));
+            List<FoodInteraction> foodInteractions = fdbPresriber.queryFoodInteractionsOfDrug(drugChosen);
+            for (FoodInteraction foodInteraction : foodInteractions)
+                System.out.println(foodInteraction.getDrugFoodInteractionResult());
+
             System.out.println("Program Finished");
         }
     }
