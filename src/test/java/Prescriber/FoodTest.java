@@ -17,7 +17,6 @@ public class FoodTest {
     @BeforeClass
     public void init() throws Exception {
         fdbPrescriber = new FdbPrescriber();
-        fdbPrescriber.initializePrescriber();
     }
 
     //closes connection
