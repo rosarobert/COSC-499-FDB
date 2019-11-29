@@ -12,7 +12,24 @@ import java.util.List;
  */
 class FdbPrescriber implements Prescriber {
 
-    private Connection fdbConnection;
+    private final Connection FDB_CONNECTION;
+
+    FdbPrescriber(String jdbcUrl, String username, String password) {
+        try {
+            FDB_CONNECTION = DriverManager.getConnection(jdbcUrl, username, password);
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not connect to fdb.\n" + e.getSQLState());
+        }
+
+    }
+
+    FdbPrescriber() {
+        try {
+            FDB_CONNECTION = DriverManager.getConnection("jdbc:sqlserver://localhost:1433; databaseName=FDB;integratedSecurity=true");
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not connect via localhost to fdb.\n" + e.getSQLState());
+        }
+    }
 
     @Override
     public List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug) {
@@ -20,18 +37,9 @@ class FdbPrescriber implements Prescriber {
     }
 
     @Override
-    public void initializePrescriber(String url) {
-        try {
-            fdbConnection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            throw new IllegalStateException("Error when creating connection to fdb" + e.getMessage());
-        }
-    }
-
-    @Override
     public void destroyPrescriber() {
         try {
-            fdbConnection.close();
+            FDB_CONNECTION.close();
         } catch (SQLException e) {
             throw new IllegalStateException("Could not close connection to FDB/\n" + e.getSQLState());
         }
@@ -40,7 +48,7 @@ class FdbPrescriber implements Prescriber {
     @Override
     public List<FoodInteraction> queryFoodInteractionsOfDrug(Drug drug) {
         try {
-            PreparedStatement pStmtToQueryFoodInteractions = fdbConnection.prepareStatement(
+            PreparedStatement pStmtToQueryFoodInteractions = FDB_CONNECTION.prepareStatement(
                     "SELECT GC.GCN_SEQNO, DF.FDCDE, DNAME, RESULT " +
                             "FROM RDFIMGC0 AS DF " +
                             "JOIN RGCNSEQ4 AS GC ON (DF.GCN_SEQNO = GC.GCN_SEQNO)" +
@@ -75,13 +83,9 @@ class FdbPrescriber implements Prescriber {
         return null;
     }
 
-    void initializePrescriber() {
-        initializePrescriber("jdbc:sqlserver://localhost:1433; databaseName=FDB;integratedSecurity=true");
-    }
-
     private List<Drug> queryManufacturerDrugs(String prefix) {
         try {
-            PreparedStatement pStmtToQueryDrugsBasedOnPrefix = fdbConnection.prepareStatement(
+            PreparedStatement pStmtToQueryDrugsBasedOnPrefix = FDB_CONNECTION.prepareStatement(
                     "SELECT TOP(100) t1.LN, t3.HICL_SEQNO, t1.GCN_SEQNO, t1.DIN, t1.IADDDTE, t1.IOBSDTE, t2.MFG " +
                             "FROM RICAIDC1 AS t1 " +
                             "JOIN RLBLRCA1 AS t2 ON (t1.ILBLRID = t2.ILBLRID) " +

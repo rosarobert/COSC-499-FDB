@@ -10,7 +10,7 @@ import java.util.List;
 public interface Prescriber {
 
     /**
-     * Creates a {@code Prescriber} for the FDB database
+     * Creates a {@code Prescriber} for the FDB database using localhost as the connection to the database
      * <p>
      * Note this method will probably change significantly, but the main idea will stay the same. We want our end users
      * to only look at what our system will do (aka the interface) and not at our specific implementation
@@ -20,10 +20,23 @@ public interface Prescriber {
         return new FdbPrescriber();
     }
 
+
+    /**
+     * Creates a {@code Prescriber} for the FDB database
+     *
+     * @param jdbcUrl  url you would pass to {@link java.sql.DriverManager#getConnection(String)}
+     * @param username username in fdb server
+     * @param password password in fdb server
+     */
+    static Prescriber createFdbPrescriber(String jdbcUrl, String username, String password) {
+        return new FdbPrescriber(jdbcUrl, username, password);
+    }
+
     /**
      * Returns all drugs in FDB database which have a name that starts with the given prefix
      * <p>
-     * Note that a drug will be compared on multiple names such as a Brand Name, Label Name, etc. See {@link ManufacturedDrug}
+     * Note that a drug will be compared on multiple names such as a Brand Name, Label Name, etc. See {@link
+     * ManufacturedDrug}
      *
      * @param prefix string that all drug names should start with
      * @return a list of all drugs that start with {@code prefix}
@@ -56,11 +69,10 @@ public interface Prescriber {
      */
     List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug);
 
-    /**
-     * @param url url to the database corresponding to the
-     */
-    void initializePrescriber(String url);
 
+    /**
+     * Closes any connection to any server/database that the presciber is connected to
+     */
     void destroyPrescriber();
 
 }
