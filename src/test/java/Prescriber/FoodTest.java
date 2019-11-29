@@ -51,7 +51,7 @@ public class FoodTest {
     public void testNameOfQueryingFoodInteractionWithNoneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("DIGITALIS PURP GRN 3-30CH");
         List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
-        Assert.assertNull(queryFoodResult.get(0));
+        Assert.assertTrue(queryFoodResult.isEmpty());
     }
 
 }
