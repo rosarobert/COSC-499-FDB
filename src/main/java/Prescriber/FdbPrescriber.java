@@ -79,7 +79,7 @@ class FdbPrescriber implements Prescriber {
     }
 
     @Override
-    public List<AllergyInteraction> queryAllergyInteractionsOfDrug(Drug drug, Patient patient) {
+    public List<AllergyInteraction> queryAllergyInteractionsOfDrug(Drug drug) {
         try {
             PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
                     "SELECT HICL_SEQNO, L1.HIC_SEQN, L1.HIC, HIC_DESC, C0.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
