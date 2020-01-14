@@ -33,9 +33,11 @@ hs_err_pid*
 *bin
 *.settings
 *.classpath
+*.code-workspace
 
 # Ignore Gradle project-specific cache directory
 .gradle
 
 # Ignore Gradle build output directory
 build
+
