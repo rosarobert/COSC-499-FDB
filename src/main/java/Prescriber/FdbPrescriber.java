@@ -79,8 +79,31 @@ class FdbPrescriber implements Prescriber {
     }
 
     @Override
-    public List<AllergyInteraction> queryAllergyInteractionsOfDrug(Drug drug, Patient patient) {
-        return null;
+    public List<AllergyInteraction> queryAllergyInteractionsOfDrug(Drug drug) {
+        try {
+            PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
+                    "SELECT HICL_SEQNO, L1.HIC_SEQN, L1.HIC, HIC_DESC, C0.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
+                            "FROM RHICD5 AS D5 " +
+                            "JOIN RHICL1 AS L1 ON (D5.HIC_SEQN = L1.HIC_SEQN) " +
+                            "JOIN RDAMGHC0 AS C0 ON (D5.HIC_SEQN = C0.HIC_SEQN) " +
+                            "JOIN RDAMAGD1 AS GD1 ON (C0.DAM_ALRGN_GRP = GD1.DAM_ALRGN_GRP) " +
+                            "WHERE HICL_SEQNO = ?"
+            );
+            pStmtToQueryAllergyInteractions.setInt(1, drug.getIngredientListIdentifier());
+
+            ResultSet allergyInteractionsAsRst = pStmtToQueryAllergyInteractions.executeQuery();
+            List<AllergyInteraction> allergyInteractionsAsObjects = new ArrayList<>();
+            while (allergyInteractionsAsRst.next()) {
+                AllergyInteraction allergyInteraction = new AllergyInteraction.AllergyInteractionBuilder(drug)
+                        .setDrugAllergyInteractionCode(allergyInteractionsAsRst.getInt(5))
+                        .setDrugAllergyInteractionResult(allergyInteractionsAsRst.getString(6).trim())
+                        .buildAllergyInteraction();
+                allergyInteractionsAsObjects.add(allergyInteraction);
+            }
+            return allergyInteractionsAsObjects;
+        } catch (SQLException e) {
+            throw new IllegalStateException("SQL is bad for querying allergy interactions.\n" + e.getSQLState());
+        }
     }
 
     private List<Drug> queryManufacturerDrugs(String prefix) {
