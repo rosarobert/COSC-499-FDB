@@ -32,8 +32,50 @@ class FdbPrescriber implements Prescriber {
     }
 
     @Override
-    public List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug) {
-        return null;
+    public List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Drug currentDrugs) {
+        try {
+            PreparedStatement pStmtToQueryDrugToDrugInteractions = FDB_CONNECTION.prepareStatement(
+                    "SELECT DISTINCT Table1.DDI_DES " +
+                            ",ADI_EFFTXT " +
+                            "FROM " +
+                            "(SELECT DISTINCT HICL_SEQNO AS HICL1 " +
+                                ",C4.DDI_CODEX AS CODEX1 " +
+                                ",DDI_MONOX AS MONOX1 " +
+                                ",DDI_DES " +
+                                "FROM RGCNSEQ4 AS GCN " +
+                                "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) " +
+                                "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) " +
+                                "WHERE HICL_SEQNO = ?) AS Table1 " +
+                            "CROSS JOIN " +
+                            "(SELECT DISTINCT HICL_SEQNO AS HICL2 " +
+                                ",C4.DDI_CODEX AS CODEX2 " +
+                                ",DDI_MONOX AS MONOX2 " +
+                                ",DDI_DES " +
+                                "FROM RGCNSEQ4 AS GCN " +
+                                "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) " +
+                                "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) " +
+                                "WHERE HICL_SEQNO IN (?)) AS TABLE2 " +
+                            "JOIN RADIMIE4 AS E4 ON (CODEX1 = E4.DDI_CODEX) " +
+                            "JOIN RADIMEF0 AS F0 ON (E4.ADI_EFFTC = F0.ADI_EFFTC) " +
+                            "JOIN RADIMSL1 AS L1 ON (DDI_SL = L1.DDI_SL) " +
+                            "WHERE MONOX1 = MONOX2 and CODEX1 != CODEX2"
+            );
+            pStmtToQueryDrugToDrugInteractions.setInt(1, newDrug.getIngredientListIdentifier());
+            pStmtToQueryDrugToDrugInteractions.setInt(2, currentDrugs.getIngredientListIdentifier());
+
+            ResultSet drugInteractionsAsRst = pStmtToQueryDrugToDrugInteractions.executeQuery();
+            List<DrugInteraction> drugInteractionsAsObjects = new ArrayList<>();
+            while (drugInteractionsAsRst.next()) {
+                DrugInteraction drugInteraction = new DrugInteraction.DrugInteractionBuilder(newDrug)
+                        .setDrugToDrugInteractionDesc(drugInteractionsAsRst.getString(1).trim())
+                        .setDrugToDrugClinicalEffectText(drugInteractionsAsRst.getString(2).trim())
+                        .buildDrugInteraction();
+                drugInteractionsAsObjects.add(drugInteraction);
+            }
+            return drugInteractionsAsObjects;
+        } catch (SQLException e) {
+            throw new IllegalStateException("SQL is bad for querying drug to drug interactions.\n" + e.getSQLState());
+        }
     }
 
     @Override
