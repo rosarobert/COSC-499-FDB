@@ -26,7 +26,7 @@ dependencies {
     //JMockit
     testCompile group: 'org.jmockit', name: 'jmockit', version: '1.48'
 
-    testCompile group: 'org.testng', name: 'testng', version: '7.0.0'
+    testCompile group: 'org.testng', name: 'testng', version: '7.1.0'
 
 }
 
