@@ -53,5 +53,4 @@ public class AllergyInteraction {
             return new AllergyInteraction(this);
         }
     }
-
 }

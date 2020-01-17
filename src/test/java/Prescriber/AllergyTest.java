@@ -38,5 +38,4 @@ public class AllergyTest {
         String allergyInteractionResult = queryAllergyResult.get(0).getDrugAllergyInteractionResult();
         Assert.assertEquals(allergyInteractionResult, "Gram Negative Bacilli (Non-Enteric) Vaccines");
     }
-
 }

@@ -48,7 +48,6 @@ public interface Prescriber {
      * FDB database
      *
      * @param drug    the drug being checked for provacations
-     * @param patient the patient whose allergies are being checked
      * @return list of patient allergies that would be provoked by {@code drug}
      */
     List<AllergyInteraction> queryAllergyInteractionsOfDrug(Drug drug);
@@ -64,10 +63,11 @@ public interface Prescriber {
     /**
      * Finds all drugs in FDB database that would interact badly with a given drug in FDB database
      *
-     * @param drug the drug being checked
+     * @param newDrug the drug being checked
+     * @param currentDrug the drugs currently being taken
      * @return a list of drug that interact badly with {@code drug}
      */
-    List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug);
+    List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Drug currentDrug);
 
 
     /**
