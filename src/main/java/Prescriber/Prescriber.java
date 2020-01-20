@@ -32,6 +32,16 @@ public interface Prescriber {
         return new FdbPrescriber(jdbcUrl, username, password);
     }
 
+      /**
+     * Creates a {@code Prescriber} for the FDB database
+     *
+     * @param username username in fdb server
+     * @param password password in fdb server
+     */
+    static Prescriber createFdbPrescriber(String username, String password) {
+        return new FdbPrescriber(username, password);
+    }
+
     /**
      * Returns all drugs in FDB database which have a name that starts with the given prefix
      * <p>
@@ -67,7 +77,7 @@ public interface Prescriber {
      * @param currentDrug the drugs currently being taken
      * @return a list of drug that interact badly with {@code drug}
      */
-    List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Drug currentDrug);
+    List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Drug[] currentDrug);
 
 
     /**
