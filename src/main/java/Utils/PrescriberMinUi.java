@@ -11,8 +11,8 @@ public class PrescriberMinUi {
 
     public static void main(String[] args) throws InterruptedException {
         Scanner input = new Scanner(System.in);
-        Prescriber fdbPrescriber = Prescriber.createFdbPrescriber();
-        //While user enters "queries drugs" in initial menu
+        Prescriber fdbPrescriber = createPrescriber(input);
+        // While user enters "queries drugs" in initial menu
         while (initialMenu(input)) {
 
             List<Drug> queriedDrugs = queryDrugs(fdbPrescriber, input);
@@ -25,13 +25,25 @@ public class PrescriberMinUi {
         }
     }
 
+    private static Prescriber createPrescriber(Scanner input) {
+        System.out.println("Who are you?:");
+        System.out.println("(1): A normal person");
+        System.out.println("(2): Ethan");
+        int choice = chooseAnInteger(input, 1, 3);
+        if (choice == 1) {
+            return Prescriber.createFdbPrescriber();
+        } else {
+            return Prescriber.createFdbPrescriber("sa", "linuxSucks123");
+        }
+    }
+
     private static void queryFoodInteractions(Prescriber prescriber, Drug drugChosen) throws InterruptedException {
         List<FoodInteraction> foodInteractions = prescriber.queryFoodInteractionsOfDrug(drugChosen);
         if (foodInteractions.isEmpty()) {
             System.out.println("There are no harmful food interactions known :)");
             System.out.println();
             System.out.println();
-        }else {
+        } else {
             System.out.println("Results:");
             for (FoodInteraction foodInteraction : foodInteractions)
                 System.out.println(foodInteraction.getDrugFoodInteractionResult());
@@ -51,7 +63,6 @@ public class PrescriberMinUi {
         int index = chooseAnInteger(input, 0, drugs.size());
         return drugs.get(index);
     }
-
 
     /**
      * Prints the inital menu and prompts user for input
@@ -91,5 +102,3 @@ public class PrescriberMinUi {
         return result;
     }
 }
-
-
