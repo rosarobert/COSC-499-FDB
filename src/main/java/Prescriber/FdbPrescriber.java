@@ -23,6 +23,10 @@ class FdbPrescriber implements Prescriber {
 
     }
 
+    FdbPrescriber(String username, String password) {
+        this("jdbc:sqlserver://localhost:1433; databaseName=FDB;", username, password);
+    }
+
     FdbPrescriber() {
         try {
             FDB_CONNECTION = DriverManager.getConnection("jdbc:sqlserver://localhost:1433; databaseName=FDB;integratedSecurity=true");
