@@ -67,7 +67,7 @@ public interface Prescriber {
      * @param currentDrug the drugs currently being taken
      * @return a list of drug that interact badly with {@code drug}
      */
-    List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Drug currentDrug);
+    List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Drug[] currentDrug);
 
 
     /**

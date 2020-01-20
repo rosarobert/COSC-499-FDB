@@ -1,13 +1,16 @@
 package Utils;
 
+import Info.AllergyInteraction;
 import Info.Drug;
+import Info.DrugInteraction;
 import Info.FoodInteraction;
 import Prescriber.Prescriber;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class PrescriberMinUi {
+public class PrescriberCli {
 
     public static void main(String[] args) throws InterruptedException {
         Scanner input = new Scanner(System.in);
@@ -20,7 +23,18 @@ public class PrescriberMinUi {
                 System.out.println("No drugs found :(");
             } else {
                 Drug drugChosen = chooseADrug(queriedDrugs, input);
-                queryFoodInteractions(fdbPrescriber, drugChosen);
+                int choice = interactionMenu(input);
+                switch (choice) {
+                    case 1:
+                        queryFoodInteractions(fdbPrescriber, drugChosen);
+                        break;
+                    case 2:
+                        queryAllergyInteractions(fdbPrescriber, drugChosen);
+                        break;
+                    case 3:
+                        queryADrugInteractions(fdbPrescriber, drugChosen, input);
+                }
+
             }
         }
     }
@@ -31,10 +45,52 @@ public class PrescriberMinUi {
             System.out.println("There are no harmful food interactions known :)");
             System.out.println();
             System.out.println();
-        }else {
+        } else {
             System.out.println("Results:");
             for (FoodInteraction foodInteraction : foodInteractions)
                 System.out.println(foodInteraction.getDrugFoodInteractionResult());
+        }
+    }
+
+    private static void queryAllergyInteractions(Prescriber prescriber, Drug drugChosen) throws InterruptedException {
+        List<AllergyInteraction> allergyInteractions = prescriber.queryAllergyInteractionsOfDrug(drugChosen);
+        if (allergyInteractions.isEmpty()) {
+            System.out.println("There are no harmful allergy interactions known :)");
+            System.out.println();
+            System.out.println();
+        } else {
+            System.out.println("Results:");
+            for (AllergyInteraction allergyInteraction : allergyInteractions)
+                System.out.println(allergyInteraction.getDrugAllergyInteractionResult());
+        }
+    }
+
+
+    private static void queryADrugInteractions(Prescriber prescriber, Drug newDrug, Scanner input) throws InterruptedException {
+        List<Drug> drugsToCheck = new ArrayList<>();
+        int chosenNumber = 1;
+        do {
+          List<Drug> queriedDrugs = queryDrugs(prescriber, input);
+          Drug drugChosen = chooseADrug(queriedDrugs, input);
+          drugsToCheck.add(drugChosen);
+            System.out.println("Do you want to check more drugs?");
+            System.out.println("(1): Yes");
+            System.out.println("(2): No");
+            chosenNumber = chooseAnInteger(input, 1, 3);
+        } while(chosenNumber != 2);
+        List<DrugInteraction> drugInteractions = prescriber.queryDrugInteractionsWithOtherDrugs(newDrug, drugsToCheck.toArray(new Drug[drugsToCheck.size()]));
+        if (drugInteractions.isEmpty()) {
+            System.out.println("There are no harmful allergy interactions known :)");
+            System.out.println();
+            System.out.println();
+        } else {
+            System.out.println("Results:");
+            System.out.println(newDrug.getDisplayName());
+            for (DrugInteraction drugInteraction : drugInteractions) {
+                System.out.println(drugInteraction.getPrescribedDrug());
+                System.out.println(drugInteraction.getDrugInteractingWith());
+                System.out.println(drugInteraction.getDrugToDrugClinicalEffectText());
+            }
         }
     }
 
@@ -90,6 +146,18 @@ public class PrescriberMinUi {
         }
         return result;
     }
+
+
+    private static int interactionMenu(Scanner input) {
+        System.out.println("(1): Food Interactions:");
+        System.out.println("(2): Allergy Interactions");
+        System.out.println("(3): Drug Interactions");
+        System.out.println("Choose an option by entering the corresponding number:");
+
+        return chooseAnInteger(input, 1, 4);
+
+    }
+
 }
 
 

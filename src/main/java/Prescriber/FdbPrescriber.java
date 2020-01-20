@@ -32,8 +32,14 @@ class FdbPrescriber implements Prescriber {
     }
 
     @Override
-    public List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Drug currentDrugs) {
+    public List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Drug[] drugsToCompare) {
         try {
+            StringBuilder testers = new StringBuilder(Integer.toString(drugsToCompare[0].getIngredientListIdentifier()));
+            for (int i = 1; i<drugsToCompare.length;i++){
+                 testers.append(", ");
+                 testers.append(drugsToCompare[i].getIngredientListIdentifier());
+            }
+
             PreparedStatement pStmtToQueryDrugToDrugInteractions = FDB_CONNECTION.prepareStatement(
                     "SELECT DISTINCT Table1.DDI_DES " +
                             ",ADI_EFFTXT " +
@@ -60,13 +66,13 @@ class FdbPrescriber implements Prescriber {
                             "JOIN RADIMSL1 AS L1 ON (DDI_SL = L1.DDI_SL) " +
                             "WHERE MONOX1 = MONOX2 and CODEX1 != CODEX2"
             );
-            pStmtToQueryDrugToDrugInteractions.setInt(1, newDrug.getIngredientListIdentifier());
-            pStmtToQueryDrugToDrugInteractions.setInt(2, currentDrugs.getIngredientListIdentifier());
+            pStmtToQueryDrugToDrugInteractions.setInt(1, drug.getIngredientListIdentifier());
+            pStmtToQueryDrugToDrugInteractions.setString(2, testers.toString());
 
             ResultSet drugInteractionsAsRst = pStmtToQueryDrugToDrugInteractions.executeQuery();
             List<DrugInteraction> drugInteractionsAsObjects = new ArrayList<>();
             while (drugInteractionsAsRst.next()) {
-                DrugInteraction drugInteraction = new DrugInteraction.DrugInteractionBuilder(newDrug)
+                DrugInteraction drugInteraction = new DrugInteraction.DrugInteractionBuilder(drug)
                         .setDrugToDrugInteractionDesc(drugInteractionsAsRst.getString(1).trim())
                         .setDrugToDrugClinicalEffectText(drugInteractionsAsRst.getString(2).trim())
                         .buildDrugInteraction();
