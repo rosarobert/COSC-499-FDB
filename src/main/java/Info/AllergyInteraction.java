@@ -5,6 +5,8 @@ import org.apache.commons.lang3.Validate;
 /**
  * Container class for storing display infomation about a allergy-drug
  * interaction
+ * 
+ * @see Drug
  */
 public class AllergyInteraction {
     // Drug causing the allergy
