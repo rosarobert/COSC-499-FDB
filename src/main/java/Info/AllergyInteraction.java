@@ -1,51 +1,56 @@
 package Info;
 
-import org.apache.commons.lang3.Validate;
-
 /**
- * Container class for storing display infomation about a allergy-drug
- * interaction
- * 
- * @see Drug
+ * Container class for storing allergy information
  */
-public final class AllergyInteraction {
-    // Drug causing the allergy
+public class AllergyInteraction {
+    //Drug causing the harmful allergy interaction
     private final Drug DRUG_INTERACTING;
-    // Description of the allergy interaction
-    private final String ALLERGY_INTERACTION_RESULT;
+    //DAM_ALRGN_GRP in relation RDAMGHC0 or DAM_ALRGN_XSENSE in relation RDAMXHC0
+    private final int DRUG_ALLERGY_INTERACTION_CODE;
+    //DAM_ALRGN_GRP_DESC in relation RDAMAGD1 or DAM_ALRGN_XSENSE_DESC in relation RDAMCSD1
+    private final String DRUG_ALLERGY_INTERACTION_RESULT;
 
-    private AllergyInteraction(Drug drugInteracting, String allergyInteractionResult) {
-        Validate.notNull(drugInteracting, "The drug causing an allergic reaction cannot be null");
-        Validate.notNull(allergyInteractionResult, "The result of an allergic reaction cannot be null");
-        Validate.notEmpty(allergyInteractionResult, "The result of an allergic reaction cannot be an empty.");
-        DRUG_INTERACTING = drugInteracting;
-        ALLERGY_INTERACTION_RESULT = allergyInteractionResult;
+    private AllergyInteraction(AllergyInteractionBuilder builder) {
+        DRUG_INTERACTING = builder.DRUG_INTERACTING;
+        DRUG_ALLERGY_INTERACTION_CODE = builder.drugAllergyInteractionCode;
+        DRUG_ALLERGY_INTERACTION_RESULT = builder.drugAllergyInteractionResult;
     }
 
-    /**
-     * Creates an AllergyInteracting from the database FDB
-     * 
-     * @param drugInteracting          Drug causing the allergic interaction
-     * @param allergyInteractionResult Description of the allegy interaction. It is
-     *                                 either DAM_ALRGN_GRP_DESC in relation
-     *                                 RDAMAGD1 or DAM_ALRGN_XSENSE_DESC in relation
-     *                                 RDAMCSD1
-     */
-    public static final AllergyInteraction createFdbAllergyInteraction(Drug drugInteracting, String allergyInteractionResult) {
-        return new AllergyInteraction(drugInteracting, allergyInteractionResult);
-    }
-
-    /**
-     * @return the drug causing the allergy interaction
-     */
-    public final Drug getInteractingDrug() {
+    public Drug getInteractingDrug() {
         return DRUG_INTERACTING;
     }
 
-    /**
-     * @return a description of the allergy interaction
-     */
-    public final String getAllergyInteractionResult() {
-        return ALLERGY_INTERACTION_RESULT;
+    public int getDrugAllergyInteractionCode() {
+        return DRUG_ALLERGY_INTERACTION_CODE;
+    }
+
+    public String getDrugAllergyInteractionResult() {
+        return DRUG_ALLERGY_INTERACTION_RESULT;
+    }
+
+
+    public static class AllergyInteractionBuilder {
+        private final Drug DRUG_INTERACTING;
+        private int drugAllergyInteractionCode;
+        private String drugAllergyInteractionResult;
+
+        public AllergyInteractionBuilder(Drug drug) {
+            DRUG_INTERACTING = drug;
+        }
+
+        public AllergyInteractionBuilder setDrugAllergyInteractionCode(int drugAllergyInteractionCode) {
+            this.drugAllergyInteractionCode = drugAllergyInteractionCode;
+            return this;
+        }
+
+        public AllergyInteractionBuilder setDrugAllergyInteractionResult(String drugAllergyInteractionResult) {
+            this.drugAllergyInteractionResult = drugAllergyInteractionResult;
+            return this;
+        }
+
+        public AllergyInteraction buildAllergyInteraction() {
+            return new AllergyInteraction(this);
+        }
     }
 }

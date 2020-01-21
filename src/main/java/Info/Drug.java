@@ -1,80 +1,92 @@
 package Info;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Date;
 
-import org.apache.commons.lang3.Validate;
+public abstract class Drug {
+    //GCN_SEQNO in relation RICAIDC1
+    private final int CLINICAL_FORMULATION_ID;
 
-/**
- * A container class for storing necessary infomation about a single Drug
- * <p>
- * This class is inspired based on the design of FDB, but could be used in other
- * circumstances
- * <p>
- * The main purpose of this class is to hold infomation needed to find other
- * interactions such as drug, food and allergic reactions.
- * <p>
- * The class does this using a map; the name of the id is the key and the id is
- * the value. Other classes then use these ids to figure out interactions the
- * drug has.
- * 
- * @see Prescriber
- * @see DrugInteraction
- * @see FoodInteraction
- * @see AllergyInteraction
- */
-public final class Drug {
-
-    // Name the user should see
+    //HICL_SEQNO in relation RGCNSEQ4
+    private final int INGREDIENT_LIST_IDENTIFIER;
+    //LN in relation RICAIDC1
     private final String DISPLAY_NAME;
-    // Stores IDs specfic to an implementation. See class description
-    private final Map<String, Integer> NAME_TO_ID;
+    //IADDDTE in relation RICAIDC1
+    private final Date ADD_DATE;
+    //IOBSDTE in relation RICAIDC1
+    private final Date OBSELETE_DATE;
 
-    private Drug(String displayName) {
-        Validate.notNull(displayName, "Display name of a drug cannot be null.");
-        DISPLAY_NAME = displayName;
-        NAME_TO_ID = new HashMap<>();
+    Drug(DrugBuilder<?> drugBuilder) {
+        CLINICAL_FORMULATION_ID = drugBuilder.clinicalFormulationId;
+        INGREDIENT_LIST_IDENTIFIER = drugBuilder.ingredientListIdentifier;
+        DISPLAY_NAME = drugBuilder.displayName;
+        ADD_DATE = drugBuilder.addDate;
+        OBSELETE_DATE = drugBuilder.obseleteDate;
     }
 
-    /**
-     * Creates a drug based on the FDB database
-     * 
-     * @param displayName              Name displayed to the user. It LN in relation
-     *                                 RICAIDC1
-     * @param clinicalFormulationId    GCN_SEQNO in relation RICAIDC1
-     * @param ingredientListIdentifier HICL_SEQNO in relation RGCNSEQ4
-     */
-    public static final Drug createFdbDrug(String displayName, int clinicalFormulationId, int ingredientListIdentifier) {
-        Drug drugCreated = new Drug(displayName);
-        drugCreated.NAME_TO_ID.put("clinicalFormulationId", clinicalFormulationId);
-        drugCreated.NAME_TO_ID.put("ingredientListIdentifier", ingredientListIdentifier);
-        return drugCreated;
+    public int getClinicalFormulationId() {
+        return CLINICAL_FORMULATION_ID;
     }
 
-    /**
-     * Retrieves the name for this drug that should be displayed to the user
-     */
-    public final String getDisplayName() {
+    public int getIngredientListIdentifier() {
+        return INGREDIENT_LIST_IDENTIFIER;
+    }
+
+    public String getDisplayName() {
         return DISPLAY_NAME;
     }
 
-    /**
-     * Retrieves an id
-     * 
-     * @param name name of the id. This could be a name of a column in a database
-     * @return the id corresponding to the given name
-     */
-    public final int getIdByName(String name) {
-        return NAME_TO_ID.get(name);
+    public Date getAddDate() {
+        return ADD_DATE;
     }
 
-    /**
-     * Determines if the drug has an id with a given name
-     * 
-     * @param name name to check
-     * @return true if the drug has an id with the given name
-     */
-    public final boolean has(String name) {
-        return NAME_TO_ID.containsKey(name);
+    public Date getObseleteDate() {
+        return OBSELETE_DATE;
     }
+
+
+    /**
+     * Class for building a Drug instance
+     * <p>
+     * Note: This builder class is implemented similar to the generic example in Chapter 2 Item 2 of Effective Java, 3rd
+     * Edition, by Joshua Bloch
+     */
+    public abstract static class DrugBuilder<T extends DrugBuilder<T>> {
+
+        private int clinicalFormulationId;
+        private int ingredientListIdentifier;
+        private String displayName;
+        private Date addDate;
+        private Date obseleteDate;
+
+        public T setClinicalFormulationId(int clinicalFormulationId) {
+            this.clinicalFormulationId = clinicalFormulationId;
+            return self();
+        }
+
+
+        public T setIngredientListIdentifier(int ingredientListIdentifier) {
+            this.ingredientListIdentifier = ingredientListIdentifier;
+            return self();
+        }
+
+        public T setDisplayName(String displayName) {
+            this.displayName = displayName.trim();
+            return self();
+        }
+
+        public T setAddDate(Date addDate) {
+            this.addDate = addDate;
+            return self();
+        }
+
+        public T setObseleteDate(Date obseleteDate) {
+            this.obseleteDate = obseleteDate;
+            return self();
+        }
+
+        abstract T self();
+
+        abstract Drug buildDrug();
+    }
+
 }
