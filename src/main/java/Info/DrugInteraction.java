@@ -1,63 +1,59 @@
 package Info;
 
-public class DrugInteraction {
-    //Drug being prescribed causing the interaction
-    private final Drug DRUG_PRESCRIBED;
-    //Drug patient already taking the interaction is occurring with
-    private final Drug DRUG_INTERACTING_WITH;
-    //DDI_DES in relation RADIMMA5
-    private final String DRUG_TO_DRUG_INTERACTION_DESC;
-    //ADI_EFFTXT in relation RADIMEF0
-    private final String DRUG_TO_DRUG_CLINICAL_EFFECT_TEXT;
+import org.apache.commons.lang3.Validate;
 
-    private DrugInteraction(DrugInteractionBuilder builder) {
-        DRUG_PRESCRIBED = builder.DRUG_PRESCRIBED;
-        DRUG_INTERACTING_WITH = builder.drugInteractingWith;
-        DRUG_TO_DRUG_INTERACTION_DESC = builder.drugToDrugInteractionDesc;
-        DRUG_TO_DRUG_CLINICAL_EFFECT_TEXT = builder.drugToDrugClinicalEffectText;
+/**
+ * A object describing some interaction with a specific drug. This interaction
+ * is usually a harmful interaction like a allergic or food interaction.
+ */
+public final class DrugInteraction {
+
+    private final Drug DRUG_INTERACTING;// Drug causing the interaction
+    private final InteractionType TYPE_OF_INTERACTION;
+    private final String INTERACTION_DESCRIPTION;
+
+    private DrugInteraction(Drug drugInteracting, InteractionType typeOfInteraction, String interactionDescription) {
+        Validate.notNull(drugInteracting, "The a drug in a drug interaction cannot be null.");
+        Validate.notNull(typeOfInteraction, "The type of a drug interaction cannot be null.");
+        Validate.notNull(interactionDescription, "The description of a drug interaction cannot be null.");
+        Validate.notEmpty(interactionDescription, "The description of a drug interaction cannot be empty.");
+
+        DRUG_INTERACTING = drugInteracting;
+        TYPE_OF_INTERACTION = typeOfInteraction;
+        INTERACTION_DESCRIPTION = interactionDescription;
     }
 
-    public Drug getPrescribedDrug() {
-        return DRUG_PRESCRIBED;
+    /**
+     * Creates a drug interaction corresponding to a harmful food-drug interaction
+     * using the FDB database
+     * 
+     * @param drugInteracting            Drug causing the harmful reaction with the
+     *                                   food. 
+     * @param foodInteractionDescription A description of what It is the property RESULT in the
+     *                                   relation RDIMMA0
+     * @return
+     */
+    public static final DrugInteraction createFdbFoodInteraction(Drug drugInteracting, String foodInteractionDescription) {
+        return new DrugInteraction(drugInteracting, InteractionType.DRUG_TO_FOOD, foodInteractionDescription);
     }
 
-    public Drug getDrugInteractingWith() {
-        return DRUG_INTERACTING_WITH;
+    public static final DrugInteraction createFdbAllergyInteraction(Drug drugInteracting, String allergyInteractionDescription) {
+        return new DrugInteraction(drugInteracting, InteractionType.DRUG_TO_ALLERGY, allergyInteractionDescription);
     }
 
-    public String getDrugToDrugInteractionDesc() { return DRUG_TO_DRUG_INTERACTION_DESC; }
-
-    public String getDrugToDrugClinicalEffectText() {
-        return DRUG_TO_DRUG_CLINICAL_EFFECT_TEXT;
+    public final Drug getDrugInteracting() {
+        return DRUG_INTERACTING;
     }
 
-    public static class DrugInteractionBuilder {
-        private final Drug DRUG_PRESCRIBED;
-        private Drug drugInteractingWith;
-        private String drugToDrugInteractionDesc;
-        private String drugToDrugClinicalEffectText;
+    public final InteractionType getInteractionType() {
+        return TYPE_OF_INTERACTION;
+    }
 
-        public DrugInteractionBuilder(Drug drug) {
-            DRUG_PRESCRIBED = drug;
-        }
+    public final String getInteractionDescription() {
+        return INTERACTION_DESCRIPTION;
+    }
 
-        public DrugInteractionBuilder setDrugInteractingWith(Drug drug) {
-            this.drugInteractingWith = drug;
-            return this;
-        }
-
-        public DrugInteractionBuilder setDrugToDrugInteractionDesc(String drugToDrugInteractionDesc) {
-            this.drugToDrugInteractionDesc = drugToDrugInteractionDesc;
-            return this;
-        }
-
-        public DrugInteractionBuilder setDrugToDrugClinicalEffectText(String drugToDrugClinicalEffectText) {
-            this.drugToDrugClinicalEffectText = drugToDrugClinicalEffectText;
-            return this;
-        }
-
-        public DrugInteraction buildDrugInteraction() {
-            return new DrugInteraction(this);
-        }
+    public enum InteractionType {
+        DRUG_TO_ALLERGY, DRUG_TO_FOOD, DRUG_TO_DRUG;
     }
 }
