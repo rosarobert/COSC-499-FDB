@@ -15,8 +15,7 @@ public final class DrugInteraction {
     private DrugInteraction(Drug drugInteracting, InteractionType typeOfInteraction, String interactionDescription) {
         Validate.notNull(drugInteracting, "The a drug in a drug interaction cannot be null.");
         Validate.notNull(typeOfInteraction, "The type of a drug interaction cannot be null.");
-        Validate.notNull(interactionDescription, "The description of a drug interaction cannot be null.");
-        Validate.notEmpty(interactionDescription, "The description of a drug interaction cannot be empty.");
+        Validate.notEmpty(interactionDescription, "The description of a drug interaction cannot be empty or null.");
 
         DRUG_INTERACTING = drugInteracting;
         TYPE_OF_INTERACTION = typeOfInteraction;
@@ -32,7 +31,10 @@ public final class DrugInteraction {
      * @param foodInteractionDescription A description of what reaction occurs with
      *                                   the food. It is the property RESULT in the
      *                                   relation RDIMMA0
+     * @throws NullPointerException  if the drug or description is null
+     * @throws IllegalStateException if the description is the empty string
      */
+
     public static final DrugInteraction createFdbFoodInteraction(Drug drugInteracting, String foodInteractionDescription) {
         return new DrugInteraction(drugInteracting, InteractionType.DRUG_TO_FOOD, foodInteractionDescription);
     }
@@ -45,6 +47,8 @@ public final class DrugInteraction {
      *                                      reaction
      * @param allergyInteractionDescription A description of what exactly the
      *                                      allergic reaction is
+     * @throws NullPointerException  if the drug or description is null
+     * @throws IllegalStateException if the description is the empty string
      */
     public static final DrugInteraction createFdbAllergyInteraction(Drug drugInteracting, String allergyInteractionDescription) {
         return new DrugInteraction(drugInteracting, InteractionType.DRUG_TO_ALLERGY, allergyInteractionDescription);
