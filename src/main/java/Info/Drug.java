@@ -85,6 +85,11 @@ public final class Drug {
             NAME_TO_ID.put(nameOfId, id);
             return this;
         }
+
+        public Drug build() {
+            Validate.notNull(displayName, "You cannot build a drug without a name.");
+            return new Drug(this);
+        }
     }
 
 }
