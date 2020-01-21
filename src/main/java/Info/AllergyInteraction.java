@@ -8,52 +8,44 @@ import org.apache.commons.lang3.Validate;
  * 
  * @see Drug
  */
-public class AllergyInteraction {
+public final class AllergyInteraction {
     // Drug causing the allergy
     private final Drug DRUG_INTERACTING;
     // Description of the allergy interaction
     private final String ALLERGY_INTERACTION_RESULT;
 
-    private AllergyInteraction(AllergyInteractionBuilder builder) {
-        DRUG_INTERACTING = builder.drugInteracting;
-        ALLERGY_INTERACTION_RESULT = builder.allergyInteractionResult;
-    }
-
-    public Drug getInteractingDrug() {
-        return DRUG_INTERACTING;
-    }
-
-    public String getAllergyInteractionResult() {
-        return ALLERGY_INTERACTION_RESULT;
+    private AllergyInteraction(Drug drugInteracting, String allergyInteractionResult) {
+        Validate.notNull(drugInteracting, "The drug causing an allergic reaction cannot be null");
+        Validate.notNull(allergyInteractionResult, "The result of an allergic reaction cannot be null");
+        Validate.notEmpty(allergyInteractionResult, "The result of an allergic reaction cannot be an empty.");
+        DRUG_INTERACTING = drugInteracting;
+        ALLERGY_INTERACTION_RESULT = allergyInteractionResult;
     }
 
     /**
-     * Class for building a AllergyInteraction instance
-     * <p>
-     * Note: This builder class is implemented similar to the examples in Chapter 2
-     * Item 2 of Effective Java, 3rd Edition, by Joshua Bloch
+     * Creates an AllergyInteracting from the database FDB
+     * 
+     * @param drugInteracting          Drug causing the allergic interaction
+     * @param allergyInteractionResult Description of the allegy interaction. It is
+     *                                 either DAM_ALRGN_GRP_DESC in relation
+     *                                 RDAMAGD1 or DAM_ALRGN_XSENSE_DESC in relation
+     *                                 RDAMCSD1
      */
-    public static class AllergyInteractionBuilder {
-        private Drug drugInteracting;
-        private String allergyInteractionResult;
+    public static final AllergyInteraction createFdbAllergyInteraction(Drug drugInteracting, String allergyInteractionResult) {
+        return new AllergyInteraction(drugInteracting, allergyInteractionResult);
+    }
 
-        public AllergyInteractionBuilder setDrugInteracting(Drug drugInteracting) {
-            Validate.notNull(drugInteracting, "The drug causing an allergic reaction cannot be null");
-            this.drugInteracting = drugInteracting;
-            return this;
-        }
+    /**
+     * @return the drug causing the allergy interaction
+     */
+    public final Drug getInteractingDrug() {
+        return DRUG_INTERACTING;
+    }
 
-        public AllergyInteractionBuilder setAllergyInteractionResult(String allergyInteractionResult) {
-            Validate.notNull(allergyInteractionResult, "The result of an allergic reaction cannot be null");
-            Validate.notEmpty(allergyInteractionResult, "The result of an allergic reaction cannot be an empty.");
-            this.allergyInteractionResult = allergyInteractionResult;
-            return this;
-        }
-
-        public AllergyInteraction buildAllergyInteraction() {
-            Validate.notNull(drugInteracting, "Cannot build an AllergyInteraction without a interacting drug");
-            Validate.notNull(allergyInteractionResult, "Cannot build AllergyInteraction without a result.");
-            return new AllergyInteraction(this);
-        }
+    /**
+     * @return a description of the allergy interaction
+     */
+    public final String getAllergyInteractionResult() {
+        return ALLERGY_INTERACTION_RESULT;
     }
 }
