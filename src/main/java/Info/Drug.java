@@ -25,20 +25,37 @@ import org.apache.commons.lang3.Validate;
  */
 public final class Drug {
 
-    // Stores IDs specfic to an implementation. See class description
-    private final Map<String, Integer> NAME_TO_ID;
     // Name the user should see
     private final String DISPLAY_NAME;
+    // Stores IDs specfic to an implementation. See class description
+    private final Map<String, Integer> NAME_TO_ID;
 
-    Drug(DrugBuilder drugBuilder) {
-        NAME_TO_ID = drugBuilder.NAME_TO_ID;
-        DISPLAY_NAME = drugBuilder.displayName;
+    private Drug(String displayName) {
+        Validate.notNull(displayName, "Display name of a drug cannot be null.");
+        DISPLAY_NAME = displayName;
+        NAME_TO_ID = new HashMap<>();
+    }
+
+    /**
+     * Creates a drug based on the FDB database
+     * 
+     * @param displayName              Name displayed to the user. It LN in relation
+     *                                 RICAIDC1
+     * @param clinicalFormulationId    GCN_SEQNO in relation RICAIDC1
+     * @param ingredientListIdentifier HICL_SEQNO in relation RGCNSEQ4
+     * @return
+     */
+    public static final Drug createFdbDrug(String displayName, int clinicalFormulationId, int ingredientListIdentifier) {
+        Drug drugCreated = new Drug(displayName);
+        drugCreated.NAME_TO_ID.put("clinicalFormulationId", clinicalFormulationId);
+        drugCreated.NAME_TO_ID.put("ingredientListIdentifier", ingredientListIdentifier);
+        return drugCreated;
     }
 
     /**
      * Retrieves the name for this drug that should be displayed to the user
      */
-    public String getDisplayName() {
+    public final String getDisplayName() {
         return DISPLAY_NAME;
     }
 
@@ -48,7 +65,7 @@ public final class Drug {
      * @param name name of the id. This could be a name of a column in a database
      * @return the id corresponding to the given name
      */
-    public int getIdByName(String name) {
+    public final int getIdByName(String name) {
         return NAME_TO_ID.get(name);
     }
 
@@ -58,38 +75,7 @@ public final class Drug {
      * @param name name to check
      * @return true if the drug has an id with the given name
      */
-    public boolean has(String name) {
+    public final boolean has(String name) {
         return NAME_TO_ID.containsKey(name);
     }
-
-    /**
-     * Class for building a Drug instance
-     * <p>
-     * Note: This builder class is implemented similar to the examples in Chapter 2
-     * Item 2 of Effective Java, 3rd Edition, by Joshua Bloch
-     */
-    public final static class DrugBuilder {
-        private final Map<String, Integer> NAME_TO_ID = new HashMap<>();
-        private String displayName;
-
-        public DrugBuilder setDisplayName(String displayName) {
-            Validate.notNull(displayName, "Display name cannot be null.");
-            Validate.notEmpty(displayName, "Display name must be a non-empty string");
-            this.displayName = displayName.trim();
-            return this;
-        }
-
-        public DrugBuilder addId(String nameOfId, int id) {
-            Validate.notNull(nameOfId, "The name of an id cannot be null");
-            Validate.notEmpty(displayName, "The name of an id cannot be an empty string");
-            NAME_TO_ID.put(nameOfId, id);
-            return this;
-        }
-
-        public Drug build() {
-            Validate.notNull(displayName, "You cannot build a drug without a name.");
-            return new Drug(this);
-        }
-    }
-
 }
