@@ -28,19 +28,31 @@ public final class DrugInteraction {
      * using the FDB database
      * 
      * @param drugInteracting            Drug causing the harmful reaction with the
-     *                                   food. 
-     * @param foodInteractionDescription A description of what It is the property RESULT in the
+     *                                   food.
+     * @param foodInteractionDescription A description of what reaction occurs with
+     *                                   the food. It is the property RESULT in the
      *                                   relation RDIMMA0
-     * @return
      */
     public static final DrugInteraction createFdbFoodInteraction(Drug drugInteracting, String foodInteractionDescription) {
         return new DrugInteraction(drugInteracting, InteractionType.DRUG_TO_FOOD, foodInteractionDescription);
     }
 
+    /**
+     * Creates a drug interaction corresponding to a harmful drug-allergy
+     * interaction using the FDB database
+     * 
+     * @param drugInteracting               Drug causing the harmful allergic
+     *                                      reaction
+     * @param allergyInteractionDescription A description of what exactly the
+     *                                      allergic reaction is
+     */
     public static final DrugInteraction createFdbAllergyInteraction(Drug drugInteracting, String allergyInteractionDescription) {
         return new DrugInteraction(drugInteracting, InteractionType.DRUG_TO_ALLERGY, allergyInteractionDescription);
     }
 
+    /**
+     * @return The drug responcible for the interaction
+     */
     public final Drug getDrugInteracting() {
         return DRUG_INTERACTING;
     }
