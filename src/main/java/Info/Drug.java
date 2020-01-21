@@ -43,7 +43,6 @@ public final class Drug {
      *                                 RICAIDC1
      * @param clinicalFormulationId    GCN_SEQNO in relation RICAIDC1
      * @param ingredientListIdentifier HICL_SEQNO in relation RGCNSEQ4
-     * @return
      */
     public static final Drug createFdbDrug(String displayName, int clinicalFormulationId, int ingredientListIdentifier) {
         Drug drugCreated = new Drug(displayName);
