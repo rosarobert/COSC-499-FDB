@@ -83,8 +83,13 @@ public class PrescriberCli {
         int chosenNumber = 1;
         do {
           List<Drug> queriedDrugs = queryDrugs(prescriber, input);
-          Drug drugChosen = chooseADrug(queriedDrugs, input);
-          drugsToCheck.add(drugChosen);
+          if(queriedDrugs.isEmpty()){
+              System.out.println("No drugs found :(");
+              System.out.println();
+          }else{
+              Drug drugChosen = chooseADrug(queriedDrugs, input);
+              drugsToCheck.add(drugChosen);
+          }
             System.out.println("Do you want to check more drugs?");
             System.out.println("(1): Yes");
             System.out.println("(2): No");
@@ -97,11 +102,11 @@ public class PrescriberCli {
             System.out.println();
         } else {
             System.out.println("Results:");
-            System.out.println(newDrug.getDisplayName());
             for (DrugInteraction drugInteraction : drugInteractions) {
-                System.out.println(drugInteraction.getPrescribedDrug());
-                System.out.println(drugInteraction.getDrugInteractingWith());
+                System.out.println(drugInteraction.getPrescribedDrug().getDisplayName());
+                System.out.println(drugInteraction.getDrugInteractingWith().getDisplayName());
                 System.out.println(drugInteraction.getDrugToDrugClinicalEffectText());
+                System.out.println();
             }
         }
     }

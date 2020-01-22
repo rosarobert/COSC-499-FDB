@@ -45,7 +45,9 @@ class FdbPrescriber implements Prescriber {
             }
 
             PreparedStatement pStmtToQueryDrugToDrugInteractions = FDB_CONNECTION.prepareStatement(
-                    "SELECT DISTINCT Table1.DDI_DES " +
+                    "SELECT DISTINCT Table1.HICL1" +
+                            ",Table2.HICL2" +
+                            ",Table1.DDI_DES " +
                             ",ADI_EFFTXT " +
                             "FROM " +
                             "(SELECT DISTINCT HICL_SEQNO AS HICL1 " +
@@ -64,21 +66,33 @@ class FdbPrescriber implements Prescriber {
                                 "FROM RGCNSEQ4 AS GCN " +
                                 "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) " +
                                 "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) " +
-                                "WHERE HICL_SEQNO IN (?)) AS TABLE2 " +
+                                "WHERE HICL_SEQNO IN ( "+testers.toString()+" )) AS TABLE2 " +
                             "JOIN RADIMIE4 AS E4 ON (CODEX1 = E4.DDI_CODEX) " +
                             "JOIN RADIMEF0 AS F0 ON (E4.ADI_EFFTC = F0.ADI_EFFTC) " +
                             "JOIN RADIMSL1 AS L1 ON (DDI_SL = L1.DDI_SL) " +
                             "WHERE MONOX1 = MONOX2 and CODEX1 != CODEX2"
             );
             pStmtToQueryDrugToDrugInteractions.setInt(1, drug.getIngredientListIdentifier());
-            pStmtToQueryDrugToDrugInteractions.setString(2, testers.toString());
 
             ResultSet drugInteractionsAsRst = pStmtToQueryDrugToDrugInteractions.executeQuery();
             List<DrugInteraction> drugInteractionsAsObjects = new ArrayList<>();
+            int HICL = 0;
+            int i = -1;
             while (drugInteractionsAsRst.next()) {
+                //Quick fix im sorry, proper fix later
+                if(i == -1) {
+                    HICL = drugInteractionsAsRst.getInt(2);
+                    i++;
+                }
+                if(HICL != drugInteractionsAsRst.getInt(2)) {
+                    HICL = drugInteractionsAsRst.getInt(2);
+                    i++;
+                }
+                //end of quick fix, remember to remove i from bottom as well as i and hicl
                 DrugInteraction drugInteraction = new DrugInteraction.DrugInteractionBuilder(drug)
-                        .setDrugToDrugInteractionDesc(drugInteractionsAsRst.getString(1).trim())
-                        .setDrugToDrugClinicalEffectText(drugInteractionsAsRst.getString(2).trim())
+                        .setDrugInteractingWith(drugsToCompare[i])//need to set to current drug
+                        .setDrugToDrugInteractionDesc(drugInteractionsAsRst.getString(3).trim())
+                        .setDrugToDrugClinicalEffectText(drugInteractionsAsRst.getString(4).trim())
                         .buildDrugInteraction();
                 drugInteractionsAsObjects.add(drugInteraction);
             }
