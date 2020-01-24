@@ -6,13 +6,13 @@ import org.apache.commons.lang3.Validate;
  * A object describing some interaction with a specific drug. This interaction
  * is usually a harmful interaction like a allergic or food interaction.
  */
-public final class DrugInteraction {
+public class DrugInteraction {
 
     private final Drug DRUG_PRESCRIBED;// Drug causing the interaction
     private final InteractionType TYPE_OF_INTERACTION;
     private final String INTERACTION_DESCRIPTION;
 
-    private DrugInteraction(Drug drugPrescribed, InteractionType typeOfInteraction, String interactionDescription) {
+    DrugInteraction(Drug drugPrescribed, InteractionType typeOfInteraction, String interactionDescription) {
         Validate.notNull(drugPrescribed, "The a drug in a drug interaction cannot be null.");
         Validate.notNull(typeOfInteraction, "The type of a drug interaction cannot be null.");
         Validate.notEmpty(interactionDescription, "The description of a drug interaction cannot be empty or null.");
