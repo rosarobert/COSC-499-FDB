@@ -8,16 +8,16 @@ import org.apache.commons.lang3.Validate;
  */
 public final class DrugInteraction {
 
-    private final Drug DRUG_INTERACTING;// Drug causing the interaction
+    private final Drug DRUG_PRESCRIBED;// Drug causing the interaction
     private final InteractionType TYPE_OF_INTERACTION;
     private final String INTERACTION_DESCRIPTION;
 
-    private DrugInteraction(Drug drugInteracting, InteractionType typeOfInteraction, String interactionDescription) {
-        Validate.notNull(drugInteracting, "The a drug in a drug interaction cannot be null.");
+    private DrugInteraction(Drug drugPrescribed, InteractionType typeOfInteraction, String interactionDescription) {
+        Validate.notNull(drugPrescribed, "The a drug in a drug interaction cannot be null.");
         Validate.notNull(typeOfInteraction, "The type of a drug interaction cannot be null.");
         Validate.notEmpty(interactionDescription, "The description of a drug interaction cannot be empty or null.");
 
-        DRUG_INTERACTING = drugInteracting;
+        DRUG_PRESCRIBED = drugPrescribed;
         TYPE_OF_INTERACTION = typeOfInteraction;
         INTERACTION_DESCRIPTION = interactionDescription;
     }
@@ -35,8 +35,8 @@ public final class DrugInteraction {
      * @throws IllegalStateException if the description is the empty string
      */
 
-    public static final DrugInteraction createFdbFoodInteraction(Drug drugInteracting, String foodInteractionDescription) {
-        return new DrugInteraction(drugInteracting, InteractionType.DRUG_TO_FOOD, foodInteractionDescription);
+    public static final DrugInteraction createFdbFoodInteraction(Drug drugPrescribed, String foodInteractionDescription) {
+        return new DrugInteraction(drugPrescribed, InteractionType.DRUG_TO_FOOD, foodInteractionDescription);
     }
 
     /**
@@ -45,20 +45,19 @@ public final class DrugInteraction {
      * 
      * @param drugInteracting               Drug causing the harmful allergic
      *                                      reaction
-     * @param allergyInteractionDescription A description of what exactly the
-     *                                      allergic reaction is
      * @throws NullPointerException  if the drug or description is null
      * @throws IllegalStateException if the description is the empty string
      */
-    public static final DrugInteraction createFdbAllergyInteraction(Drug drugInteracting, String allergyInteractionDescription) {
-        return new DrugInteraction(drugInteracting, InteractionType.DRUG_TO_ALLERGY, allergyInteractionDescription);
+    public static final DrugInteraction createFdbAllergyInteraction(Drug drugPrescribed) {
+        String description = "The patient is allergic to a ingredient in \"" + drugPrescribed.getDisplayName() + "\"";
+        return new DrugInteraction(drugPrescribed, InteractionType.DRUG_TO_ALLERGY, description);
     }
 
     /**
-     * @return The drug responcible for the interaction
+     * @return The drug responsible for the interaction
      */
-    public final Drug getDrugInteracting() {
-        return DRUG_INTERACTING;
+    public final Drug getDrugPrescribed() {
+        return DRUG_PRESCRIBED;
     }
 
     public final InteractionType getInteractionType() {
