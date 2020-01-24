@@ -1,9 +1,10 @@
 package Info;
 
 import org.apache.commons.lang3.Validate;
+
 //TODO: Could added a Prescriber as a property 
 /**
- * A object describing some interaction with a specific drug attempting to be
+ * A object describing an interaction with a specific drug that is trying to be
  * prescribed by a {@link Prescriber}.
  */
 public class DrugInteraction {
