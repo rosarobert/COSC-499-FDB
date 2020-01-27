@@ -27,7 +27,7 @@ public final class Drug {
 
     // Name the user should see
     private final String DISPLAY_NAME;
-    // Stores IDs specfic to an implementation. See class description
+    // Stores IDs specific to an implementation. See class description
     private final Map<String, Integer> NAME_TO_ID;
 
     private Drug(String displayName) {
