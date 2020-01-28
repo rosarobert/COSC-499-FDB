@@ -36,18 +36,10 @@ class FdbPrescriber implements Prescriber {
     }
 
     @Override
-    public List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Drug[] drugsToCompare) {
+    public List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Drug[] drugsToCompare) {
         try {
-            if(!drug.has("ingredientListIdentifier") || !drugsToCompare[0].has("ingredientListIdentifier")){
-                System.out.println("Drug has bad format for querying drug to drug interactions");
-                return null;
-            }
             StringBuilder testers = new StringBuilder(Integer.toString(drugsToCompare[0].getIdByName("ingredientListIdentifier")));
             for (int i = 1; i<drugsToCompare.length;i++){
-                if(!drugsToCompare[i].has("ingredientListIdentifier")){
-                    System.out.println("Drug comparing with has bad format for querying drug to drug interactions");
-                    return null;
-                }
                  testers.append(", ");
                  testers.append(drugsToCompare[i].getIdByName("ingredientListIdentifier"));
             }
@@ -72,21 +64,22 @@ class FdbPrescriber implements Prescriber {
                                 "FROM RGCNSEQ4 AS GCN " +
                                 "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) " +
                                 "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) " +
-                                "WHERE HICL_SEQNO IN "+testers.toString()+") AS TABLE2 " +
+                                "WHERE HICL_SEQNO IN ( ? )) AS TABLE2 " +
                             "JOIN RADIMIE4 AS E4 ON (CODEX1 = E4.DDI_CODEX) " +
                             "JOIN RADIMEF0 AS F0 ON (E4.ADI_EFFTC = F0.ADI_EFFTC) " +
                             "JOIN RADIMSL1 AS L1 ON (DDI_SL = L1.DDI_SL) " +
                             "WHERE MONOX1 = MONOX2 and CODEX1 != CODEX2"
             );
             pStmtToQueryDrugToDrugInteractions.setInt(1, drug.getIdByName("ingredientListIdentifier"));
+            pStmtToQueryDrugToDrugInteractions.setString(2, testers.toString());
 
-            ResultSet drugInteractionsAsRst = pStmtToQueryDrugToDrugInteractions.executeQuery();
-            List<DrugInteraction> drugInteractionsAsObjects = new ArrayList<>();
-            while (drugInteractionsAsRst.next()) {
-                DrugInteraction drugInteraction = DrugInteraction.DrugInteraction(drug.getDisplayName(), drugsToCompare[0].getDisplayName(), drugInteractionsAsRst.getString(2).trim());
-                drugInteractionsAsObjects.add(drugInteraction);
+            ResultSet drugToDrugInteractionsAsRst = pStmtToQueryDrugToDrugInteractions.executeQuery();
+            List<DrugToDrugInteraction> drugToDrugInteractionsAsObjects = new ArrayList<>();
+            while (drugToDrugInteractionsAsRst.next()) {
+                DrugToDrugInteraction drugToDrugInteraction = DrugToDrugInteraction.createFdbDrugToDrugInteraction(drug, drugsToCompare[0], drugToDrugInteractionsAsRst.getString(2).trim());
+                drugToDrugInteractionsAsObjects.add(drugToDrugInteraction);
             }
-            return drugInteractionsAsObjects;
+            return drugToDrugInteractionsAsObjects;
         } catch (SQLException e) {
             throw new IllegalStateException("SQL is bad for querying drug to drug interactions.\n" + e.getSQLState());
         }
@@ -104,10 +97,6 @@ class FdbPrescriber implements Prescriber {
     @Override
     public List<DrugInteraction> queryFoodInteractionsOfDrug(Drug drug) {
         try {
-            if(!drug.has("clinicalFormulationId")){
-                System.out.println("Drug has bad format for querying food interactions");
-                return null;
-            }
             PreparedStatement pStmtToQueryFoodInteractions = FDB_CONNECTION.prepareStatement(
                     "SELECT RESULT " +
                             "FROM RDFIMGC0 AS DF " +
@@ -137,10 +126,6 @@ class FdbPrescriber implements Prescriber {
     @Override
     public List<DrugInteraction> queryAllergyInteractionsOfDrug(Drug drug) {
         try {
-            if(!drug.has("ingredientListIdentifier")){
-                System.out.println("Drug has bad format for querying allergy interactions");
-                return null;
-            }
             PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
                     "SELECT HICL_SEQNO, L1.HIC_SEQN, L1.HIC, HIC_DESC, C0.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
                             "FROM RHICD5 AS D5 " +
@@ -154,7 +139,7 @@ class FdbPrescriber implements Prescriber {
             ResultSet allergyInteractionsAsRst = pStmtToQueryAllergyInteractions.executeQuery();
             List<DrugInteraction> allergyInteractionsAsObjects = new ArrayList<>();
             while (allergyInteractionsAsRst.next()) {
-                DrugInteraction allergyInteraction = DrugInteraction.createFdbAllergyInteraction(drug, allergyInteractionsAsRst.getString(6).trim());
+                DrugInteraction allergyInteraction = DrugInteraction.createFdbAllergyInteraction(drug);
                 allergyInteractionsAsObjects.add(allergyInteraction);
             }
             return allergyInteractionsAsObjects;
@@ -180,7 +165,8 @@ class FdbPrescriber implements Prescriber {
 
             //For each SQL result, create a Java object representing that drug
             while (drugsAsRst.next()) {
-                Drug manufacturedDrug = new ManufacturedDrug.ManufacturedDrugBuilder()
+                Drug drug = Drug.createFdbDrug(drugsAsRst.getString(1).trim(),drugsAsRst.getInt(3),drugsAsRst.getInt(2));
+                /*Drug manufacturedDrug = new ManufacturedDrug.ManufacturedDrugBuilder()
                         .setDisplayName(drugsAsRst.getString(1).trim())
                         .setIngredientListIdentifier(drugsAsRst.getInt(2))
                         .setClinicalFormulationId(drugsAsRst.getInt(3))
@@ -188,8 +174,8 @@ class FdbPrescriber implements Prescriber {
                         .setAddDate(drugsAsRst.getDate(5))
                         .setObseleteDate(drugsAsRst.getDate(6))
                         .setManufacturerName(drugsAsRst.getString(7).trim())
-                        .buildDrug();
-                drugsAsObjects.add(manufacturedDrug);
+                        .buildDrug();*/
+                drugsAsObjects.add(drug);
             }
             return drugsAsObjects;
         } catch (SQLException e) {

@@ -1,7 +1,7 @@
 package Prescriber;
 
 import Info.Drug;
-import Info.AllergyInteraction;
+import Info.DrugInteraction;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -27,15 +27,15 @@ public class AllergyTest {
     @Test
     public void testSizeOfQueryAllergyInteractionsWithOnlyOneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("DUKORAL SUSPENSION");
-        List<AllergyInteraction> queryAllergyResult = fdbPrescriber.queryAllergyInteractionsOfDrug(queryDrugsResult.get(0));
+        List<DrugInteraction> queryAllergyResult = fdbPrescriber.queryAllergyInteractionsOfDrug(queryDrugsResult.get(0));
         Assert.assertEquals(queryAllergyResult.size(), 1);
     }
 
     @Test
     public void testNameOfQueryingAllergyInteractionWithOnlyOneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("DUKORAL SUSPENSION");
-        List<AllergyInteraction> queryAllergyResult = fdbPrescriber.queryAllergyInteractionsOfDrug(queryDrugsResult.get(0));
-        String allergyInteractionResult = queryAllergyResult.get(0).getDrugAllergyInteractionResult();
-        Assert.assertEquals(allergyInteractionResult, "Gram Negative Bacilli (Non-Enteric) Vaccines");
+        List<DrugInteraction> queryAllergyResult = fdbPrescriber.queryAllergyInteractionsOfDrug(queryDrugsResult.get(0));
+        String allergyInteractionResult = queryAllergyResult.get(0).getInteractionDescription();
+        Assert.assertEquals(allergyInteractionResult, "Patient is allergic to a ingredient in \"DUKORAL SUSPENSION\"");
     }
 }

@@ -1,7 +1,7 @@
 package Prescriber;
 
 import Info.Drug;
-import Info.FoodInteraction;
+import Info.DrugInteraction;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -28,29 +28,29 @@ public class FoodTest {
     @Test
     public void testSizeOfQueryFoodInteractionsWithOnlyOneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("ELIXOPHYLLIN K1 ELIXIR");
-        List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
+        List<DrugInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
         Assert.assertEquals(queryFoodResult.size(), 1);
     }
 
     @Test
     public void testNameOfQueryingFoodInteractionWithOnlyOneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("ELIXOPHYLLIN K1 ELIXIR");
-        List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
-        String foodInteractionResult = queryFoodResult.get(0).getDrugFoodInteractionResult();
+        List<DrugInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
+        String foodInteractionResult = queryFoodResult.get(0).getInteractionDescription();
         Assert.assertEquals(foodInteractionResult, "FOOD MAY CAUSE VARIABLE ABSORPTION.");
     }
 
     @Test
     public void testSizeOfQueryFoodInteractionsWithNoneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("DIGITALIS PURP GRN 3-30CH");
-        List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
+        List<DrugInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
         Assert.assertEquals(queryFoodResult.size(), 0);
     }
 
     @Test
     public void testNameOfQueryingFoodInteractionWithNoneReturned() {
         List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("DIGITALIS PURP GRN 3-30CH");
-        List<FoodInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
+        List<DrugInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
         Assert.assertTrue(queryFoodResult.isEmpty());
     }
 

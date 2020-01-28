@@ -2,6 +2,7 @@ package Prescriber;
 
 import Info.Drug;
 import Info.DrugInteraction;
+import Info.DrugToDrugInteraction;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -29,7 +30,7 @@ public class DrugInteractionTest {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("PRENATAL/POSTPARTUM VIT/MIN");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("CARDIOQUIN 275MG TABLET");
         Drug[] testtt = {queryCurrentDrugResult.get(0)};
-        List<DrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),testtt);
+        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),testtt);
         Assert.assertEquals(queryDrugToDrugInteractionResult.size(), 1);
     }
 
@@ -38,10 +39,8 @@ public class DrugInteractionTest {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("PRENATAL/POSTPARTUM VIT/MIN");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("CARDIOQUIN 275MG TABLET");
         Drug[] testtt = {queryCurrentDrugResult.get(0)};
-        List<DrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0), testtt);
-        String drugToDrugInteractionDescResult = queryDrugToDrugInteractionResult.get(0).getDrugToDrugInteractionDesc();
-        String drugToDrugClinicalEffectTextResult = queryDrugToDrugInteractionResult.get(0).getDrugToDrugClinicalEffectText();
-        Assert.assertEquals(drugToDrugInteractionDescResult, "ALUMINUM AND MAGNESIUM ANTACIDS/QUINIDINE; QUININE");
+        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0), testtt);
+        String drugToDrugClinicalEffectTextResult = queryDrugToDrugInteractionResult.get(0).getInteractionDescription();
         Assert.assertEquals(drugToDrugClinicalEffectTextResult, "Mixed effects of the latter drug");
     }
 }

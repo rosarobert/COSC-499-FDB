@@ -1,6 +1,6 @@
 package Info;
 
-import org.apache.commons.lang3.Validate;
+//import org.apache.commons.lang3.Validate;
 
 //TODO: Could added a Prescriber as a property 
 /**
@@ -14,9 +14,9 @@ public class DrugInteraction {
     private final String INTERACTION_DESCRIPTION;
 
     DrugInteraction(Drug drugBeingPrescribed, InteractionType typeOfInteraction, String interactionDescription) {
-        Validate.notNull(drugBeingPrescribed, "The a drug in a drug interaction cannot be null.");
+       /* Validate.notNull(drugBeingPrescribed, "The a drug in a drug interaction cannot be null.");
         Validate.notNull(typeOfInteraction, "The type of a drug interaction cannot be null.");
-        Validate.notEmpty(interactionDescription, "The description of a drug interaction cannot be empty or null.");
+        Validate.notEmpty(interactionDescription, "The description of a drug interaction cannot be empty or null.");*/
 
         DRUG_BEING_PRESCRIBED = drugBeingPrescribed;
         TYPE_OF_INTERACTION = typeOfInteraction;

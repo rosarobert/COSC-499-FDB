@@ -1,9 +1,8 @@
 package Utils;
 
-import Info.AllergyInteraction;
 import Info.Drug;
 import Info.DrugInteraction;
-import Info.FoodInteraction;
+import Info.DrugToDrugInteraction;
 import Prescriber.Prescriber;
 
 import java.util.ArrayList;
@@ -52,28 +51,28 @@ public class PrescriberCli {
     }
 
     private static void queryFoodInteractions(Prescriber prescriber, Drug drugChosen) throws InterruptedException {
-        List<FoodInteraction> foodInteractions = prescriber.queryFoodInteractionsOfDrug(drugChosen);
+        List<DrugInteraction> foodInteractions = prescriber.queryFoodInteractionsOfDrug(drugChosen);
         if (foodInteractions.isEmpty()) {
             System.out.println("There are no harmful food interactions known :)");
             System.out.println();
             System.out.println();
         } else {
             System.out.println("Results:");
-            for (FoodInteraction foodInteraction : foodInteractions)
-                System.out.println(foodInteraction.getDrugFoodInteractionResult());
+            for (DrugInteraction foodInteraction : foodInteractions)
+                System.out.println(foodInteraction.getInteractionDescription());
         }
     }
 
     private static void queryAllergyInteractions(Prescriber prescriber, Drug drugChosen) throws InterruptedException {
-        List<AllergyInteraction> allergyInteractions = prescriber.queryAllergyInteractionsOfDrug(drugChosen);
+        List<DrugInteraction> allergyInteractions = prescriber.queryAllergyInteractionsOfDrug(drugChosen);
         if (allergyInteractions.isEmpty()) {
             System.out.println("There are no harmful allergy interactions known :)");
             System.out.println();
             System.out.println();
         } else {
             System.out.println("Results:");
-            for (AllergyInteraction allergyInteraction : allergyInteractions)
-                System.out.println(allergyInteraction.getDrugAllergyInteractionResult());
+            for (DrugInteraction allergyInteraction : allergyInteractions)
+                System.out.println(allergyInteraction.getInteractionDescription());
         }
     }
 
@@ -90,7 +89,7 @@ public class PrescriberCli {
             System.out.println("(2): No");
             chosenNumber = chooseAnInteger(input, 1, 3);
         } while(chosenNumber != 2);
-        List<DrugInteraction> drugInteractions = prescriber.queryDrugInteractionsWithOtherDrugs(newDrug, drugsToCheck.toArray(new Drug[drugsToCheck.size()]));
+        List<DrugToDrugInteraction> drugInteractions = prescriber.queryDrugInteractionsWithOtherDrugs(newDrug, drugsToCheck.toArray(new Drug[drugsToCheck.size()]));
         if (drugInteractions.isEmpty()) {
             System.out.println("There are no harmful allergy interactions known :)");
             System.out.println();
@@ -99,9 +98,9 @@ public class PrescriberCli {
             System.out.println("Results:");
             System.out.println(newDrug.getDisplayName());
             for (DrugInteraction drugInteraction : drugInteractions) {
-                System.out.println(drugInteraction.getPrescribedDrug());
-                System.out.println(drugInteraction.getDrugInteractingWith());
-                System.out.println(drugInteraction.getDrugToDrugClinicalEffectText());
+                System.out.println(newDrug.getDisplayName());
+                System.out.println(drugInteraction.getDrugBeingPrescribed().getDisplayName());
+                System.out.println(drugInteraction.getInteractionDescription());
             }
         }
     }

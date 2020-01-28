@@ -3,7 +3,7 @@ package Info;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.Validate;
+//import org.apache.commons.lang3.Validate;
 
 /**
  * A container class for storing necessary infomation about a single Drug
@@ -31,7 +31,7 @@ public final class Drug {
     private final Map<String, Integer> NAME_TO_ID;
 
     private Drug(String displayName) {
-        Validate.notNull(displayName, "Display name of a drug cannot be null.");
+        //Validate.notNull(displayName, "Display name of a drug cannot be null.");
         DISPLAY_NAME = displayName;
         NAME_TO_ID = new HashMap<>();
     }
