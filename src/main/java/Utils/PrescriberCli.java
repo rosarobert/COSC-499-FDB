@@ -98,8 +98,8 @@ public class PrescriberCli {
             System.out.println("Results:");
             System.out.println(newDrug.getDisplayName());
             for (DrugInteraction drugInteraction : drugInteractions) {
-                System.out.println(newDrug.getDisplayName());
                 System.out.println(drugInteraction.getDrugBeingPrescribed().getDisplayName());
+                System.out.println(drugsToCheck.get(0));
                 System.out.println(drugInteraction.getInteractionDescription());
             }
         }

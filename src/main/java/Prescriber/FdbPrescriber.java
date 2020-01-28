@@ -64,14 +64,13 @@ class FdbPrescriber implements Prescriber {
                                 "FROM RGCNSEQ4 AS GCN " +
                                 "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) " +
                                 "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) " +
-                                "WHERE HICL_SEQNO IN ( ? )) AS TABLE2 " +
+                                "WHERE HICL_SEQNO IN ( "+testers.toString()+" )) AS TABLE2 " +
                             "JOIN RADIMIE4 AS E4 ON (CODEX1 = E4.DDI_CODEX) " +
                             "JOIN RADIMEF0 AS F0 ON (E4.ADI_EFFTC = F0.ADI_EFFTC) " +
                             "JOIN RADIMSL1 AS L1 ON (DDI_SL = L1.DDI_SL) " +
                             "WHERE MONOX1 = MONOX2 and CODEX1 != CODEX2"
             );
             pStmtToQueryDrugToDrugInteractions.setInt(1, drug.getIdByName("ingredientListIdentifier"));
-            pStmtToQueryDrugToDrugInteractions.setString(2, testers.toString());
 
             ResultSet drugToDrugInteractionsAsRst = pStmtToQueryDrugToDrugInteractions.executeQuery();
             List<DrugToDrugInteraction> drugToDrugInteractionsAsObjects = new ArrayList<>();
