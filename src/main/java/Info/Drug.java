@@ -45,8 +45,9 @@ public final class Drug {
      * @param ingredientListIdentifier HICL_SEQNO in relation RGCNSEQ4
      * @return
      */
-    public static final Drug createFdbDrug(String displayName, int clinicalFormulationId, int ingredientListIdentifier) {
+    public static final Drug createFdbDrug(String displayName, int id, int clinicalFormulationId, int ingredientListIdentifier) {
         Drug drugCreated = new Drug(displayName);
+        drugCreated.NAME_TO_ID.put("uniqueIdentifier", id);
         drugCreated.NAME_TO_ID.put("clinicalFormulationId", clinicalFormulationId);
         drugCreated.NAME_TO_ID.put("ingredientListIdentifier", ingredientListIdentifier);
         return drugCreated;
