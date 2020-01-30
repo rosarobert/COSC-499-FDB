@@ -40,25 +40,20 @@ class FdbPrescriber implements Prescriber {
     @Override
     public List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Iterable<Drug> otherDrugs) {
         try {
-            // StringBuilder testers = new
-            // StringBuilder(Integer.toString(drugsToCompare[0].getIdByName("ingredientListIdentifier")));
-            // for (int i = 1; i<drugsToCompare.length;i++){
-            // testers.append(", ");
-            // testers.append(drugsToCompare[i].getIdByName("ingredientListIdentifier"));
-            // }
-
-            // I think this is cleaner than above
+            List<Drug> currentDrugs = new ArrayList<>();
             StringBuilder testers = new StringBuilder();
             Iterator<Drug> otherDrugsIterator = otherDrugs.iterator();
             while (otherDrugsIterator.hasNext()) {
                 Drug nextNext = otherDrugsIterator.next();
-                testers.append(drug.getIdByName("ingredientsListIdentifier"));
+                currentDrugs.add(nextNext);
+                testers.append(nextNext.getIdByName("ingredientListIdentifier"));
                 if (otherDrugsIterator.hasNext())
                     testers.append(",");
             }
 
             PreparedStatement pStmtToQueryDrugToDrugInteractions = FDB_CONNECTION
-                    .prepareStatement("SELECT DISTINCT Table1.DDI_DES " + ",ADI_EFFTXT " + "FROM "
+                    .prepareStatement(
+                            "SELECT DISTINCT Table1.DDI_DES " + ",ADI_EFFTXT " + "FROM "
                             + "(SELECT DISTINCT HICL_SEQNO AS HICL1 " + ",C4.DDI_CODEX AS CODEX1 "
                             + ",DDI_MONOX AS MONOX1 " + ",DDI_DES " + "FROM RGCNSEQ4 AS GCN "
                             + "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) "
@@ -78,7 +73,7 @@ class FdbPrescriber implements Prescriber {
             List<DrugToDrugInteraction> drugToDrugInteractionsAsObjects = new ArrayList<>();
             while (drugToDrugInteractionsAsRst.next()) {
                 DrugToDrugInteraction drugToDrugInteraction = DrugToDrugInteraction.createFdbDrugToDrugInteraction(drug,
-                        drugsToCompare[0], drugToDrugInteractionsAsRst.getString(2).trim());
+                        currentDrugs.get(0), drugToDrugInteractionsAsRst.getString(2).trim());
                 drugToDrugInteractionsAsObjects.add(drugToDrugInteraction);
             }
             return drugToDrugInteractionsAsObjects;
@@ -125,12 +120,21 @@ class FdbPrescriber implements Prescriber {
     @Override
     public List<DrugInteraction> queryAllergyInteractionsOfDrug(Drug drug, Iterable<Integer> allergyCodes) {
         try {
+            StringBuilder testers = new StringBuilder();
+            Iterator<Integer> otherAllergyIterator = allergyCodes.iterator();
+            while (otherAllergyIterator.hasNext()) {
+                int nextNext = otherAllergyIterator.next();
+                testers.append(nextNext);
+                if (otherAllergyIterator.hasNext())
+                    testers.append(",");
+            }
+
             PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
                     "SELECT HICL_SEQNO, L1.HIC_SEQN, L1.HIC, HIC_DESC, C0.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC "
                             + "FROM RHICD5 AS D5 " + "JOIN RHICL1 AS L1 ON (D5.HIC_SEQN = L1.HIC_SEQN) "
                             + "JOIN RDAMGHC0 AS C0 ON (D5.HIC_SEQN = C0.HIC_SEQN) "
                             + "JOIN RDAMAGD1 AS GD1 ON (C0.DAM_ALRGN_GRP = GD1.DAM_ALRGN_GRP) "
-                            + "WHERE HICL_SEQNO = ?");
+                            + "WHERE HICL_SEQNO = ? AND C0.DAM_ALRGN_GRP IN ("+testers.toString()+")");
             pStmtToQueryAllergyInteractions.setInt(1, drug.getIdByName("ingredientListIdentifier"));
 
             ResultSet allergyInteractionsAsRst = pStmtToQueryAllergyInteractions.executeQuery();
@@ -159,7 +163,7 @@ class FdbPrescriber implements Prescriber {
 
             // For each SQL result, create a Java object representing that drug
             while (drugsAsRst.next()) {
-                Drug drug = Drug.createFdbDrug(drugsAsRst.getString(1).trim(), drugsAsRst.getInt(3),
+                Drug drug = Drug.createFdbDrug(drugsAsRst.getString(1).trim(),  drugsAsRst.getInt(4), drugsAsRst.getInt(3),
                         drugsAsRst.getInt(2));
                 /*
                  * Drug manufacturedDrug = new ManufacturedDrug.ManufacturedDrugBuilder()

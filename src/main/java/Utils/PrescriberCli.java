@@ -28,7 +28,8 @@ public class PrescriberCli {
                         queryFoodInteractions(fdbPrescriber, drugChosen);
                         break;
                     case 2:
-                        queryAllergyInteractions(fdbPrescriber, drugChosen);
+                        List<Integer> allergyCodes = chooseAllergies(input);
+                        queryAllergyInteractions(fdbPrescriber, drugChosen, allergyCodes);
                         break;
                     case 3:
                         queryADrugInteractions(fdbPrescriber, drugChosen, input);
@@ -63,8 +64,8 @@ public class PrescriberCli {
         }
     }
 
-    private static void queryAllergyInteractions(Prescriber prescriber, Drug drugChosen) throws InterruptedException {
-        List<DrugInteraction> allergyInteractions = prescriber.queryAllergyInteractionsOfDrug(drugChosen);
+    private static void queryAllergyInteractions(Prescriber prescriber, Drug drugChosen, List<Integer> allergyCodes) throws InterruptedException {
+        List<DrugInteraction> allergyInteractions = prescriber.queryAllergyInteractionsOfDrug(drugChosen, allergyCodes);
         if (allergyInteractions.isEmpty()) {
             System.out.println("There are no harmful allergy interactions known :)");
             System.out.println();
@@ -89,7 +90,7 @@ public class PrescriberCli {
             System.out.println("(2): No");
             chosenNumber = chooseAnInteger(input, 1, 3);
         } while(chosenNumber != 2);
-        List<DrugToDrugInteraction> drugInteractions = prescriber.queryDrugInteractionsWithOtherDrugs(newDrug, drugsToCheck.toArray(new Drug[drugsToCheck.size()]));
+        List<DrugToDrugInteraction> drugInteractions = prescriber.queryDrugInteractionsWithOtherDrugs(newDrug, drugsToCheck);
         if (drugInteractions.isEmpty()) {
             System.out.println("There are no harmful allergy interactions known :)");
             System.out.println();
@@ -99,10 +100,24 @@ public class PrescriberCli {
             System.out.println(newDrug.getDisplayName());
             for (DrugInteraction drugInteraction : drugInteractions) {
                 System.out.println(drugInteraction.getDrugBeingPrescribed().getDisplayName());
-                System.out.println(drugsToCheck.get(0));
+                System.out.println(drugsToCheck.get(0).getDisplayName());
                 System.out.println(drugInteraction.getInteractionDescription());
             }
         }
+    }
+
+    private static List<Integer> chooseAllergies(Scanner input) {
+        List<Integer> allergies = new ArrayList<>();
+        int chosenNumber = 1;
+        do {
+            System.out.println("Enter an allergy code:");
+            allergies.add(chooseAnInteger(input, 0, 999999));
+            System.out.println("Do you want to add another allergy code?");
+            System.out.println("(1): Yes");
+            System.out.println("(2): No");
+            chosenNumber = chooseAnInteger(input, 1, 3);
+        } while(chosenNumber != 2);
+        return allergies;
     }
 
     private static List<Drug> queryDrugs(Prescriber prescriber, Scanner input) {

@@ -29,8 +29,7 @@ public class DrugInteractionTest {
     public void testSizeOfQueryAllergyInteractionsWithOnlyOneReturned() {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("PRENATAL/POSTPARTUM VIT/MIN");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("CARDIOQUIN 275MG TABLET");
-        Drug[] testtt = {queryCurrentDrugResult.get(0)};
-        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),testtt);
+        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),queryCurrentDrugResult);
         Assert.assertEquals(queryDrugToDrugInteractionResult.size(), 1);
     }
 
@@ -38,8 +37,7 @@ public class DrugInteractionTest {
     public void testNameOfQueryingAllergyInteractionWithOnlyOneReturned() {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("PRENATAL/POSTPARTUM VIT/MIN");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("CARDIOQUIN 275MG TABLET");
-        Drug[] testtt = {queryCurrentDrugResult.get(0)};
-        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0), testtt);
+        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0), queryCurrentDrugResult);
         String drugToDrugClinicalEffectTextResult = queryDrugToDrugInteractionResult.get(0).getInteractionDescription();
         Assert.assertEquals(drugToDrugClinicalEffectTextResult, "Mixed effects of the latter drug");
     }
