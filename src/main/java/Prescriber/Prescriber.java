@@ -57,10 +57,10 @@ public interface Prescriber {
      * Determines which patient allergies will be triggered from a given drug based on allergy and drug information in
      * FDB database
      *
-     * @param drug    the drug being checked for provacations
+     * @param drug    the drug being checked for provocations
      * @return list of patient allergies that would be provoked by {@code drug}
      */
-    List<DrugInteraction> queryAllergyInteractionsOfDrug(Drug drug);
+    List<DrugInteraction> queryAllergyInteractionsOfDrug(Drug drug, Iterable<Integer> allergyCodes);
 
     /**
      * Finds all foods in FDB database that interact badly with a given drug in FDB database
@@ -77,7 +77,7 @@ public interface Prescriber {
      * @param currentDrug the drugs currently being taken
      * @return a list of drug that interact badly with {@code drug}
      */
-    List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Drug[] currentDrug);
+    List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Iterable<Drug> otherDrugs);
 
 
     /**
