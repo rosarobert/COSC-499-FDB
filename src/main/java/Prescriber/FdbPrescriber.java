@@ -39,7 +39,6 @@ class FdbPrescriber implements Prescriber {
 
     @Override
     public List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Iterable<Drug> otherDrugs) {
-        System.out.println("hello");
         try {
             /*
              * Okay we might not want to use an iterable now. So The query is also returning
