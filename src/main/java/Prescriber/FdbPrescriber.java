@@ -40,13 +40,6 @@ class FdbPrescriber implements Prescriber {
     @Override
     public List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Iterable<Drug> otherDrugs) {
         try {
-            /*
-             * Okay we might not want to use an iterable now. So The query is also returning
-             * the DIN of the second drug it is interacting with in order Now we need to use
-             * that DIN to link it back to otherDrugs DIN using
-             * .getIdByName("uniqueIdentifier"); which will allow us to replace
-             * currentDrugs.get(0) on line 90 with the proper drug that it currently is
-             */
             List<Drug> currentDrugs = new ArrayList<>();
             
             StringBuilder testers = new StringBuilder();
@@ -186,15 +179,6 @@ class FdbPrescriber implements Prescriber {
             while (drugsAsRst.next()) {
                 Drug drug = Drug.createFdbDrug(drugsAsRst.getString(1).trim(), drugsAsRst.getInt(4),
                         drugsAsRst.getInt(3), drugsAsRst.getInt(2));
-                /*
-                 * Drug manufacturedDrug = new ManufacturedDrug.ManufacturedDrugBuilder()
-                 * .setDisplayName(drugsAsRst.getString(1).trim())
-                 * .setIngredientListIdentifier(drugsAsRst.getInt(2))
-                 * .setClinicalFormulationId(drugsAsRst.getInt(3))
-                 * .setCanadianDrugId(drugsAsRst.getString(4).trim())
-                 * .setAddDate(drugsAsRst.getDate(5)) .setObseleteDate(drugsAsRst.getDate(6))
-                 * .setManufacturerName(drugsAsRst.getString(7).trim()) .buildDrug();
-                 */
                 drugsAsObjects.add(drug);
             }
             return drugsAsObjects;
