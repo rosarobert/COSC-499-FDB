@@ -97,16 +97,16 @@ public class PrescriberCli {
         } while(chosenNumber != 2);
         List<DrugToDrugInteraction> drugInteractions = prescriber.queryDrugInteractionsWithOtherDrugs(newDrug, drugsToCheck);
         if (drugInteractions.isEmpty()) {
-            System.out.println("There are no harmful allergy interactions known :)");
+            System.out.println("There are no harmful drug interactions known :)");
             System.out.println();
             System.out.println();
         } else {
             System.out.println("Results:");
-            System.out.println(newDrug.getDisplayName());
             for (DrugInteraction drugInteraction : drugInteractions) {
                 System.out.println(drugInteraction.getDrugBeingPrescribed().getDisplayName());
                 System.out.println(drugsToCheck.get(0).getDisplayName());
                 System.out.println(drugInteraction.getInteractionDescription());
+                System.out.println();
             }
         }
     }

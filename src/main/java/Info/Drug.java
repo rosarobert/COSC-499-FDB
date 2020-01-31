@@ -23,7 +23,7 @@ import java.util.Map;
  * @see FoodInteraction
  * @see AllergyInteraction
  */
-public final class Drug {
+public final class Drug implements Comparable<Drug> {
 
     // Name the user should see
     private final String DISPLAY_NAME;
@@ -31,7 +31,7 @@ public final class Drug {
     private final Map<String, Integer> NAME_TO_ID;
 
     private Drug(String displayName) {
-        //Validate.notNull(displayName, "Display name of a drug cannot be null.");
+        // Validate.notNull(displayName, "Display name of a drug cannot be null.");
         DISPLAY_NAME = displayName;
         NAME_TO_ID = new HashMap<>();
     }
@@ -60,6 +60,10 @@ public final class Drug {
         return DISPLAY_NAME;
     }
 
+    public final int getId() {
+        return NAME_TO_ID.get("uniqueIdentifier");
+    }
+
     /**
      * Retrieves an id
      * 
@@ -70,6 +74,10 @@ public final class Drug {
         return NAME_TO_ID.get(name);
     }
 
+    public String toString() {
+        return getDisplayName() + " " + getId();
+    }
+
     /**
      * Determines if the drug has an id with a given name
      * 
@@ -78,5 +86,16 @@ public final class Drug {
      */
     public final boolean has(String name) {
         return NAME_TO_ID.containsKey(name);
+    }
+
+    @Override
+    public int compareTo(Drug drugToCompare) {
+        if (this.getId() < drugToCompare.getId()) {
+            return -1;
+        } else if (this.getId() < drugToCompare.getId()) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
