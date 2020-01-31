@@ -54,4 +54,21 @@ public class FoodTest {
         Assert.assertTrue(queryFoodResult.isEmpty());
     }
 
+    @Test
+    public void testSizeOfQueryFoodInteractionsWithManyReturned() {
+        List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("SYNTHROID 25 MCG TABLET");
+        List<DrugInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
+        Assert.assertEquals(queryFoodResult.size(), 3);
+    }
+
+    @Test
+    public void testNameOfQueryingFoodInteractionWithManyReturned() {
+        List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("SYNTHROID 25 MCG TABLET");
+        List<DrugInteraction> queryFoodResult = fdbPrescriber.queryFoodInteractionsOfDrug(queryDrugsResult.get(0));
+        String foodInteractionResult = queryFoodResult.get(0).getInteractionDescription();
+        for(int i = 1; i<queryFoodResult.size();i++)
+            foodInteractionResult += ", " + queryFoodResult.get(i).getInteractionDescription();
+        Assert.assertEquals(foodInteractionResult,
+                "SOY DECREASES ABSORPTION OF LEVOTHYROXINE., FIBER DECREASES ABSORPTION OF LEVOTHYROXINE, COFFEE DECR ABSORPTION OF LEVOTHYROXINE TABS.");
+    }
 }
