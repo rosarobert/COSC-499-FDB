@@ -40,40 +40,54 @@ class FdbPrescriber implements Prescriber {
     @Override
     public List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Iterable<Drug> otherDrugs) {
         try {
+            /*
+            Okay we might not want to use an iterable now. So The query is also returning the DIN of the second drug it is interacting with in order
+            Now we need to use that DIN to link it back to otherDrugs DIN using .getIdByName("uniqueIdentifier"); which will allow us to replace currentDrugs.get(0) on line
+            90 with the proper drug that it currently is
+             */
             List<Drug> currentDrugs = new ArrayList<>();
             StringBuilder testers = new StringBuilder();
+            StringBuilder identifiers = new StringBuilder();
             Iterator<Drug> otherDrugsIterator = otherDrugs.iterator();
             while (otherDrugsIterator.hasNext()) {
                 Drug nextNext = otherDrugsIterator.next();
                 currentDrugs.add(nextNext);
                 testers.append(nextNext.getIdByName("ingredientListIdentifier"));
-                if (otherDrugsIterator.hasNext())
+                identifiers.append(nextNext.getIdByName("uniqueIdentifier"));
+                if (otherDrugsIterator.hasNext()) {
                     testers.append(",");
+                    identifiers.append(", ");
+                }
             }
 
             PreparedStatement pStmtToQueryDrugToDrugInteractions = FDB_CONNECTION
                     .prepareStatement(
-                            "SELECT DISTINCT Table1.DDI_DES " + ",ADI_EFFTXT " + "FROM "
-                            + "(SELECT DISTINCT HICL_SEQNO AS HICL1 " + ",C4.DDI_CODEX AS CODEX1 "
-                            + ",DDI_MONOX AS MONOX1 " + ",DDI_DES " + "FROM RGCNSEQ4 AS GCN "
-                            + "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) "
-                            + "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) "
-                            + "WHERE HICL_SEQNO = ?) AS Table1 " + "CROSS JOIN "
-                            + "(SELECT DISTINCT HICL_SEQNO AS HICL2 " + ",C4.DDI_CODEX AS CODEX2 "
-                            + ",DDI_MONOX AS MONOX2 " + ",DDI_DES " + "FROM RGCNSEQ4 AS GCN "
-                            + "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) "
-                            + "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) " + "WHERE HICL_SEQNO IN ( "
-                            + testers.toString() + " )) AS TABLE2 " + "JOIN RADIMIE4 AS E4 ON (CODEX1 = E4.DDI_CODEX) "
-                            + "JOIN RADIMEF0 AS F0 ON (E4.ADI_EFFTC = F0.ADI_EFFTC) "
-                            + "JOIN RADIMSL1 AS L1 ON (DDI_SL = L1.DDI_SL) "
-                            + "WHERE MONOX1 = MONOX2 and CODEX1 != CODEX2");
+                            "SELECT DISTINCT DIN, Table1.DDI_DES ,ADI_EFFTXT " +
+                                "FROM " +
+                                "(SELECT DISTINCT HICL_SEQNO AS HICL1,C4.DDI_CODEX AS CODEX1 ,DDI_MONOX AS MONOX1,DDI_DES " +
+                                    "FROM RGCNSEQ4 AS GCN " +
+                                    "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) " +
+                                    "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) " +
+                                    "WHERE HICL_SEQNO = ?) AS Table1 " +
+                                "CROSS JOIN " +
+                                "(SELECT DISTINCT HICL_SEQNO AS HICL2, DIN, LN ,GCN.GCN_SEQNO ,C4.DDI_CODEX AS CODEX2 ,DDI_MONOX AS MONOX2 ,DDI_DES " +
+                                    "FROM RGCNSEQ4 AS GCN " +
+                                    "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) " +
+                                    "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) " +
+                                    "JOIN RICAIDC1 AS RIC ON (RIC.GCN_SEQNO = GCN.GCN_SEQNO)" +
+                                    "WHERE HICL_SEQNO IN (" + testers.toString() + ") AND DIN IN (" + identifiers.toString() + ")) AS TABLE2 " +
+                                "JOIN RADIMIE4 AS E4 ON (CODEX1 = E4.DDI_CODEX) " +
+                                "JOIN RADIMEF0 AS F0 ON (E4.ADI_EFFTC = F0.ADI_EFFTC) " +
+                                "JOIN RADIMSL1 AS L1 ON (DDI_SL = L1.DDI_SL) " +
+                                "WHERE MONOX1 = MONOX2 and CODEX1 != CODEX2 " +
+                                "ORDER BY DIN");
             pStmtToQueryDrugToDrugInteractions.setInt(1, drug.getIdByName("ingredientListIdentifier"));
 
             ResultSet drugToDrugInteractionsAsRst = pStmtToQueryDrugToDrugInteractions.executeQuery();
             List<DrugToDrugInteraction> drugToDrugInteractionsAsObjects = new ArrayList<>();
             while (drugToDrugInteractionsAsRst.next()) {
                 DrugToDrugInteraction drugToDrugInteraction = DrugToDrugInteraction.createFdbDrugToDrugInteraction(drug,
-                        currentDrugs.get(0), drugToDrugInteractionsAsRst.getString(2).trim());
+                        currentDrugs.get(0), drugToDrugInteractionsAsRst.getString(3).trim());
                 drugToDrugInteractionsAsObjects.add(drugToDrugInteraction);
             }
             return drugToDrugInteractionsAsObjects;

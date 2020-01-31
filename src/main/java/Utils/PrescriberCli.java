@@ -83,8 +83,13 @@ public class PrescriberCli {
         int chosenNumber = 1;
         do {
           List<Drug> queriedDrugs = queryDrugs(prescriber, input);
-          Drug drugChosen = chooseADrug(queriedDrugs, input);
-          drugsToCheck.add(drugChosen);
+            if(queriedDrugs.isEmpty()){
+                System.out.println("No drugs found :(");
+                System.out.println();
+            }else{
+                Drug drugChosen = chooseADrug(queriedDrugs, input);
+                drugsToCheck.add(drugChosen);
+            }
             System.out.println("Do you want to check more drugs?");
             System.out.println("(1): Yes");
             System.out.println("(2): No");
