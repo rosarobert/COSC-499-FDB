@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+
 /**
  * A implementation of {@link Prescriber} using the FDB database
  */
@@ -15,33 +16,22 @@ class FdbPrescriber implements Prescriber {
 
     private final Connection FDB_CONNECTION;
 
-    FdbPrescriber(String jdbcUrl, String username, String password) {
-        try {
-            FDB_CONNECTION = DriverManager.getConnection(jdbcUrl, username, password);
-        } catch (SQLException e) {
-            throw new IllegalStateException("Could not connect to fdb.\n" + e.getSQLState());
-        }
-
-    }
-
-    FdbPrescriber(String username, String password) {
-        this("jdbc:sqlserver://localhost:1433; databaseName=FDB;", username, password);
-    }
-
+    /**
+     * Creates an FdbPrescriber from the file resources/config.json
+     */
     FdbPrescriber() {
-        try {
-            FDB_CONNECTION = DriverManager
-                    .getConnection("jdbc:sqlserver://localhost:1433; databaseName=FDB;integratedSecurity=true");
-        } catch (SQLException e) {
-            throw new IllegalStateException("Could not connect via localhost to fdb.\n" + e.getSQLState());
-        }
+        FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
+    }
+
+    public static void main(String[] args) {
+        new FdbPrescriber();
     }
 
     @Override
     public List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Iterable<Drug> otherDrugs) {
         try {
             List<Drug> currentDrugs = new ArrayList<>();
-            
+
             StringBuilder testers = new StringBuilder();
             StringBuilder identifiers = new StringBuilder();
             Iterator<Drug> otherDrugsIterator = otherDrugs.iterator();
@@ -56,8 +46,6 @@ class FdbPrescriber implements Prescriber {
                 }
             }
             Collections.sort(currentDrugs);
-
-           
 
             PreparedStatement pStmtToQueryDrugToDrugInteractions = FDB_CONNECTION
                     .prepareStatement("SELECT DISTINCT DIN,ADI_EFFTXT " + "FROM "
@@ -83,11 +71,12 @@ class FdbPrescriber implements Prescriber {
             while (drugToDrugInteractionsAsRst.next()) {
                 int idOfDrugInteracting = drugToDrugInteractionsAsRst.getInt(1);
                 String interactionDescription = drugToDrugInteractionsAsRst.getString(2).trim();
-                while(currentDrug.getId() <  idOfDrugInteracting && currentDrugsIterator.hasNext()) {
+                while (currentDrug.getId() < idOfDrugInteracting && currentDrugsIterator.hasNext()) {
                     currentDrug = currentDrugsIterator.next();
                 }
-                if(currentDrug.getId() == idOfDrugInteracting) {
-                    drugToDrugInteractions.add(DrugToDrugInteraction.createFdbDrugToDrugInteraction(drug, currentDrug, interactionDescription));
+                if (currentDrug.getId() == idOfDrugInteracting) {
+                    drugToDrugInteractions.add(DrugToDrugInteraction.createFdbDrugToDrugInteraction(drug, currentDrug,
+                            interactionDescription));
                 }
             }
             return drugToDrugInteractions;
