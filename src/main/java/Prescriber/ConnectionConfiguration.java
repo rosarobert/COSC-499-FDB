@@ -5,7 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Class for determining how to construct JDBC connection
+ * Class for determining how to construct JDBC connection for FdbPrescriber (but
+ * could be used in other implementations)
  * 
  * This is so the poor soul who has to use linux can run the tests.
  * 
