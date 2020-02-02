@@ -20,7 +20,7 @@ import java.sql.SQLException;
 final class ConnectionConfiguration {
     private static final String SERVER_NAME = "localhost";
     private static final String DATABASE_NAME = "FDB";
-    private static final boolean USE_INTEGRATED_SECURITY = false;
+    private static final boolean USE_INTEGRATED_SECURITY = true;
     private static final String USER_NAME = "sa";
     private static final String PASSWORD = "linuxSucks123";
 
