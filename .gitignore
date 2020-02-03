@@ -42,6 +42,5 @@ out/*
 # Ignore Gradle build output directory
 build
 
-# Project config file
-
-*/ConnectionConfiguration.java
+#Database connection config
+*/databaseConnection.json
