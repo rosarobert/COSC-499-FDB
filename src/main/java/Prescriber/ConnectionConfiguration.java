@@ -39,7 +39,7 @@ final class ConnectionConfiguration {
     private final String DATABASE = "FDB";
 
     @SerializedName("useIntegratedSecurity")
-    private final boolean USE_INTEGRATED_SECURITY = false;
+    private final boolean USE_INTEGRATED_SECURITY = true;
 
     @SerializedName("username")
     private final String USERNAME = "sa";
