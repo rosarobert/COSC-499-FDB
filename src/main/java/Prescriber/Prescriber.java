@@ -30,33 +30,7 @@ public interface Prescriber {
      */
     List<Drug> queryDrugs(String prefix);
 
-    /**
-     * Determines which patient allergies will be triggered from a given drug based
-     * on allergy and drug information in FDB database
-     *
-     * @param drug the drug being checked for provocations
-     * @return list of patient allergies that would be provoked by {@code drug}
-     */
-    List<DrugInteraction> queryAllergyInteractionsOfDrug(Drug drug, Iterable<Integer> allergyCodes);
-
-    /**
-     * Finds all foods in FDB database that interact badly with a given drug in FDB
-     * database
-     *
-     * @param drug the drug being checked
-     * @return a list of foods that would interact badly with {@code drug}
-     */
-    List<DrugInteraction> queryFoodInteractionsOfDrug(Drug drug);
-
-    /**
-     * Finds all drugs in FDB database that would interact badly with a given drug
-     * in FDB database
-     *
-     * @param newDrug     the drug being checked
-     * @param currentDrug the drugs currently being taken
-     * @return a list of drug that interact badly with {@code drug}
-     */
-    List<DrugToDrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug newDrug, Iterable<Drug> otherDrugs);
+    List<DrugInteraction> findInteractions(Drug drugBeingPrescribed, Patient patient);
 
     /**
      * Closes any connection to any server/database that the presciber is connected
