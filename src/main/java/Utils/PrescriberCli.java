@@ -13,7 +13,7 @@ public class PrescriberCli {
 
     public static void main(String[] args) throws InterruptedException {
         Scanner input = new Scanner(System.in);
-        Prescriber fdbPrescriber = createPrescriber(input);
+        Prescriber fdbPrescriber = Prescriber.createFdbPrescriber();
         // While user enters "queries drugs" in initial menu
         while (initialMenu(input)) {
 
@@ -39,17 +39,6 @@ public class PrescriberCli {
         }
     }
 
-    private static Prescriber createPrescriber(Scanner input) {
-        System.out.println("Who are you?:");
-        System.out.println("(1): A normal person");
-        System.out.println("(2): Ethan");
-        int choice = chooseAnInteger(input, 1, 3);
-        if (choice == 1) {
-            return Prescriber.createFdbPrescriber();
-        } else {
-            return Prescriber.createFdbPrescriber("sa", "linuxSucks123");
-        }
-    }
 
     private static void queryFoodInteractions(Prescriber prescriber, Drug drugChosen) throws InterruptedException {
         List<DrugInteraction> foodInteractions = prescriber.queryFoodInteractionsOfDrug(drugChosen);
