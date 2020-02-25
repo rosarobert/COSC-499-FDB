@@ -27,6 +27,6 @@ public final class Drug implements Comparable<Drug> {
 
     @Override
     public int compareTo(Drug drugToCompare) {
-        return getDisplayName().compareTo(drugToCompare.getDisplayName());
+        return getId() - drugToCompare.getId();
     }
 }
