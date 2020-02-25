@@ -7,12 +7,12 @@ public abstract class Patient {
     SortedSet<Drug> DRUGS_PRESCRIBED = new TreeSet<>();
     SortedSet<Allergy> PATIENT_ALLERGIES = new TreeSet<>();
 
-    public final boolean prescribeDrug(Drug drugPrescribed) {
-        return DRUGS_PRESCRIBED.add(drugPrescribed) && prescribeDrugInDatabase(drugPrescribed);
+    public final boolean addDrug(Drug drug) {
+        return DRUGS_PRESCRIBED.add(drug);
     }
 
     public final boolean addAllergy(Allergy allergy) {
-        return PATIENT_ALLERGIES.add(allergy) && addPatientAllergyToDatabase(allergy);
+        return PATIENT_ALLERGIES.add(allergy);
     }
 
     public SortedSet<Drug> getDrugsPrescribed() {
@@ -22,9 +22,6 @@ public abstract class Patient {
     public SortedSet<Allergy> getPatientAllergies() {
         return PATIENT_ALLERGIES;
     }
-    
-    abstract boolean prescribeDrugInDatabase(Drug drugPrescribed);
 
-    abstract boolean addPatientAllergyToDatabase(Allergy allergy);
 
 }

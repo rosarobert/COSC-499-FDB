@@ -1,12 +1,13 @@
 package Prescriber;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -52,7 +53,7 @@ final class ConnectionConfiguration {
         try {
             File configFile = new File("resources/databaseConnection.json");
             if (configFile.exists()) {
-                String configFileAsString = Files.readString(configFile.toPath());
+                String configFileAsString = readFile(configFile);
                 config = JSON_SERIALIZER.fromJson(configFileAsString, ConnectionConfiguration.class);
             } else if (configFile.createNewFile()) {
                 PrintWriter writer = new PrintWriter(configFile);
@@ -62,10 +63,8 @@ final class ConnectionConfiguration {
                 throw new IOException();
             }
             StringBuilder jdbcStringBuilder = new StringBuilder();
-            jdbcStringBuilder.append("jdbc:sqlserver://")
-                             .append(config.SERVER)
-                             .append(";databaseName=")
-                             .append(config.DATABASE);
+            jdbcStringBuilder.append("jdbc:sqlserver://").append(config.SERVER).append(";databaseName=")
+                    .append(config.DATABASE);
             if (config.USE_INTEGRATED_SECURITY) {
                 jdbcStringBuilder.append(";integratedSecurity=true");
                 return DriverManager.getConnection(jdbcStringBuilder.toString());
@@ -77,5 +76,15 @@ final class ConnectionConfiguration {
         } catch (SQLException e) {
             throw new IllegalStateException("Could not connect to " + config.DATABASE + " via " + config.SERVER);
         }
+    }
+
+    private static String readFile(File file) throws FileNotFoundException {
+        StringBuilder fileStringBuilder = new StringBuilder();
+        Scanner reader = new Scanner(file);
+        while (reader.hasNextLine()) {
+            fileStringBuilder.append(reader.nextLine());
+        }
+        reader.close();
+        return fileStringBuilder.toString();
     }
 }

@@ -11,14 +11,6 @@ import java.util.List;
 public interface Prescriber {
 
     /**
-     * Creates an FdbPrescriber object based on the static properties defined in
-     * ConnectionConfiguration.java
-     */
-    static Prescriber createFdbPrescriber() {
-        return new FdbPrescriber();
-    }
-
-    /**
      * Returns all drugs in FDB database which have a name that starts with the
      * given prefix
      * <p>
@@ -32,10 +24,12 @@ public interface Prescriber {
 
     List<DrugInteraction> findInteractions(Drug drugBeingPrescribed, Patient patient);
 
+    boolean prescribeDrug(Drug drug, Patient patient);
+
     /**
      * Closes any connection to any server/database that the presciber is connected
      * to
      */
-    void destroyPrescriber();
+    boolean closePrescriber();
 
 }

@@ -10,7 +10,6 @@ public final class Drug implements Comparable<Drug> {
         DISPLAY_NAME = displayName;
     }
 
-    
     public static final Drug createFdbDrug(int din, String displayName) {
         return new Drug(din, displayName);
     }
@@ -28,12 +27,6 @@ public final class Drug implements Comparable<Drug> {
 
     @Override
     public int compareTo(Drug drugToCompare) {
-        if (this.getId() < drugToCompare.getId()) {
-            return -1;
-        } else if (this.getId() < drugToCompare.getId()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return getDisplayName().compareTo(drugToCompare.getDisplayName());
     }
 }
