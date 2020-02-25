@@ -1,1 +1,1 @@
-{"server":"localhost","database":"FDB","useIntegratedSecurity":false,"username":"sa","password":"linuxSucks123"}
+{"server":"localhost","database":"FDB","useIntegratedSecurity":true,"username":"sa","password":"linuxSucks123"}
