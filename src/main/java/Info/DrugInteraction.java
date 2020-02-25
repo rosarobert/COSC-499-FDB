@@ -2,13 +2,12 @@ package Info;
 
 //import org.apache.commons.lang3.Validate;
 
-//TODO: Could added a Prescriber as a property 
+
 /**
  * A object describing an interaction with a specific drug that is trying to be
  * prescribed by a {@link Prescriber}.
  */
 public class DrugInteraction {
-
     private final Drug DRUG_BEING_PRESCRIBED;// Drug causing the interaction
     private final InteractionType TYPE_OF_INTERACTION;
     private final String INTERACTION_DESCRIPTION;
@@ -48,9 +47,13 @@ public class DrugInteraction {
      * @throws NullPointerException  if the drug or description is null
      * @throws IllegalStateException if the description is the empty string
      */
-    public static final DrugInteraction createFdbAllergyInteraction(Drug drugBeingPrescribed) {
-        String description = "Patient is allergic to a ingredient in \"" + drugBeingPrescribed.getDisplayName() + "\"";
+    public static final DrugInteraction createFdbAllergyInteraction(Allergy allergy, Drug drugBeingPrescribed) {
+        String description = "Patient is allergic to " + allergy.getAllergyName() + "which is an  ingredient in \"" + drugBeingPrescribed.getDisplayName() + "\"";
         return new DrugInteraction(drugBeingPrescribed, InteractionType.DRUG_TO_ALLERGY, description);
+    }
+
+    public static final DrugInteraction createFdbDrugToDrugInteraction(Drug drugBeingPrescribed, String description) {
+        return new DrugInteraction(drugBeingPrescribed, InteractionType.DRUG_TO_DRUG, description);
     }
 
     /**

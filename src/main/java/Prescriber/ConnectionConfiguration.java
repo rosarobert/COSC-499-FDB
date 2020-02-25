@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -80,6 +79,7 @@ final class ConnectionConfiguration {
     }
 
     private static final String readFile(File file) throws FileNotFoundException {
+
         StringBuilder fileStringBuilder = new StringBuilder();
         Scanner reader = new Scanner(file);
         while (reader.hasNextLine()) {
