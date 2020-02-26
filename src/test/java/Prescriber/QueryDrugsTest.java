@@ -21,7 +21,7 @@ public class QueryDrugsTest {
     //closes connection
     @AfterClass
     public void end() throws Exception {
-        fdbPrescriber.destroyPrescriber();
+        fdbPrescriber.closePrescriber();
     }
 
     @Test

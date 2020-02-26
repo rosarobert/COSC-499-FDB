@@ -24,7 +24,7 @@ public interface Prescriber {
 
     List<DrugInteraction> findInteractions(Drug drugBeingPrescribed, Patient patient);
 
-    boolean prescribeDrug(Drug drug, Patient patient);
+    void prescribeDrug(Drug drug, Patient patient);
 
     /**
      * Closes any connection to any server/database that the presciber is connected

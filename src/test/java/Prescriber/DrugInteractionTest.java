@@ -2,7 +2,7 @@ package Prescriber;
 
 import Info.Drug;
 import Info.DrugInteraction;
-import Info.DrugToDrugInteraction;
+import Info.Patient;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -22,14 +22,16 @@ public class DrugInteractionTest {
     //closes connection
     @AfterClass
     public void end() throws Exception {
-        fdbPrescriber.destroyPrescriber();
+        fdbPrescriber.closePrescriber();
     }
 
     @Test
     public void testSizeOfQueryDrugToDrugInteractionsWithOnlyOneReturned() {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("PRENATAL/POSTPARTUM VIT/MIN");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("CARDIOQUIN 275MG TABLET");
-        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),queryCurrentDrugResult);
+        Patient patient = new Patient();
+        patient.addDrug(queryCurrentDrugResult.get(0));
+        List<DrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),patient);
         Assert.assertEquals(queryDrugToDrugInteractionResult.size(), 1);
     }
 
@@ -37,16 +39,20 @@ public class DrugInteractionTest {
     public void testNameOfQueryingDrugToDrugInteractionWithOnlyOneReturned() {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("PRENATAL/POSTPARTUM VIT/MIN");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("CARDIOQUIN 275MG TABLET");
-        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0), queryCurrentDrugResult);
+        Patient patient = new Patient();
+        patient.addDrug(queryCurrentDrugResult.get(0));
+        List<DrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0), patient);
         String drugToDrugClinicalEffectTextResult = queryDrugToDrugInteractionResult.get(0).getInteractionDescription();
-        Assert.assertEquals(drugToDrugClinicalEffectTextResult, "Mixed effects of the latter drug");
+        Assert.assertEquals(drugToDrugClinicalEffectTextResult, "PRENATAL/POSTPARTUM VIT/MIN Mixed effects of the latter drug CARDIOQUIN 275MG TABLET");
     }
 
     @Test
     public void testSizeOfQueryDrugToDrugInteractionsWithZeroReturned() {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("ADDERALL XR 10 MG CAPSULE");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("TYLENOL WITH CODEINE ELIXIR");
-        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),queryCurrentDrugResult);
+        Patient patient = new Patient();
+        patient.addDrug(queryCurrentDrugResult.get(0));
+        List<DrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),patient);
         Assert.assertEquals(queryDrugToDrugInteractionResult.size(), 0);
     }
 
@@ -54,7 +60,9 @@ public class DrugInteractionTest {
     public void testNameOfQueryingDrugToDrugInteractionWithZeroReturned() {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("ADDERALL XR 10 MG CAPSULE");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("TYLENOL WITH CODEINE ELIXIR");
-        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0), queryCurrentDrugResult);
+        Patient patient = new Patient();
+        patient.addDrug(queryCurrentDrugResult.get(0));
+        List<DrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0), patient);
         String drugToDrugClinicalEffectTextResult = null;
         if(!queryDrugToDrugInteractionResult.isEmpty()){
             drugToDrugClinicalEffectTextResult = queryDrugToDrugInteractionResult.get(0).getInteractionDescription();
@@ -67,7 +75,10 @@ public class DrugInteractionTest {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("PRENATAL/POSTPARTUM VIT/MIN");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("APO-QUIN-G 325 MG TABLET");
         queryCurrentDrugResult.add(fdbPrescriber.queryDrugs("BIO BALANCED CALC/MAG TAB").get(0));
-        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),queryCurrentDrugResult);
+        Patient patient = new Patient();
+        patient.addDrug(queryCurrentDrugResult.get(0));
+        patient.addDrug(queryCurrentDrugResult.get(1));
+        List<DrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),patient);
         Assert.assertEquals(queryDrugToDrugInteractionResult.size(), 3);
     }
 
@@ -76,15 +87,16 @@ public class DrugInteractionTest {
         List<Drug> queryNewDrugResult = fdbPrescriber.queryDrugs("PRENATAL/POSTPARTUM VIT/MIN");
         List<Drug> queryCurrentDrugResult = fdbPrescriber.queryDrugs("APO-QUIN-G 325 MG TABLET");
         queryCurrentDrugResult.add(fdbPrescriber.queryDrugs("BIO BALANCED CALC/MAG TAB").get(0));
-        List<DrugToDrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),queryCurrentDrugResult);
+        Patient patient = new Patient();
+        patient.addDrug(queryCurrentDrugResult.get(0));
+        patient.addDrug(queryCurrentDrugResult.get(1));
+        List<DrugInteraction> queryDrugToDrugInteractionResult = fdbPrescriber.queryDrugInteractionsWithOtherDrugs(queryNewDrugResult.get(0),patient);
         String drugToDrugClinicalEffectTextResult = "";
         for(int i = 0; i < queryDrugToDrugInteractionResult.size(); i++){
-            drugToDrugClinicalEffectTextResult += "(" + queryDrugToDrugInteractionResult.get(i).getDrugBeingPrescribed().getDisplayName() + " - ";
-            drugToDrugClinicalEffectTextResult += queryDrugToDrugInteractionResult.get(i).getDrugAlreadyPrescribed().getDisplayName() + " : ";
-            drugToDrugClinicalEffectTextResult += queryDrugToDrugInteractionResult.get(i).getInteractionDescription() + ")\n";
+            drugToDrugClinicalEffectTextResult += "(" + queryDrugToDrugInteractionResult.get(i).getInteractionDescription() + ")\n";
         }
-        Assert.assertEquals(drugToDrugClinicalEffectTextResult,"(PRENATAL/POSTPARTUM VIT/MIN - BIO BALANCED CALC/MAG TAB : Decreased effect of the former drug)\n"
-        +"(PRENATAL/POSTPARTUM VIT/MIN - BIO BALANCED CALC/MAG TAB : Mixed effects of the latter drug)\n"
-        +"(PRENATAL/POSTPARTUM VIT/MIN - APO-QUIN-G 325 MG TABLET : Mixed effects of the latter drug)\n");
+        Assert.assertEquals(drugToDrugClinicalEffectTextResult, "(PRENATAL/POSTPARTUM VIT/MIN Decreased effect of the former drug BIO BALANCED CALC/MAG TAB)\n"
+        +"(PRENATAL/POSTPARTUM VIT/MIN Mixed effects of the latter drug BIO BALANCED CALC/MAG TAB)\n"
+        +"(PRENATAL/POSTPARTUM VIT/MIN Mixed effects of the latter drug APO-QUIN-G 325 MG TABLET)\n");
     }
 }

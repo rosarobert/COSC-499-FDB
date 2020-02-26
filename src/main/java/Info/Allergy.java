@@ -1,6 +1,6 @@
 package Info;
 
-public final class Allergy {
+public final class Allergy implements Comparable<Allergy>{
     private final int ID;
     private final String NAME;
     
@@ -19,5 +19,10 @@ public final class Allergy {
 
     public final String getAllergyName() {
         return NAME;
+    }
+
+    @Override
+    public int compareTo(Allergy allergyToCompare) {
+        return getId() - allergyToCompare.getId();
     }
 }
