@@ -209,4 +209,27 @@ public class FdbPrescriber implements Prescriber {
          }
      }
 
+    private List<Allergy> queryAllergies(String prefix) {
+        try {
+            PreparedStatement pStmtToQueryAllergiesBasedOnPrefix = FDB_CONNECTION.prepareStatement(
+                    "SELECT DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC "+
+                    "FROM RDAMAGD1 " +
+                    "WHERE DAM_ALRGN_GRP_DESC LIKE ?");
+            pStmtToQueryAllergiesBasedOnPrefix.setString(1, prefix + "%");
+            ResultSet drugsAsRst = pStmtToQueryAllergiesBasedOnPrefix.executeQuery();
+
+            List<Allergy> allergiesAsObjects = new ArrayList<>();
+
+            // For each SQL result, create a Java object representing that Allergy
+            while (drugsAsRst.next()) {
+                Allergy allergy = Allergy.createFdbAllergy(drugsAsRst.getInt(1), drugsAsRst.getString(2).trim());
+                allergiesAsObjects.add(allergy);
+            }
+            return allergiesAsObjects;
+        } catch (SQLException e) {
+            throw new IllegalStateException("SQL is bad for querying drugs.\n" +
+                    e.getSQLState());
+        }
+    }
+
 }
