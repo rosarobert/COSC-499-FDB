@@ -48,7 +48,7 @@ public class DrugInteraction {
      * @throws IllegalStateException if the description is the empty string
      */
     public static final DrugInteraction createFdbAllergyInteraction(Allergy allergy, Drug drugBeingPrescribed) {
-        String description = "Patient is allergic to " + allergy.getAllergyName().trim() + " which is an  ingredient in \"" + drugBeingPrescribed.getDisplayName() + "\"";
+        String description = "Patient is allergic to " + allergy.getName().trim() + " which is an  ingredient in \"" + drugBeingPrescribed.getDisplayName() + "\"";
         return new DrugInteraction(drugBeingPrescribed, InteractionType.DRUG_TO_ALLERGY, description);
     }
 

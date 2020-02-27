@@ -17,7 +17,7 @@ public final class Allergy implements Comparable<Allergy>{
         return ID;
     }
 
-    public final String getAllergyName() {
+    public final String getName() {
         return NAME;
     }
 
