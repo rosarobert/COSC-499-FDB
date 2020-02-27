@@ -1,0 +1,45 @@
+body {
+    font-family: "Poppins";
+    background-color: #1ac6f1;
+}
+
+.dark {
+    background-color: #071477;
+    color: #ffffff;
+}
+
+.data:hover {
+    background-color: #ececff;
+    cursor: pointer;
+}
+
+.cell {
+    height: 60px;
+}
+
+.data.cell {
+    font-size: 15px;
+}
+
+.light {
+    color: #666666;
+    background: #fff;
+}
+
+.header.cell {
+    font-size: 18px;
+}
+
+#input {
+    border-radius: 0px 5px 5px 0px;
+}
+
+#search_bar{
+    border-radius: 10px;
+}
+
+#navigation_bar button {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
