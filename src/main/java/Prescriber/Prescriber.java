@@ -22,9 +22,19 @@ public interface Prescriber {
      */
     List<Drug> queryDrugs(String prefix);
 
+    List<Allergy> queryAllergies(String prefix);
+
     List<DrugInteraction> findInteractions(Drug drugBeingPrescribed, Patient patient);
 
     void prescribeDrug(Drug drug, Patient patient);
+
+    /**
+     * Creates an FdbPrescriber object based on the static properties defined in
+     * ConnectionConfiguration.java
+     */
+    static Prescriber createFdbPrescriber() {
+        return new FdbPrescriber();
+    }
 
     /**
      * Closes any connection to any server/database that the presciber is connected

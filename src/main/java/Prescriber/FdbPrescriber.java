@@ -35,10 +35,12 @@ public class FdbPrescriber implements Prescriber {
         interactions.addAll(queryFoodInteractionsOfDrug(drugBeingPrescribed));
 
         //Check all allergy interactions with patients allergies and drugBeingPrescribed
-        interactions.addAll(queryAllergyInteractionsOfDrug(drugBeingPrescribed, patient));
+        if(!patient.getPatientAllergies().isEmpty())
+            interactions.addAll(queryAllergyInteractionsOfDrug(drugBeingPrescribed, patient));
 
         //Check all drug to drug interactions between drugBeingPrescribed and patients current drugs
-        interactions.addAll(queryDrugInteractionsWithOtherDrugs(drugBeingPrescribed, patient));
+        if(!patient.getDrugsPrescribed().isEmpty())
+            interactions.addAll(queryDrugInteractionsWithOtherDrugs(drugBeingPrescribed, patient));
 
         return interactions;
     }
@@ -209,7 +211,8 @@ public class FdbPrescriber implements Prescriber {
          }
      }
 
-    private List<Allergy> queryAllergies(String prefix) {
+     @Override
+    public List<Allergy> queryAllergies(String prefix) {
         try {
             PreparedStatement pStmtToQueryAllergiesBasedOnPrefix = FDB_CONNECTION.prepareStatement(
                     "SELECT DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC "+
