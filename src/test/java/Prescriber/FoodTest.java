@@ -69,6 +69,6 @@ public class FoodTest {
         for(int i = 1; i<queryFoodResult.size();i++)
             foodInteractionResult += ", " + queryFoodResult.get(i).getInteractionDescription();
         Assert.assertEquals(foodInteractionResult,
-                "SOY DECREASES ABSORPTION OF LEVOTHYROXINE., FIBER DECREASES ABSORPTION OF LEVOTHYROXINE, COFFEE DECR ABSORPTION OF LEVOTHYROXINE TABS.");
+                "COFFEE DECR ABSORPTION OF LEVOTHYROXINE TABS., FIBER DECREASES ABSORPTION OF LEVOTHYROXINE, SOY DECREASES ABSORPTION OF LEVOTHYROXINE.");
     }
 }

@@ -107,7 +107,7 @@ public class PatientCli {
                     System.out.println(patient.getName()+"'s allergies:");
                     Iterator<Allergy> allergyIterator = patient.getPatientAllergies().iterator();
                     while(allergyIterator.hasNext())
-                        System.out.println(allergyIterator.next().getAllergyName());
+                        System.out.println(allergyIterator.next().getName());
                 }else{
                     System.out.println(patient.getName() + " has no allergies!");
                 }
@@ -147,7 +147,7 @@ public class PatientCli {
 
     private static Allergy chooseAAllergy(List<Allergy> allergies, Scanner input) {
         for (int i = 0; i < allergies.size(); i++)
-            System.out.printf("(%d): %30s\n", i, allergies.get(i).getAllergyName());
+            System.out.printf("(%d): %30s\n", i, allergies.get(i).getName());
         System.out.println("Choose a allergy by entering an index:");
         int index = chooseAnInteger(input, 0, allergies.size());
         return allergies.get(index);
