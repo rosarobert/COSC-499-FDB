@@ -129,7 +129,7 @@ public class FdbPrescriber implements Prescriber {
      public List<DrugInteraction> queryFoodInteractionsOfDrug(Drug drug) {
         try {
             PreparedStatement pStmtToQueryFoodInteractions = FDB_CONNECTION.prepareStatement(
-                "SELECT RESULT " +
+                "SELECT DISTINCT RESULT " +
                         "FROM RDFIMGC0 AS DF " +
                         "JOIN RGCNSEQ4 AS GC ON (DF.GCN_SEQNO = GC.GCN_SEQNO)" +
                         "JOIN RDFIMMA0 AS DFI ON (DF.FDCDE = DFI.FDCDE) " +

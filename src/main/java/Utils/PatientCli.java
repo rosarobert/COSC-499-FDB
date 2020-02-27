@@ -7,6 +7,7 @@ import Info.Patient;
 import Prescriber.Prescriber;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -41,7 +42,7 @@ public class PatientCli {
      * @return true if user wants to query drugs
      */
     private static boolean initialMenu(Scanner input) {
-        System.out.println("(1): Create Prescription");
+        System.out.println("(1): Enter Prescription CLI");
         System.out.println("(2): Exit");
         System.out.println("Choose an option by entering the corresponding number:");
 
@@ -69,17 +70,19 @@ public class PatientCli {
     }
 
     private static int addToPatientMenu(Scanner input) {
-        System.out.println("(1): Add Drug to patient");
-        System.out.println("(2): Add Allergy to patient");
-        System.out.println("(3): Exit Patient");
+        System.out.println("(1): Add Drug to Patient");
+        System.out.println("(2): Add Allergy to Patient");
+        System.out.println("(3): Prescribed Drugs");
+        System.out.println("(4): Patients Allergies");
+        System.out.println("(5): Exit Patient");
         System.out.println("Choose an option by entering the corresponding number:");
 
-        return chooseAnInteger(input, 1, 4);
+        return chooseAnInteger(input, 1, 6);
     }
 
     private static void addToPatient(Prescriber fdbPrescriber, Scanner input, Patient patient) {
         int patientOption = addToPatientMenu(input);
-        while(patientOption != 3){
+        while(patientOption != 5){
             if( patientOption == 1){
                 List<Drug> queriedDrugs = queryDrugs(fdbPrescriber, input);
                 if (queriedDrugs.isEmpty()) {
@@ -106,13 +109,31 @@ public class PatientCli {
                         }
                     }
                 }
-            }else{
+            }else if (patientOption == 2){
                 List<Allergy> queriedAllergies = queryAllergies(fdbPrescriber, input);
                 if(queriedAllergies.isEmpty()){
                     System.out.println("No allergies found");
                 }else{
                     Allergy allergyChosen = chooseAAllergy(queriedAllergies, input);
                     patient.addAllergy(allergyChosen);
+                }
+            }else if(patientOption == 3){
+                if(!patient.getDrugsPrescribed().isEmpty()){
+                    System.out.println(patient.getName()+"'s is taking:");
+                    Iterator<Drug> drugIterator = patient.getDrugsPrescribed().iterator();
+                    while(drugIterator.hasNext())
+                        System.out.println(drugIterator.next().getDisplayName());
+                }else{
+                    System.out.println(patient.getName() + " is not currently taking any drugs!");
+                }
+            }else{
+                if(!patient.getPatientAllergies().isEmpty()){
+                    System.out.println(patient.getName()+"'s allergies:");
+                    Iterator<Allergy> allergyIterator = patient.getPatientAllergies().iterator();
+                    while(allergyIterator.hasNext())
+                        System.out.println(allergyIterator.next().getAllergyName());
+                }else{
+                    System.out.println(patient.getName() + " has no allergies!");
                 }
             }
             patientOption = addToPatientMenu(input);
@@ -173,15 +194,12 @@ public class PatientCli {
         int result = low - 1;
         while (result < low || result >= high) {
             try {
-                result = input.nextInt();
-                input.nextLine();
-                if (result < high && result >= low)
-                    break;
-                else
-                    System.out.print("Number is not in range. Try again: ");
+                String selection = input.nextLine();
+                result = Integer.parseInt(selection);
+                if (result >= high || result < low)
+                    System.out.println("Number is not in range. Try again: ");
             } catch (NumberFormatException e) {
                 System.out.println("Not a number. Try again");
-                input.nextLine();
             }
         }
         return result;
