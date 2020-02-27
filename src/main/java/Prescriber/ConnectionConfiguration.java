@@ -14,17 +14,17 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Class for constructing a JDBC connection from different systems.
- * 
+ * <p>
  * This is so the poor soul who has to use linux can run the tests.
- * 
+ * <p>
  * The class will create a connection from the configuration in
  * resources/databaseConnection.json if it exists. If it doesn't, creates a the
  * file databaseConnection.json in resources from the default settings below,
  * and uses those default settings to create the connection
- * 
+ * <p>
  * Note, no one should change this class. If you want to change your connection
  * settings, change them in resources/databaseConnection.json
- * 
+ * <p>
  * Another solution to this problem is everyone have the same sa password for
  * SQL Server, but I did not want to have to bring that up since everyone uses
  * integrated security
@@ -34,28 +34,31 @@ final class ConnectionConfiguration {
     private static final Gson JSON_SERIALIZER = new Gson();
 
     @SerializedName("server")
-    private final String SERVER = "localhost";
+    private String server;
 
     @SerializedName("database")
-    private final String DATABASE = "FDB";
+    private String database;
 
     @SerializedName("useIntegratedSecurity")
-    private final boolean USE_INTEGRATED_SECURITY = true;
+    private boolean useIntegratedSecurity;
 
     @SerializedName("username")
-    private final String USERNAME = "sa";
+    private String username;
 
     @SerializedName("password")
-    private final String PASSWORD = "linuxSucks123";
+    private String password;
 
-    static final Connection getJdbcConnection() {
-        ConnectionConfiguration config = new ConnectionConfiguration();
+    static Connection getJdbcConnection() {
+        ConnectionConfiguration config = null;
         try {
-            File configFile = new File("resources/databaseConnection.json");
+            File configFile = new File("src/main/resources/databaseConnection.json");
             if (configFile.exists()) {
                 String configFileAsString = readFile(configFile);
                 config = JSON_SERIALIZER.fromJson(configFileAsString, ConnectionConfiguration.class);
+                System.out.println(config.username);
+
             } else if (configFile.createNewFile()) {
+                config = createConfig();
                 PrintWriter writer = new PrintWriter(configFile);
                 writer.write(JSON_SERIALIZER.toJson(config));
                 writer.close();
@@ -63,22 +66,23 @@ final class ConnectionConfiguration {
                 throw new IOException();
             }
             StringBuilder jdbcStringBuilder = new StringBuilder();
-            jdbcStringBuilder.append("jdbc:sqlserver://").append(config.SERVER).append(";databaseName=")
-                    .append(config.DATABASE);
-            if (config.USE_INTEGRATED_SECURITY) {
-                jdbcStringBuilder.append(";integratedSecurity=true");
-                return DriverManager.getConnection(jdbcStringBuilder.toString());
+            jdbcStringBuilder.append("jdbc:sqlserver://").append(config.server).append(";databaseName=")
+                    .append(config.database).append(";");
+            if (config.useIntegratedSecurity) {
+                jdbcStringBuilder.append("integratedSecurity=true;");
             } else {
-                return DriverManager.getConnection(jdbcStringBuilder.toString(), config.USERNAME, config.PASSWORD);
+                jdbcStringBuilder.append("user=").append(config.username).append(";password=").append(config.password);
             }
+            System.out.println(jdbcStringBuilder.toString());
+            return DriverManager.getConnection(jdbcStringBuilder.toString());
         } catch (IOException e) {
             throw new IllegalStateException("Could not configure file");
         } catch (SQLException e) {
-            throw new IllegalStateException("Could not connect to " + config.DATABASE + " via " + config.SERVER);
+            throw new IllegalStateException("Could not connect to " + config.database + " via " + config.server);
         }
     }
 
-    private static final String readFile(File file) throws FileNotFoundException {
+    private static String readFile(File file) throws FileNotFoundException {
 
         StringBuilder fileStringBuilder = new StringBuilder();
         Scanner reader = new Scanner(file);
@@ -87,5 +91,19 @@ final class ConnectionConfiguration {
         }
         reader.close();
         return fileStringBuilder.toString();
+    }
+
+    private static ConnectionConfiguration createConfig() {
+        ConnectionConfiguration config = new ConnectionConfiguration();
+        Scanner input = new Scanner(System.in);
+        System.out.println("User integrate security? (true/false)");
+        config.useIntegratedSecurity = Boolean.parseBoolean(input.next());
+        if (!config.useIntegratedSecurity) {
+            System.out.println("Enter username:");
+            config.username = input.next();
+            System.out.println("Enter password: ");
+            config.password = input.next();
+        }
+        return config;
     }
 }
