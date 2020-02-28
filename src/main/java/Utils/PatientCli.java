@@ -73,16 +73,18 @@ public class PatientCli {
         System.out.println("(1): Add Drug to Patient");
         System.out.println("(2): Add Allergy to Patient");
         System.out.println("(3): Prescribed Drugs");
-        System.out.println("(4): Patients Allergies");
-        System.out.println("(5): Exit Patient");
+        System.out.println("(4): Remove Drug");
+        System.out.println("(5): Patients Allergies");
+        System.out.println("(6): Remove Allergy");
+        System.out.println("(7): Exit Patient");
         System.out.println("Choose an option by entering the corresponding number:");
 
-        return chooseAnInteger(input, 1, 6);
+        return chooseAnInteger(input, 1, 8);
     }
 
     private static void addToPatient(Prescriber fdbPrescriber, Scanner input, Patient patient) {
         int patientOption = addToPatientMenu(input);
-        while(patientOption != 5){ //while patient doesn't choose exit
+        while(patientOption != 7){ //while patient doesn't choose exit
             if( patientOption == 1){ //add a drug to the current patient
                 addDrug(fdbPrescriber, input, patient);
             }else if (patientOption == 2){ //add a allergy to the current patient
@@ -102,12 +104,38 @@ public class PatientCli {
                 }else{
                     System.out.println(patient.getName() + " is not currently taking any drugs!");
                 }
-            }else{ //Get patient allergies
+            }else if(patientOption == 4){
+                if(!patient.getDrugsPrescribed().isEmpty()){
+                    // create an empty list
+                    List<Drug> list = new ArrayList<>();
+
+                    // push each element in the set into the list
+                    for (Drug a : patient.getDrugsPrescribed())
+                        list.add(a);
+                    patient.getDrugsPrescribed().remove(chooseADrug(list,input));
+                    System.out.println("Drug Removed");
+                }else{
+                    System.out.println(patient.getName() + " isn't taking any drugs!");
+                }
+            }else if(patientOption == 5){ //Get patient allergies
                 if(!patient.getPatientAllergies().isEmpty()){
                     System.out.println(patient.getName()+"'s allergies:");
                     Iterator<Allergy> allergyIterator = patient.getPatientAllergies().iterator();
                     while(allergyIterator.hasNext())
                         System.out.println(allergyIterator.next().getName());
+                }else{
+                    System.out.println(patient.getName() + " has no allergies!");
+                }
+            }else{
+                if(!patient.getPatientAllergies().isEmpty()){
+                    // create an empty list
+                    List<Allergy> list = new ArrayList<>();
+
+                    // push each element in the set into the list
+                    for (Allergy a : patient.getPatientAllergies())
+                        list.add(a);
+                    patient.getPatientAllergies().remove(chooseAAllergy(list,input));
+                    System.out.println("Allergy Removed");
                 }else{
                     System.out.println(patient.getName() + " has no allergies!");
                 }
