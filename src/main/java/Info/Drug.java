@@ -1,6 +1,6 @@
 package Info;
 
-public final class Drug implements Comparable<Drug> {
+public final class Drug implements Displayable, Comparable<Drug> {
 
     private final int ID;
     private final int INGREDIENTS_ID;
