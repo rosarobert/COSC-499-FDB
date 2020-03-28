@@ -61,12 +61,15 @@ public class newJDialog extends javax.swing.JDialog {
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldActionPerformed(evt);
+                jTextField1ActionPerformed(evt);
             }
         });
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextFieldKeyTyped(evt);
+                jTextField1KeyTyped(evt);
             }
         });
 
@@ -109,7 +112,7 @@ public class newJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldActionPerformed
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldActionPerformed
 
     }//GEN-LAST:event_jTextFieldActionPerformed
 
@@ -140,7 +143,22 @@ public class newJDialog extends javax.swing.JDialog {
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldKeyTyped
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldKeyTyped
+//        list = new ArrayList<>();
+//        switch (flag){
+//            case DRUGS:{
+//                list = garbage.queryDrugs(jTextField1.getText());
+//                break;
+//            }
+//            case ALLERGIES:{
+//                list = garbage.queryAllergies(jTextField1.getText());
+//                break;
+//            }
+//        }
+//        jList1.setListData(list.stream().map(Displayable::getDisplayName).toArray(String[]::new));
+    }//GEN-LAST:event_jTextFieldKeyTyped
+
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
         list = new ArrayList<>();
         switch (flag){
             case DRUGS:{
@@ -153,7 +171,7 @@ public class newJDialog extends javax.swing.JDialog {
             }
         }
         jList1.setListData(list.stream().map(Displayable::getDisplayName).toArray(String[]::new));
-    }//GEN-LAST:event_jTextFieldKeyTyped
+    }//GEN-LAST:event_jTextField1KeyReleased
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
