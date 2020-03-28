@@ -20,19 +20,21 @@ public class PatientCli {
         // While user enters "queries drugs" in initial menu
         while (initialMenu(input)) {
             int choice = patientMenu(input);
-            if(choice == 1){
-                Patient patient = createPatientMenu(input);
-                addToPatient(fdbPrescriber,input,patient);
-                patients.add(patient);
-            }else{
-                int patientIndex = chooseAPatient(patients,input);
-                if(patientIndex == -1){
-                    System.out.println("Sorry there are no patients");
-                }else{
-                    addToPatient(fdbPrescriber,input,patients.get(patientIndex));
+            while(choice != 3) {
+                if (choice == 1) {
+                    Patient patient = createPatientMenu(input);
+                    addToPatient(fdbPrescriber, input, patient);
+                    patients.add(patient);
+                } else {
+                    int patientIndex = chooseAPatient(patients, input);
+                    if (patientIndex == -1) {
+                        System.out.println("Sorry there are no patients");
+                    } else if (patientIndex != patients.size()) {
+                        addToPatient(fdbPrescriber, input, patients.get(patientIndex));
+                    }
                 }
+                choice = patientMenu(input);
             }
-
         }
     }
 
@@ -55,9 +57,10 @@ public class PatientCli {
     private static int patientMenu(Scanner input) {
         System.out.println("(1): Create A New Patient");
         System.out.println("(2): Use Existing Patient");
+        System.out.println("(3): Exit");
         System.out.println("Choose an option by entering the corresponding number:");
 
-        return chooseAnInteger(input, 1, 3);
+        return chooseAnInteger(input, 1, 4);
     }
 
     private static Patient createPatientMenu(Scanner input) {
@@ -69,12 +72,12 @@ public class PatientCli {
         return patient;
     }
 
-    private static int addToPatientMenu(Scanner input) {
-        System.out.println("(1): Add Drug to Patient");
-        System.out.println("(2): Add Allergy to Patient");
-        System.out.println("(3): Prescribed Drugs");
+    private static int addToPatientMenu(Scanner input, Patient patient) {
+        System.out.println("(1): Add a Drug to " + patient.getName());
+        System.out.println("(2): Add  a Allergy to " + patient.getName());
+        System.out.println("(3): View " + patient.getName() + "'s Prescriptions");
         System.out.println("(4): Remove Drug");
-        System.out.println("(5): Patients Allergies");
+        System.out.println("(5): View " + patient.getName() + "'s Allergies");
         System.out.println("(6): Remove Allergy");
         System.out.println("(7): Exit Patient");
         System.out.println("Choose an option by entering the corresponding number:");
@@ -83,7 +86,7 @@ public class PatientCli {
     }
 
     private static void addToPatient(Prescriber fdbPrescriber, Scanner input, Patient patient) {
-        int patientOption = addToPatientMenu(input);
+        int patientOption = addToPatientMenu(input, patient);
         while(patientOption != 7){ //while patient doesn't choose exit
             if( patientOption == 1){ //add a drug to the current patient
                 addDrug(fdbPrescriber, input, patient);
@@ -93,11 +96,12 @@ public class PatientCli {
                     System.out.println("No allergies found");
                 }else{
                     Allergy allergyChosen = chooseAAllergy(queriedAllergies, input);
-                    patient.addAllergy(allergyChosen);
+                    if(allergyChosen != null)
+                        patient.addAllergy(allergyChosen);
                 }
             }else if(patientOption == 3){ //Get prescribed drugs of current patient
                 if(!patient.getDrugsPrescribed().isEmpty()){
-                    System.out.println(patient.getName()+"'s is taking:");
+                    System.out.println(patient.getName()+" is taking:");
                     Iterator<Drug> drugIterator = patient.getDrugsPrescribed().iterator();
                     while(drugIterator.hasNext())
                         System.out.println(drugIterator.next().getDisplayName());
@@ -112,8 +116,11 @@ public class PatientCli {
                     // push each element in the set into the list
                     for (Drug a : patient.getDrugsPrescribed())
                         list.add(a);
-                    patient.getDrugsPrescribed().remove(chooseADrug(list,input));
-                    System.out.println("Drug Removed");
+                    Drug drugChosen = chooseADrug(list,input);
+                    if(drugChosen != null) {
+                        patient.getDrugsPrescribed().remove(drugChosen);
+                        System.out.println(drugChosen.getDisplayName() + " removed from " + patient.getName());
+                    }
                 }else{
                     System.out.println(patient.getName() + " isn't taking any drugs!");
                 }
@@ -134,13 +141,16 @@ public class PatientCli {
                     // push each element in the set into the list
                     for (Allergy a : patient.getPatientAllergies())
                         list.add(a);
-                    patient.getPatientAllergies().remove(chooseAAllergy(list,input));
-                    System.out.println("Allergy Removed");
+                    Allergy allergyChosen = chooseAAllergy(list,input);
+                    if(allergyChosen != null) {
+                        patient.getPatientAllergies().remove(allergyChosen);
+                        System.out.println(allergyChosen.getName() + "removed from " + patient.getName());
+                    }
                 }else{
                     System.out.println(patient.getName() + " has no allergies!");
                 }
             }
-            patientOption = addToPatientMenu(input);
+            patientOption = addToPatientMenu(input, patient);
         }
     }
 
@@ -162,8 +172,10 @@ public class PatientCli {
     private static Drug chooseADrug(List<Drug> drugs, Scanner input) {
         for (int i = 0; i < drugs.size(); i++)
             System.out.printf("(%d): %30s\n", i, drugs.get(i).getDisplayName());
-        System.out.println("Choose a drug by entering an index:");
-        int index = chooseAnInteger(input, 0, drugs.size());
+        System.out.printf("Choose a drug by entering an index: (%d to Exit)\n",drugs.size());
+        int index = chooseAnInteger(input, 0, drugs.size()+1);
+        if(index == drugs.size())
+            return null;
         return drugs.get(index);
     }
 
@@ -176,8 +188,10 @@ public class PatientCli {
     private static Allergy chooseAAllergy(List<Allergy> allergies, Scanner input) {
         for (int i = 0; i < allergies.size(); i++)
             System.out.printf("(%d): %30s\n", i, allergies.get(i).getName());
-        System.out.println("Choose a allergy by entering an index:");
-        int index = chooseAnInteger(input, 0, allergies.size());
+        System.out.printf("Choose a allergy by entering an index: (%d to Exit)\n",allergies.size());
+        int index = chooseAnInteger(input, 0, allergies.size()+1);
+        if(index == allergies.size())
+            return null;
         return allergies.get(index);
     }
 
@@ -186,8 +200,8 @@ public class PatientCli {
             return -1;
         for (int i = 0; i < patients.size(); i++)
             System.out.printf("(%d): %30s\n", i, patients.get(i).getName());
-        System.out.println("Choose a patient by entering an index:");
-        return chooseAnInteger(input, 0, patients.size());
+        System.out.printf("Choose a allergy by entering an index: (%d to Exit)\n",patients.size());
+        return chooseAnInteger(input, 0, patients.size()+1);
     }
 
     private static void addDrug(Prescriber fdbPrescriber, Scanner input, Patient patient){
@@ -196,23 +210,30 @@ public class PatientCli {
             System.out.println("No drugs found :(");
         }else{
             Drug drugChosen = chooseADrug(queriedDrugs, input);
-            List<DrugInteraction> drugInteractions = fdbPrescriber.findInteractions(drugChosen, patient);
-            if(drugInteractions.isEmpty()){
-                System.out.println("No drug interactions!");
-                System.out.println("Prescribing drug " + drugChosen.getDisplayName() + " to " + patient.getName());
-                patient.addDrug(drugChosen);
-            }else{
-                //break up into food, allergy and drug later
-                System.out.println("Prescribing this drug will cause these interactions:");
-                for(int i = 0; i < drugInteractions.size(); i++){
-                    System.out.println(drugInteractions.get(0).getInteractionDescription());
-                }
-                int choice = acceptMenu(input);
-                if(choice == 1){
-                    System.out.println("Drug added to patient");
-                    patient.addDrug(drugChosen);
-                }else{
-                    System.out.println("Drug not added to patient");
+            if(drugChosen != null){
+                List<DrugInteraction> drugInteractions = fdbPrescriber.findInteractions(drugChosen, patient);
+                if(drugInteractions.isEmpty()){
+                    System.out.println("No drug interactions!");
+                    int choice = acceptMenu(input);
+                    if (choice == 1) {
+                        System.out.println("Prescribing drug " + drugChosen.getDisplayName() + " to " + patient.getName());
+                        patient.addDrug(drugChosen);
+                    } else {
+                        System.out.println(drugChosen.getDisplayName() + " not added to " + patient.getName());
+                    }
+                }else {
+                    //break up into food, allergy and drug later
+                    System.out.println("Prescribing " + drugChosen.getDisplayName() + " will cause these interactions:");
+                    for (int i = 0; i < drugInteractions.size(); i++) {
+                        System.out.println(drugInteractions.get(i).getInteractionDescription());
+                    }
+                    int choice = acceptMenu(input);
+                    if (choice == 1) {
+                        System.out.println("Prescribing drug " + drugChosen.getDisplayName() + " to " + patient.getName());
+                        patient.addDrug(drugChosen);
+                    } else {
+                        System.out.println(drugChosen.getDisplayName() + " not added to " + patient.getName());
+                    }
                 }
             }
         }
