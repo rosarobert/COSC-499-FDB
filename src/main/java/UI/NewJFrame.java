@@ -373,14 +373,14 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jlDrugValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jlDrugValueChanged
         if(jlDrug.getSelectedIndex() == -1){
-            massBtnREnalbed(false);
-        }else {massBtnREnalbed(true);}
+            jbnDrugRemove.setEnabled(false);
+        }else {jbnDrugRemove.setEnabled(true);}
     }//GEN-LAST:event_jlDrugValueChanged
 
     private void jlAllergyValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jlAllergyValueChanged
         if(jlAllergy.getSelectedIndex() == -1){
-            massBtnREnalbed(false);
-        }else {massBtnREnalbed(true);}
+            jbnAllergyRemove.setEnabled(false);
+        }else {jbnAllergyRemove.setEnabled(true);}
     }//GEN-LAST:event_jlAllergyValueChanged
 
     /**
