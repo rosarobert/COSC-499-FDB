@@ -74,7 +74,7 @@ public class PatientCli {
 
     private static int addToPatientMenu(Scanner input, Patient patient) {
         System.out.println("(1): Add a Drug to " + patient.getName());
-        System.out.println("(2): Add  a Allergy to " + patient.getName());
+        System.out.println("(2): Add an Allergy to " + patient.getName());
         System.out.println("(3): View " + patient.getName() + "'s Prescriptions");
         System.out.println("(4): Remove Drug");
         System.out.println("(5): View " + patient.getName() + "'s Allergies");
