@@ -122,7 +122,7 @@ public class newJDialog extends javax.swing.JDialog {
                 for(int i: jList1.getSelectedIndices()){
                     List<DrugInteraction> drugInteractions = garbage.findInteractions(((List<Drug>)list).get(i), patient);
                     if(drugInteractions.isEmpty() !=true){
-                        WarningJDialog warning = new WarningJDialog(parent,true, ((List<Drug>)list).get(i));
+                        WarningJDialog warning = new WarningJDialog(parent,true, ((List<Drug>)list).get(i),drugInteractions);
                         warning.setVisible(true);
                         if(warning.clickedContinue()){
                             patient.addDrug(((List<Drug>)list).get(i));

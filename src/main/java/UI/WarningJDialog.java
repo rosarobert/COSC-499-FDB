@@ -6,6 +6,9 @@
 package UI;
 
 import Info.Drug;
+import Info.DrugInteraction;
+
+import java.util.List;
 
 /**
  *
@@ -16,10 +19,15 @@ public class WarningJDialog extends javax.swing.JDialog {
     /**
      * Creates new form WarningJDialog
      */
-    public WarningJDialog(java.awt.Frame parent, boolean modal, Drug drug) {
+    public WarningJDialog(java.awt.Frame parent, boolean modal, Drug drug, List<DrugInteraction> interactions) {
         super(parent, modal);
         initComponents();
-        lblInteraction.setText("There is an interaction Prescribing: " + drug.getDisplayName() + " Do you wish to continue?");
+        StringBuilder warning = new StringBuilder("There is an interaction Prescribing: " + drug.getDisplayName());
+        for (int i = 0; i < interactions.size(); i++) {
+            warning.append("\n");
+            warning.append(interactions.get(i).getInteractionDescription());
+        }
+        jtaWarn.setText(warning.toString());
     }
 
     /**
@@ -32,17 +40,16 @@ public class WarningJDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         lblWarning = new javax.swing.JLabel();
-        lblInteraction = new javax.swing.JLabel();
         jbnContinue = new javax.swing.JButton();
         jbnCancel = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtaWarn = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(514, 85));
 
         lblWarning.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lblWarning.setText("Warning");
-
-        lblInteraction.setText("Prescibing this will cause an interation");
 
         jbnContinue.setText("Continue");
         jbnContinue.addActionListener(new java.awt.event.ActionListener() {
@@ -58,23 +65,27 @@ public class WarningJDialog extends javax.swing.JDialog {
             }
         });
 
+        jtaWarn.setColumns(20);
+        jtaWarn.setRows(5);
+        jScrollPane1.setViewportView(jtaWarn);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(lblWarning)
+                .addGap(251, 251, 251))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblInteraction, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jbnContinue, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
-                        .addComponent(jbnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+                        .addComponent(jbnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(225, 225, 225)
-                .addComponent(lblWarning)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -82,8 +93,8 @@ public class WarningJDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(lblWarning)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblInteraction)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbnContinue)
                     .addComponent(jbnCancel))
@@ -108,9 +119,10 @@ public class WarningJDialog extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jbnCancel;
     private javax.swing.JButton jbnContinue;
-    private javax.swing.JLabel lblInteraction;
+    private javax.swing.JTextArea jtaWarn;
     private javax.swing.JLabel lblWarning;
     // End of variables declaration//GEN-END:variables
 }
