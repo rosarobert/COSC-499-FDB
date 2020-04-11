@@ -104,6 +104,7 @@ final class ConnectionConfiguration {
             System.out.println("Enter password: ");
             config.password = input.next();
         }
+        input.close();
         return config;
     }
 }
