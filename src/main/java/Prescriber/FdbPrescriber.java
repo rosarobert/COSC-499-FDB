@@ -188,13 +188,13 @@ public class FdbPrescriber implements Prescriber {
      private List<Drug> queryManufacturerDrugs(String prefix) {
          try {
              PreparedStatement pStmtToQueryDrugsBasedOnPrefix = FDB_CONNECTION.prepareStatement(
-                "SELECT TOP(100) t1.LN, t3.HICL_SEQNO, t1.GCN_SEQNO, t1.DIN, t1.IADDDTE, t1.IOBSDTE, t2.MFG "
+                "SELECT t1.LN, t3.HICL_SEQNO, t1.GCN_SEQNO, t1.DIN, t1.IADDDTE, t1.IOBSDTE, t2.MFG "
                         + "FROM RICAIDC1 AS t1 "
                         + "JOIN RLBLRCA1 AS t2 ON (t1.ILBLRID = t2.ILBLRID) "
                         + "JOIN RGCNSEQ4 AS t3 ON (t1.GCN_SEQNO = t3.GCN_SEQNO) "
                         + "WHERE t1.LN LIKE ? "
                         + "ORDER BY t1.LN");
-             pStmtToQueryDrugsBasedOnPrefix.setString(1, prefix + "%");
+             pStmtToQueryDrugsBasedOnPrefix.setString(1, "%" + prefix + "%");
              ResultSet drugsAsRst = pStmtToQueryDrugsBasedOnPrefix.executeQuery();
 
              List<Drug> drugsAsObjects = new ArrayList<>();

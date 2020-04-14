@@ -28,7 +28,7 @@ public class PatientCli {
                 } else {
                     int patientIndex = chooseAPatient(patients, input);
                     if (patientIndex == -1) {
-                        System.out.println("Sorry there are no patients");
+                        System.out.println("Sorry, there are no patients.");
                     } else if (patientIndex != patients.size()) {
                         addToPatient(fdbPrescriber, input, patients.get(patientIndex));
                     }
@@ -64,7 +64,6 @@ public class PatientCli {
     }
 
     private static Patient createPatientMenu(Scanner input) {
-
         Patient patient = new Patient();
         System.out.println("Enter patient name:");
         String name = input.nextLine();
@@ -73,12 +72,12 @@ public class PatientCli {
     }
 
     private static int addToPatientMenu(Scanner input, Patient patient) {
-        System.out.println("(1): Add a Drug to " + patient.getName());
-        System.out.println("(2): Add  a Allergy to " + patient.getName());
-        System.out.println("(3): View " + patient.getName() + "'s Prescriptions");
-        System.out.println("(4): Remove Drug");
-        System.out.println("(5): View " + patient.getName() + "'s Allergies");
-        System.out.println("(6): Remove Allergy");
+        System.out.println("(1): Prescribe a drug to " + patient.getName());
+        System.out.println("(2): Add an allergy to " + patient.getName());
+        System.out.println("(3): View " + patient.getName() + "'s past prescriptions");
+        System.out.println("(4): Remove drug");
+        System.out.println("(5): View " + patient.getName() + "'s allergies");
+        System.out.println("(6): Remove allergy");
         System.out.println("(7): Exit Patient");
         System.out.println("Choose an option by entering the corresponding number:");
 
@@ -172,9 +171,9 @@ public class PatientCli {
     private static Drug chooseADrug(List<Drug> drugs, Scanner input) {
         for (int i = 0; i < drugs.size(); i++)
             System.out.printf("(%d): %30s\n", i, drugs.get(i).getDisplayName());
-        System.out.printf("Choose a drug by entering an index: (%d to Exit)\n",drugs.size());
+        System.out.printf("Choose a drug by entering an index: (0 to Exit)\n",drugs.size());
         int index = chooseAnInteger(input, 0, drugs.size()+1);
-        if(index == drugs.size())
+        if(index == 0)
             return null;
         return drugs.get(index);
     }
@@ -188,9 +187,9 @@ public class PatientCli {
     private static Allergy chooseAAllergy(List<Allergy> allergies, Scanner input) {
         for (int i = 0; i < allergies.size(); i++)
             System.out.printf("(%d): %30s\n", i, allergies.get(i).getName());
-        System.out.printf("Choose a allergy by entering an index: (%d to Exit)\n",allergies.size());
+        System.out.printf("Choose a allergy by entering an index: (0 to Exit)\n",allergies.size());
         int index = chooseAnInteger(input, 0, allergies.size()+1);
-        if(index == allergies.size())
+        if(index == 0)
             return null;
         return allergies.get(index);
     }
