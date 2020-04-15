@@ -5,16 +5,22 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class Patient implements Displayable{
+public class Patient implements Displayable {
     String NAME;
     SortedSet<Drug> DRUGS_PRESCRIBED = new TreeSet<>();
     SortedSet<Allergy> PATIENT_ALLERGIES = new TreeSet<>();
 
-    public final String setName(String name){ return NAME = name;}
+    public final String setName(String name) {
+        return NAME = name;
+    }
 
-    public final boolean addDrug(Drug drug) { return DRUGS_PRESCRIBED.add(drug); }
+    public final boolean addDrug(Drug drug) {
+        return DRUGS_PRESCRIBED.add(drug);
+    }
 
-    public final boolean addAllergy(Allergy allergy) { return PATIENT_ALLERGIES.add(allergy); }
+    public final boolean addAllergy(Allergy allergy) {
+        return PATIENT_ALLERGIES.add(allergy);
+    }
 
     public SortedSet<Drug> getDrugsPrescribed() {
         return DRUGS_PRESCRIBED;
@@ -23,7 +29,8 @@ public class Patient implements Displayable{
     public SortedSet<Allergy> getPatientAllergies() {
         return PATIENT_ALLERGIES;
     }
-    public void removeDrug(int input){
+
+    public void removeDrug(int input) {
         List<Drug> list = new ArrayList<>();
 
         // push each element in the set into the list
@@ -31,7 +38,8 @@ public class Patient implements Displayable{
             list.add(a);
         getDrugsPrescribed().remove(list.get(input));
     }
-    public void removeAllergy(int input){
+
+    public void removeAllergy(int input) {
         List<Allergy> list = new ArrayList<>();
 
         // push each element in the set into the list
@@ -40,11 +48,22 @@ public class Patient implements Displayable{
         getPatientAllergies().remove(list.get(input));
     }
 
-
-    public final String getName(){ return NAME;}
+    public final String getName() {
+        return NAME;
+    }
 
     @Override
     public String getDisplayName() {
         return getName();
+    }
+
+    public final String toString() {
+        StringBuilder builder = new StringBuilder().append("Name: " + getName() + "\n\n")
+                                                   .append("Allerggies\n\n");
+        getPatientAllergies().forEach(allergy -> builder.append(allergy.toString() + "\n"));
+        builder.append("\n\n")
+               .append("Drugs:\n\n");
+        getDrugsPrescribed().forEach(drug -> builder.append(drug.toString() + "\n"));
+        return builder.toString();
     }
 }
