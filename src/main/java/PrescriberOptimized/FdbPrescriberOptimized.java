@@ -19,7 +19,7 @@ public class FdbPrescriberOptimized implements PrescriberOptimized {
      * Creates an FdbPrescriber from the file resources/config.json
      */
     FdbPrescriberOptimized() {
-        FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
+        FDB_CONNECTION = ConnectionConfigurationOptimized.getJdbcConnection();
     }
 
     @Override

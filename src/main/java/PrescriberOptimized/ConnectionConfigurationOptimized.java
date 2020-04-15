@@ -29,7 +29,7 @@ import com.google.gson.annotations.SerializedName;
  * SQL Server, but I did not want to have to bring that up since everyone uses
  * integrated security
  */
-final class ConnectionConfiguration {
+final class ConnectionConfigurationOptimized {
 
     private static final Gson JSON_SERIALIZER = new Gson();
 
@@ -49,12 +49,12 @@ final class ConnectionConfiguration {
     private String password;
 
     static Connection getJdbcConnection() {
-        ConnectionConfiguration config = null;
+        ConnectionConfigurationOptimized config = null;
         try {
             File configFile = new File("src/main/resources/databaseConnection.json");
             if (configFile.exists()) {
                 String configFileAsString = readFile(configFile);
-                config = JSON_SERIALIZER.fromJson(configFileAsString, ConnectionConfiguration.class);
+                config = JSON_SERIALIZER.fromJson(configFileAsString, ConnectionConfigurationOptimized.class);
                 System.out.println(config.username);
 
             } else if (configFile.createNewFile()) {
@@ -93,8 +93,8 @@ final class ConnectionConfiguration {
         return fileStringBuilder.toString();
     }
 
-    private static ConnectionConfiguration createConfig() {
-        ConnectionConfiguration config = new ConnectionConfiguration();
+    private static ConnectionConfigurationOptimized createConfig() {
+        ConnectionConfigurationOptimized config = new ConnectionConfigurationOptimized();
         Scanner input = new Scanner(System.in);
         System.out.println("User integrate security? (true/false)");
         config.useIntegratedSecurity = Boolean.parseBoolean(input.next());
