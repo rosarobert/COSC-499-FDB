@@ -1,5 +1,6 @@
 package Prescriber;
 
+import Apps.ConnectionConfiguration;
 import Info.*;
 
 import java.sql.*;

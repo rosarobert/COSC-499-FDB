@@ -1,4 +1,4 @@
-package Utils;
+package Apps;
 
 import Info.Allergy;
 import Info.Drug;

@@ -1,4 +1,4 @@
-package Prescriber;
+package Apps;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,7 +29,7 @@ import com.google.gson.annotations.SerializedName;
  * SQL Server, but I did not want to have to bring that up since everyone uses
  * integrated security
  */
-final class ConnectionConfiguration {
+public final class ConnectionConfiguration {
 
     private static final Gson JSON_SERIALIZER = new Gson();
 
