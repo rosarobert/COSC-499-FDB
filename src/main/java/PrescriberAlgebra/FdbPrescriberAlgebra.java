@@ -1,4 +1,4 @@
-package Prescriber;
+package PrescriberAlgebra;
 
 import Info.*;
 
@@ -11,15 +11,15 @@ import java.util.SortedSet;
 /**
  * A implementation of {@link Prescriber} using the FDB database
  */
-public class FdbPrescriber implements Prescriber {
+public class FdbPrescriberAlgebra implements PrescriberAlgebra {
 
     private final Connection FDB_CONNECTION;
 
     /**
      * Creates an FdbPrescriber from the file resources/config.json
      */
-    FdbPrescriber() {
-        FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
+    FdbPrescriberAlgebra() {
+        FDB_CONNECTION = ConnectionConfigurationAlgebra.getJdbcConnection();
     }
 
     @Override
@@ -162,17 +162,14 @@ public class FdbPrescriber implements Prescriber {
                     testers.append(",");
              }
 
-             System.out.println(testers.toString());
-             System.out.println(drug.getIngredientIdentifier());
-
              //Query all allergy interactions between a drug and a list of allergies
              PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
-                "SELECT t3.HICL_SEQNO, t3.HIC_SEQN, t3.HIC, t4.HIC_DESC, t2.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
-                "FROM RDAMGHC0 AS t1 " +
-                "JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
-                "JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
-                "JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
-                "WHERE HICL_SEQNO = ? AND t1.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
+             "SELECT t3.HICL_SEQNO, t3.HIC_SEQN, t3.HIC, t4.HIC_DESC, t2.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
+                     "FROM RDAMGHC0 AS t1 " +
+                     "JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
+                     "JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
+                     "JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
+                     "WHERE HICL_SEQNO = ? AND t1.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
              pStmtToQueryAllergyInteractions.setInt(1, drug.getIngredientIdentifier());
 
              ResultSet allergyInteractionsAsRst = pStmtToQueryAllergyInteractions.executeQuery();

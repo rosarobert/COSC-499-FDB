@@ -1,4 +1,4 @@
-package PrescriberOptimized;
+package PrescriberPaginate;
 
 import Info.*;
 
@@ -11,15 +11,15 @@ import java.util.SortedSet;
 /**
  * A implementation of {@link Prescriber} using the FDB database
  */
-public class FdbPrescriberOptimized implements PrescriberOptimized {
+public class FdbPrescriberPaginate implements PrescriberPaginate {
 
     private final Connection FDB_CONNECTION;
 
     /**
      * Creates an FdbPrescriber from the file resources/config.json
      */
-    FdbPrescriberOptimized() {
-        FDB_CONNECTION = ConnectionConfigurationOptimized.getJdbcConnection();
+    FdbPrescriberPaginate() {
+        FDB_CONNECTION = ConnectionConfigurationPaginate.getJdbcConnection();
     }
 
     @Override

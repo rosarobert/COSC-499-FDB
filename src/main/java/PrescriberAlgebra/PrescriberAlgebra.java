@@ -1,4 +1,4 @@
-package PrescriberOptimized;
+package PrescriberAlgebra;
 
 import Info.*;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * An object that can gather the necessary information in order to make a
  * prescription
  */
-public interface PrescriberOptimized {
+public interface PrescriberAlgebra {
 
     /**
      * Returns all drugs in FDB database which have a name that starts with the
@@ -20,7 +20,7 @@ public interface PrescriberOptimized {
      * @param prefix string that all drug names should start with
      * @return a list of all drugs that start with {@code prefix}
      */
-    List<Drug> queryDrugs(String prefix, int page);
+    List<Drug> queryDrugs(String prefix);
 
     List<Allergy> queryAllergies(String prefix);
 
@@ -32,8 +32,8 @@ public interface PrescriberOptimized {
      * Creates an FdbPrescriber object based on the static properties defined in
      * ConnectionConfiguration.java
      */
-    static PrescriberOptimized createFdbPrescriber() {
-        return new FdbPrescriberOptimized();
+    static PrescriberAlgebra createFdbPrescriber() {
+        return new FdbPrescriberAlgebra();
     }
 
     /**

@@ -1,4 +1,4 @@
-package PrescriberOptimized;
+package PrescriberPaginate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,7 +29,7 @@ import com.google.gson.annotations.SerializedName;
  * SQL Server, but I did not want to have to bring that up since everyone uses
  * integrated security
  */
-final class ConnectionConfigurationOptimized {
+final class ConnectionConfigurationPaginate {
 
     private static final Gson JSON_SERIALIZER = new Gson();
 
@@ -49,12 +49,12 @@ final class ConnectionConfigurationOptimized {
     private String password;
 
     static Connection getJdbcConnection() {
-        ConnectionConfigurationOptimized config = null;
+        ConnectionConfigurationPaginate config = null;
         try {
             File configFile = new File("src/main/resources/databaseConnection.json");
             if (configFile.exists()) {
                 String configFileAsString = readFile(configFile);
-                config = JSON_SERIALIZER.fromJson(configFileAsString, ConnectionConfigurationOptimized.class);
+                config = JSON_SERIALIZER.fromJson(configFileAsString, ConnectionConfigurationPaginate.class);
                 System.out.println(config.username);
 
             } else if (configFile.createNewFile()) {
@@ -93,8 +93,8 @@ final class ConnectionConfigurationOptimized {
         return fileStringBuilder.toString();
     }
 
-    private static ConnectionConfigurationOptimized createConfig() {
-        ConnectionConfigurationOptimized config = new ConnectionConfigurationOptimized();
+    private static ConnectionConfigurationPaginate createConfig() {
+        ConnectionConfigurationPaginate config = new ConnectionConfigurationPaginate();
         Scanner input = new Scanner(System.in);
         System.out.println("User integrate security? (true/false)");
         config.useIntegratedSecurity = Boolean.parseBoolean(input.next());
