@@ -50,3 +50,4 @@ resources/*
 data/*
 metadata/*
 .gitattributes
+*/databaseConnection.json
