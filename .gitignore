@@ -47,3 +47,6 @@ build
 
 #Stupid files that were previously here, and keep reappearing
 resources/*
+data/*
+metadata/*
+.gitattributes
