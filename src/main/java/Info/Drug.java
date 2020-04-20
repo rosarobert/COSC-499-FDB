@@ -47,4 +47,14 @@ public final class Drug implements Displayable, Comparable<Drug> {
     public int compareTo(Drug drugToCompare) {
         return getId() - drugToCompare.getId();
     }
+
+    public final String toString() {
+        return new StringBuilder().append("Drug -> ")
+                                  .append("DIN: " + getId())
+                                  .append(" INGREDIENTS_ID: " + getIngredientIdentifier())
+                                  .append(" GCN_SEQNO: " + getGcnSeqno())
+                                  .append(" DISPLAY_NAME: " + getDisplayName())
+                                  .toString();
+
+    }
 }

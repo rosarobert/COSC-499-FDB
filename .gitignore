@@ -42,5 +42,10 @@ out/*
 # Ignore Gradle build output directory
 build
 
-#Database connection config
+#Stupid files that were previously here, and keep reappearing
+resources/*
+data/*
+metadata/*
+.gitattributes
 */databaseConnection.json
+src/main/resources/*

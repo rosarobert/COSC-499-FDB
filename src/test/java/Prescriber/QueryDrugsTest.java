@@ -10,47 +10,47 @@ import java.util.List;
 
 public class QueryDrugsTest {
 
-    private FdbPrescriber fdbPrescriber;
+    private FdbPrescriberUnoptimized fdbPrescriberUnoptimized;
 
     //Requests a connection to the database
     @BeforeClass
     public void init() throws Exception {
-        fdbPrescriber = new FdbPrescriber();
+        fdbPrescriberUnoptimized = new FdbPrescriberUnoptimized();
     }
 
     //closes connection
     @AfterClass
     public void end() throws Exception {
-        fdbPrescriber.closePrescriber();
+        fdbPrescriberUnoptimized.closePrescriber();
     }
 
     @Test
     public void testSizeOfQueryDrugsWhenOnlyOneDrugReturned() {
-        List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("PLACIDYL 200 MG CAPSULE");
+        List<Drug> queryDrugsResult = fdbPrescriberUnoptimized.queryDrugs("PLACIDYL 200 MG CAPSULE");
         Assert.assertEquals(queryDrugsResult.size(), 1);
     }
 
     @Test
     public void testNameOfDrugWhenQueryingDrugsWithOnlyOneDrugReturned() {
-        List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("PLACIDYL 200 MG CAPSULE");
+        List<Drug> queryDrugsResult = fdbPrescriberUnoptimized.queryDrugs("PLACIDYL 200 MG CAPSULE");
         Assert.assertEquals(queryDrugsResult.get(0).getDisplayName(), "PLACIDYL 200 MG CAPSULE");
     }
 
     @Test
     public void testSizeOfQueryDrugsWhenNoDrugReturned() {
-        List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("zx");
+        List<Drug> queryDrugsResult = fdbPrescriberUnoptimized.queryDrugs("zx");
         Assert.assertEquals(queryDrugsResult.size(), 0);
     }
 
     @Test
     public void testSizeOfQueryDrugsWhenManyDrugReturned() {
-        List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("PMS_DIGOXIN");
+        List<Drug> queryDrugsResult = fdbPrescriberUnoptimized.queryDrugs("PMS_DIGOXIN");
         Assert.assertEquals(queryDrugsResult.size(), 3);
     }
 
     @Test
     public void testNameOfDrugWhenQueryingDrugsWithManyDrugReturned() {
-        List<Drug> queryDrugsResult = fdbPrescriber.queryDrugs("PMS_DIGOXIN");
+        List<Drug> queryDrugsResult = fdbPrescriberUnoptimized.queryDrugs("PMS_DIGOXIN");
         String result = queryDrugsResult.get(0).getDisplayName();
         for(int i = 0; i < queryDrugsResult.size(); i++)
             result += ", " + queryDrugsResult.get(0).getDisplayName();

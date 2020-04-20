@@ -1,9 +1,9 @@
 package Info;
 
-public final class Allergy implements Displayable, Comparable<Allergy>{
+public final class Allergy implements Displayable, Comparable<Allergy> {
     private final int ID;
     private final String NAME;
-    
+
     private Allergy(int id, String name) {
         ID = id;
         NAME = name;
@@ -29,5 +29,9 @@ public final class Allergy implements Displayable, Comparable<Allergy>{
     @Override
     public String getDisplayName() {
         return getName();
+    }
+
+    public String toString() {
+        return "Allergy -> id:" + ID + " name: " + NAME;
     }
 }
