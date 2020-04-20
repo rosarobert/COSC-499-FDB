@@ -22,17 +22,17 @@ import java.util.SortedSet;
  * Note that there is a method to return a page, but it does this by first finding all drugs the taking a subset of
  * that. This is very costly
  */
-final class FdbPrescriberUnoptimized implements Prescriber {
+final class FdbPrescriberRelational implements Prescriber {
 
     private final Connection FDB_CONNECTION;
     private final int PAGE_SIZE;
 
-    FdbPrescriberUnoptimized() {
+    FdbPrescriberRelational() {
         this(20);
     }
 
 
-    FdbPrescriberUnoptimized(int pageSize) {
+    FdbPrescriberRelational(int pageSize) {
         PAGE_SIZE = pageSize;
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
     }
@@ -147,11 +147,11 @@ final class FdbPrescriberUnoptimized implements Prescriber {
     public List<DrugInteraction> queryFoodInteractionsOfDrug(Drug drug) {
         try {
             PreparedStatement pStmtToQueryFoodInteractions = FDB_CONNECTION.prepareStatement(
-                    "SELECT DISTINCT RESULT " +
-                            "FROM RDFIMGC0 AS DF " +
-                            "JOIN RGCNSEQ4 AS GC ON (DF.GCN_SEQNO = GC.GCN_SEQNO)" +
-                            "JOIN RDFIMMA0 AS DFI ON (DF.FDCDE = DFI.FDCDE) " +
-                            "WHERE GC.GCN_SEQNO = ?");
+                "SELECT DISTINCT RESULT " +
+                "FROM RDFIMGC0 AS t1 " +
+                "LEFT JOIN RDFIMMA0 AS t2 ON (t1.FDCDE = t2.FDCDE) " +
+                "LEFT JOIN RGCNSEQ4 AS t3 ON (t1.GCN_SEQNO = t3.GCN_SEQNO)" +
+                "WHERE GC.GCN_SEQNO = ?");
             pStmtToQueryFoodInteractions.setInt(1, drug.getGcnSeqno());
 
             ResultSet foodInteractionsAsRst = pStmtToQueryFoodInteractions.executeQuery();
@@ -185,12 +185,12 @@ final class FdbPrescriberUnoptimized implements Prescriber {
 
             //Query all allergy interactions between a drug and a list of allergies
             PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
-                    "SELECT t3.HICL_SEQNO, t3.HIC_SEQN, t3.HIC, t4.HIC_DESC, t2.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
-                            "FROM RDAMGHC0 AS t1 " +
-                            "JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
-                            "JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
-                            "JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
-                            "WHERE HICL_SEQNO = ? AND t1.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
+                "SELECT t3.HICL_SEQNO, t3.HIC_SEQN, t3.HIC, t4.HIC_DESC, t2.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
+                "FROM RDAMGHC0 AS t1 " +
+                "LEFT JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
+                "LEFT JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
+                "LEFT JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
+                "WHERE HICL_SEQNO = ? AND t1.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
             pStmtToQueryAllergyInteractions.setInt(1, drug.getIngredientIdentifier());
 
             ResultSet allergyInteractionsAsRst = pStmtToQueryAllergyInteractions.executeQuery();
