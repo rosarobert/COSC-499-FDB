@@ -30,7 +30,9 @@ public class PerformanceTest {
     private static final Prescriber PAGE_RELATIONAL_PRESCRIBER = Prescriber.createFdbPrescriberPageRelation();
 
     public static void main(String[] args) {
-        System.out.printf("%-20s %s", "Hello", "hello");
+        timeQueryDrugsWithoutPage("can");
+        timeQueryDrugsWithPage("can",2);
+        timeFindDrugInteractions();
     }
 
     /**
@@ -46,7 +48,6 @@ public class PerformanceTest {
         System.out.println("Test Query All Drugs");
         System.out.println();
         time("Unoptimized", () -> UNOPTIMIZED_PRESCRIBER.queryDrugs(pattern));
-        time("Relational", () -> RELATIONAL_PRESCRIBER.queryDrugs(pattern));
     }
 
     /**
@@ -63,7 +64,7 @@ public class PerformanceTest {
         time("Unoptimized", () -> UNOPTIMIZED_PRESCRIBER.queryDrugs(pattern, page));
         time("Pagination", () -> PAGE_PRESCRIBER.queryDrugs(pattern, page));
         time("Relational", () -> RELATIONAL_PRESCRIBER.queryDrugs(pattern, page));
-        time("Pagination and relational" () -> PAGE_RELATIONAL_PRESCRIBER.queryDrugs(pattern, page));
+        time("Pagination and relational", () -> PAGE_RELATIONAL_PRESCRIBER.queryDrugs(pattern, page));
     }
 
     /**
@@ -97,7 +98,7 @@ public class PerformanceTest {
             long end = System.nanoTime();
             double time = (end - start) / Math.pow(10, 9);
             System.out.printf("%-20s: %f\n", nameOfTest, time);
-        } catch (NullPointerException e) {
+        } catch (RuntimeException e) {
             System.out.printf("%-20s: %s\n", nameOfTest, "NA");
         }
     }
@@ -112,8 +113,9 @@ public class PerformanceTest {
         patient.addAllergy(Allergy.createFdbAllergy(140, "Xanthines"));
         patient.addAllergy(Allergy.createFdbAllergy(53, "Haemophilus influenzae Vaccines"));
         patient.addAllergy(Allergy.createFdbAllergy(900654, null));
-
+        
         List<Drug> queryCurrentDrugResult = UNOPTIMIZED_PRESCRIBER.queryDrugs("APO-QUIN-G 325 MG TABLET");
+        queryCurrentDrugResult.add(UNOPTIMIZED_PRESCRIBER.queryDrugs("BIO BALANCED CALC/MAG TAB").get(0));
         patient.addDrug(queryCurrentDrugResult.get(0));
         patient.addDrug(queryCurrentDrugResult.get(1));
 
