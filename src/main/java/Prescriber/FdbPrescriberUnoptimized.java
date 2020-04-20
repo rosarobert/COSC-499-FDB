@@ -31,7 +31,6 @@ final class FdbPrescriberUnoptimized implements Prescriber {
         this(20);
     }
 
-
     FdbPrescriberUnoptimized(int pageSize) {
         PAGE_SIZE = pageSize;
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
