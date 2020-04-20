@@ -52,8 +52,7 @@ public interface Prescriber {
      * By optimal way, we mean that way described in our COSC 404 textbook, which is the way many DBMSs do it
      */
     static Prescriber createFdbPrescriberRelational() {
-        //TODO:Add
-        return null;
+        return new FdbPrescriberRelational();
     }
 
     /**
@@ -62,8 +61,7 @@ public interface Prescriber {
      * No other queries use pagination because their expected results are very very small
      */
     static Prescriber createFdbPrescriberPage() {
-        //TODO:Add
-        return null;
+        return new FdbPrescriberPage();
     }
 
     /**
