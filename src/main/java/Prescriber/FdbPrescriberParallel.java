@@ -1,9 +1,15 @@
 package Prescriber;
 
 import Apps.ConnectionConfiguration;
-import Info.*;
+import Info.Allergy;
+import Info.Drug;
+import Info.DrugInteraction;
+import Info.Patient;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,20 +20,36 @@ import java.util.concurrent.Executors;
 /**
  * A implementation of {@link PrescriberParallel.Prescriber} using the FDB database
  */
-public class FdbPrescriberParallel implements Prescriber {
+final class FdbPrescriberParallel implements Prescriber {
 
     private final Connection FDB_CONNECTION;
+    private final int PAGE_SIZE;
 
-    /**
-     * Creates an FdbPrescriber from the file resources/config.json
-     */
     FdbPrescriberParallel() {
+        this(20);
+    }
+
+
+    FdbPrescriberParallel(int pageSize) {
+        PAGE_SIZE = pageSize;
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
     }
 
     @Override
     public List<Drug> queryDrugs(String prefix) {
         return queryManufacturerDrugs(prefix);
+    }
+
+    @Override
+    public List<Drug> queryDrugs(String pattern, int page) {
+        List<Drug> allDrugs = queryDrugs(pattern);
+        int startIndex = (page - 1) * PAGE_SIZE;
+        int endIndex = page * PAGE_SIZE - 1;
+        List<Drug> pageList = new ArrayList<>(20);
+        for (int i = startIndex; i < endIndex; i++) {
+            pageList.add(allDrugs.get(i));
+        }
+        return pageList;
     }
 
     @Override
@@ -66,7 +88,7 @@ public class FdbPrescriberParallel implements Prescriber {
             StringBuilder ingredientIdentifiers = new StringBuilder();
             StringBuilder identifiers = new StringBuilder();
             Iterator<Drug> otherDrugsIterator = patient.getDrugsPrescribed()
-                                                       .iterator();
+                    .iterator();
             while (otherDrugsIterator.hasNext()) {
                 Drug currentDrug = otherDrugsIterator.next();
                 currentDrugs.add(currentDrug);
@@ -104,7 +126,7 @@ public class FdbPrescriberParallel implements Prescriber {
             while (drugToDrugInteractionsAsRst.next()) {
                 int idOfDrugInteracting = drugToDrugInteractionsAsRst.getInt(1);
                 String interactionDescription = drugToDrugInteractionsAsRst.getString(2)
-                                                                           .trim();
+                        .trim();
                 while (currentDrug.getId() < idOfDrugInteracting && currentDrugsIterator.hasNext()) {
                     currentDrug = currentDrugsIterator.next();
                 }
@@ -132,7 +154,7 @@ public class FdbPrescriberParallel implements Prescriber {
             while (foodInteractionsAsRst.next()) {
                 DrugInteraction foodInteraction = DrugInteraction.createFdbFoodInteraction(drug,
                         foodInteractionsAsRst.getString(1)
-                                             .trim());
+                                .trim());
                 foodInteractionsAsObjects.add(foodInteraction);
             }
             return foodInteractionsAsObjects;
@@ -146,7 +168,7 @@ public class FdbPrescriberParallel implements Prescriber {
             // Create a coma separated string of allergy codes to use in prepared statement
             StringBuilder testers = new StringBuilder();
             Iterator<Allergy> allergyIterator = patient.getPatientAllergies()
-                                                       .iterator();
+                    .iterator();
             while (allergyIterator.hasNext()) {
                 Allergy currentAllergy = allergyIterator.next();
                 testers.append(currentAllergy.getId());
@@ -193,7 +215,7 @@ public class FdbPrescriberParallel implements Prescriber {
             while (drugsAsRst.next()) {
                 Drug drug = Drug.createFdbDrug(drugsAsRst.getInt(4), drugsAsRst.getInt(2), drugsAsRst.getInt(3),
                         drugsAsRst.getString(1)
-                                  .trim());
+                                .trim());
                 drugsAsObjects.add(drug);
             }
             return drugsAsObjects;
@@ -215,7 +237,7 @@ public class FdbPrescriberParallel implements Prescriber {
             // For each SQL result, create a Java object representing that Allergy
             while (drugsAsRst.next()) {
                 Allergy allergy = Allergy.createFdbAllergy(drugsAsRst.getInt(1), drugsAsRst.getString(2)
-                                                                                           .trim());
+                        .trim());
                 allergiesAsObjects.add(allergy);
             }
             return allergiesAsObjects;

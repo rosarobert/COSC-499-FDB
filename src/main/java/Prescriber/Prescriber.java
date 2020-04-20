@@ -13,20 +13,104 @@ import java.util.List;
 public interface Prescriber {
 
     /**
-     * Creates an FdbPrescriber object based on the static properties defined in ConnectionConfiguration.java
+     * Creates a prescriber using the FDB database with a page size of 20
      */
     static Prescriber createFdbPrescriber() {
         return new FdbPrescriberUnoptimized();
     }
 
     /**
-     * Returns all drugs in FDB database which have a name that starts with the given prefix
-     * <p>
+     * Creates a prescriber with a given page size
      *
-     * @param prefix string that all drug names should start with
-     * @return a list of all drugs that should be shown on a given page with the given prefix
+     * @param pageSize the size of a page
      */
-    List<Drug> queryDrugs(String prefix);
+    static Prescriber createFdbPrescriber(int pageSize) {
+        return new FdbPrescriberUnoptimized(pageSize);
+    }
+
+
+    /**
+     * Creates an presciber that is not optimized at all. That is, not parallel programming, relation algebra
+     * manipulation, or pagination
+     */
+    static Prescriber createFdbPrescriberUnoptimized() {
+        return new FdbPrescriberUnoptimized();
+    }
+
+    /**
+     * Creates a prescriber that is only optimized by adding parallel programming to {@link #findInteractions(Drug,
+     * Patient)}. The rest of the implementation is not parallelizable
+     */
+    static Prescriber createFdbPrescriberParallel() {
+        return new FdbPrescriberParallel();
+    }
+
+    /**
+     * Creates a prescriber that is only optimized by manipulating the relational algebra of all queries  in a optimal
+     * way.
+     * <p>
+     * By optimal way, we mean that way described in our COSC 404 textbook, which is the way many DBMSs do it
+     */
+    static Prescriber createFdbPrescriberRelational() {
+        //TODO:Add
+        return null;
+    }
+
+    /**
+     * Creates a prescriber that is only optimized by adding pagination to {@link #queryDrugs(String, int)}
+     * <p>
+     * No other queries use pagination because their expected results are very very small
+     */
+    static Prescriber createFdbPrescriberPage() {
+        //TODO:Add
+        return null;
+    }
+
+    /**
+     * Creates a prescriber that is optimized by using pagination on {@link #queryDrugs(String, int)} and manipulating
+     * relational algebra on all queries
+     * <p>
+     * No other queries use pagination because their expected results are very very small
+     */
+    static Prescriber createFdbPrescriberPageRelation() {
+        //TODO:Add
+        return null;
+    }
+
+    /**
+     * Creates a prescriber that is optimized by using parallel programming on {@link #findInteractions(Drug, Patient)} and manipulating
+     * relational algebra on all queries
+     * <p>
+     * No other queries use pagination because their expected results are very very small
+     */
+    static Prescriber createFdbPrescriberParallelRelation() {
+        //TODO:Add
+        return null;
+    }
+
+
+
+    /**
+     * Returns all drugs in FDB database which have a name that contains the pattern
+     * <p>
+     * The pattern does not support any regex operators; it only supports checking if the given patterns is exactly in
+     * the drug name
+     *
+     * @param pattern string that all drug names should contain
+     * @return a list of all drugs that contain the pattern
+     */
+    List<Drug> queryDrugs(String pattern);
+
+    /**
+     * Same as {@link #queryDrugs(String, int)} but only the drugs on a particular page are shown
+     * <p>
+     * The number of drugs per page is implementation specific
+     *
+     * @param pattern string that all drug names should contain
+     * @param page    the page that all drugs returned should be on
+     * @return a list of all drugs that contain the pattern
+     */
+    List<Drug> queryDrugs(String pattern, int page);
 
     /**
      * Finds all allergies that start with a given prefix
