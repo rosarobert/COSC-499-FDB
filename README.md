@@ -3,7 +3,7 @@
 An API that uses the First Databank database to find the following things:
   * Query drugs 
   * Query Allergies
-  * Find harmful interactions that could occur with a drug
+  * Harmful interactions that could occur with a drug
   
 ## Dependencies
 This API uses the following technologies
