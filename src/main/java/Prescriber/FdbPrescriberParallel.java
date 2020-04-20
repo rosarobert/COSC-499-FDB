@@ -26,7 +26,7 @@ public class FdbPrescriberParallel implements Prescriber {
     }
 
     @Override
-    public List<Drug> queryDrugs(String prefix, int page) {
+    public List<Drug> queryDrugs(String prefix) {
         return queryManufacturerDrugs(prefix);
     }
 

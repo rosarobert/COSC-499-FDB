@@ -24,10 +24,9 @@ public interface Prescriber {
      * <p>
      *
      * @param prefix string that all drug names should start with
-     * @param page   the page of drugs that should be shown
      * @return a list of all drugs that should be shown on a given page with the given prefix
      */
-    List<Drug> queryDrugs(String prefix, int page);
+    List<Drug> queryDrugs(String prefix);
 
     /**
      * Finds all allergies that start with a given prefix

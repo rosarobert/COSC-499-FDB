@@ -165,7 +165,7 @@ public class PatientCli {
     private static List<Drug> queryDrugs(Prescriber prescriber, Scanner input) {
         System.out.println("Enter a prefix:");
         String prefix = input.nextLine();
-        return prescriber.queryDrugs(prefix, 1);
+        return prescriber.queryDrugs(prefix);
     }
 
     private static Drug chooseADrug(List<Drug> drugs, Scanner input) {
@@ -173,7 +173,7 @@ public class PatientCli {
             System.out.printf("(%d): %30s\n", i, drugs.get(i).getDisplayName());
         System.out.printf("Choose a drug by entering an index: (0 to Exit)\n",drugs.size());
         int index = chooseAnInteger(input, 0, drugs.size()+1);
-        if(index == 0)
+        if(index == drugs.size()+1)
             return null;
         return drugs.get(index);
     }
@@ -189,7 +189,7 @@ public class PatientCli {
             System.out.printf("(%d): %30s\n", i, allergies.get(i).getName());
         System.out.printf("Choose a allergy by entering an index: (0 to Exit)\n",allergies.size());
         int index = chooseAnInteger(input, 0, allergies.size()+1);
-        if(index == 0)
+        if(index == allergies.size()+1)
             return null;
         return allergies.get(index);
     }

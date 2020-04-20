@@ -1,7 +1,6 @@
 package Apps;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang3.Validate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,94 +14,148 @@ import java.util.Scanner;
 /**
  * Class for constructing a JDBC connection from different systems.
  * <p>
- * This is so the poor soul who has to use linux can run the tests.
- * <p>
- * The class will create a connection from the configuration in resources/databaseConnection.json if it exists. If it
- * doesn't, creates a the file databaseConnection.json in resources from the default settings below, and uses those
- * default settings to create the connection
- * <p>
- * Note, no one should change this class. If you want to change your connection settings, change them in
- * resources/databaseConnection.json
- * <p>
- * Another solution to this problem is everyone have the same sa password for SQL Server, but I did not want to have to
- * bring that up since everyone uses integrated security
+ * The class will create a connection from the configuration in src/main/resources if it exists. If it doesnt, it
+ * creates the file from user input via stdin
  */
 public final class ConnectionConfiguration {
+    private static final File CONFIG_FILE = new File("src/main/resources/databaseConnectionConfig.json");
 
-    private static final Gson JSON_SERIALIZER = new Gson();
+    /**
+     * For testing if the connection works
+     */
+    public static void main(String[] args) {
+        Connection connection = getJdbcConnection();
+    }
 
-    @SerializedName("server")
-    private String server;
-
-    @SerializedName("database")
-    private String database;
-
-    @SerializedName("useIntegratedSecurity")
-    private boolean useIntegratedSecurity;
-
-    @SerializedName("username")
-    private String username;
-
-    @SerializedName("password")
-    private String password;
-
+    /**
+     * Creates a JDBC connection from the file in src/main/resources. If this files does not exist, we create it via
+     * stdin
+     *
+     * @return a JDBC connection to a database
+     */
     public static final Connection getJdbcConnection() {
-        ConnectionConfiguration config = null;
+        Validate.isTrue(connectionConfigFileHasBeenCreated(), "Could not create connection config file");
+        while (true) {
+            try {
+                String configFileAsString = readConfigFile();
+                System.out.printf("Current SQL String: %s\n\n", configFileAsString);
+                System.out.println("Creating connection from file...");
+                return createJdbcConnection(configFileAsString);
+            } catch (SQLException e) {
+                try (PrintWriter writer = new PrintWriter(CONFIG_FILE)) {
+                    System.out.println("Failed connection :(");
+                    System.out.println("Now trying to create the connection manually");
+                    String connectionString = createConnectionStringViaStdin();
+                    writer.println(connectionString);
+                } catch (FileNotFoundException fileNotFoundException) {
+                    throw new IllegalStateException("Could not write to config file");
+                }
+            }
+        }
+    }
+
+    /**
+     * Reads the config file (src/main/resources/databaseConnectionConfig.json) for creating a JDBC connection
+     *
+     * @return the file contents as a string
+     */
+    private static final String readConfigFile() {
         try {
-            File configFile = new File("src/main/resources/databaseConnection.json");
-            if (configFile.exists()) {
-                String configFileAsString = readFile(configFile);
-                config = JSON_SERIALIZER.fromJson(configFileAsString, ConnectionConfiguration.class);
-                System.out.println(config.username);
+            StringBuilder fileStringBuilder = new StringBuilder();
+            Scanner reader = new Scanner(CONFIG_FILE);
+            while (reader.hasNextLine()) {
+                fileStringBuilder.append(reader.nextLine());
+            }
+            reader.close();
+            return fileStringBuilder.toString();
 
-            } else if (configFile.createNewFile()) {
-                config = createConfig();
-                PrintWriter writer = new PrintWriter(configFile);
-                writer.write(JSON_SERIALIZER.toJson(config));
-                writer.close();
-            } else {
-                throw new IOException();
-            }
-            StringBuilder jdbcStringBuilder = new StringBuilder();
-            jdbcStringBuilder.append("jdbc:sqlserver://").append(config.server).append(";databaseName=")
-                    .append(config.database).append(";");
-            if (config.useIntegratedSecurity) {
-                jdbcStringBuilder.append("integratedSecurity=true;");
-            } else {
-                jdbcStringBuilder.append("user=").append(config.username).append(";password=").append(config.password);
-            }
-            System.out.println(jdbcStringBuilder.toString());
-            return DriverManager.getConnection(jdbcStringBuilder.toString());
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("Could not find config file when reading it");
+        }
+    }
+
+    /**
+     * Creates the file containing the connection configuration settings if it does not exist
+     *
+     * @return true if the file already exists or the creation of the file was successful
+     */
+    private static final boolean connectionConfigFileHasBeenCreated() {
+        try {
+            File parentDirectory = CONFIG_FILE.getParentFile();
+            boolean parentDirectoryHasBeenCreated = parentDirectory.exists() || parentDirectory.mkdirs();
+            boolean configFileHasBeenCreated = CONFIG_FILE.exists() || (parentDirectoryHasBeenCreated && CONFIG_FILE.createNewFile());
+            return configFileHasBeenCreated;
         } catch (IOException e) {
-            throw new IllegalStateException("Could not configure file");
-        } catch (SQLException e) {
-            throw new IllegalStateException("Could not connect to " + config.database + " via " + config.server);
+            return false;
         }
     }
 
-    private static String readFile(File file) throws FileNotFoundException {
-
-        StringBuilder fileStringBuilder = new StringBuilder();
-        Scanner reader = new Scanner(file);
-        while (reader.hasNextLine()) {
-            fileStringBuilder.append(reader.nextLine());
-        }
-        reader.close();
-        return fileStringBuilder.toString();
+    /**
+     * Creates a JDBC conneciton  from a string
+     *
+     * @param connectionString JDBC conneciton url
+     * @return the JDBC connection
+     * @throws SQLException if the connection url is invalid
+     */
+    private static final Connection createJdbcConnection(String connectionString) throws SQLException {
+        return DriverManager.getConnection(connectionString);
     }
 
-    private static ConnectionConfiguration createConfig() {
-        ConnectionConfiguration config = new ConnectionConfiguration();
-        Scanner input = new Scanner(System.in);
-        System.out.println("User integrate security? (true/false)");
-        config.useIntegratedSecurity = Boolean.parseBoolean(input.next());
-        if (!config.useIntegratedSecurity) {
-            System.out.println("Enter username:");
-            config.username = input.next();
-            System.out.println("Enter password: ");
-            config.password = input.next();
+    /**
+     * Creates  a JDBC connection string via stdin
+     *
+     * @return the JDBC connection url
+     */
+    private static final String createConnectionStringViaStdin() {
+        try (Scanner input = new Scanner(System.in)) {
+            String server = readProperty("server", input);
+            String database = readProperty("database", input);
+            boolean useIntegratedSecuty = askIntegratedSecurity(input);
+            if (useIntegratedSecuty) {
+                return "jdbc:sqlserver://" + server + ";database=" + database + ";integratedSecurity=true;";
+            } else {
+                String username = readProperty("username", input);
+                String pass = readProperty("password", input);
+                return "jdbc:sqlserver://" + server + ";database=" + database + ";user=" + username + ";password=" + pass + ";";
+            }
         }
-        input.close();
-        return config;
     }
+
+    /**
+     * Prompts the user via stding to enter a property
+     *
+     * @param propertyName property name to prompt
+     * @param input        stream to stdin for the user to input in
+     * @return the user input
+     */
+    private static final String readProperty(String propertyName, Scanner input) {
+        while (true) {
+            System.out.printf("Enter %s: ", propertyName);
+            String propertyValue = input.nextLine();
+
+            //If property value is not empty
+            if (!propertyName.equals("") || !propertyValue.contains(" ")) {
+                return propertyValue;
+            }
+            System.out.println("Property value cannot be empty or contain spaces");
+        }
+    }
+
+    /**
+     * Propmts the user to check whether he/she wants to use integrated windows security
+     *
+     * @param input stream to stdin for the user to input into
+     * @return true if the user wants to use integrated security
+     */
+    private static final boolean askIntegratedSecurity(Scanner input) {
+        System.out.print("Use integrated security (true/false)?: ");
+        while (true) {
+            try {
+                return Boolean.parseBoolean(input.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Illegal input. Try again");
+            }
+        }
+    }
+
 }

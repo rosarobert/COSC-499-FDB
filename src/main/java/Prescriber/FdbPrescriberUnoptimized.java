@@ -15,15 +15,13 @@ import java.util.SortedSet;
 public class FdbPrescriberUnoptimized implements Prescriber {
 
     private final Connection FDB_CONNECTION;
-    private final int PAGE_SIZE;
 
-    FdbPrescriberUnoptimized(int pageSize) {
-        PAGE_SIZE = pageSize;
+    FdbPrescriberUnoptimized() {
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
     }
 
     @Override
-    public List<Drug> queryDrugs(String prefix, int page) {
+    public List<Drug> queryDrugs(String prefix) {
         return queryManufacturerDrugs(prefix);
     }
 
@@ -162,14 +160,17 @@ public class FdbPrescriberUnoptimized implements Prescriber {
                     testers.append(",");
              }
 
+             System.out.println(testers.toString());
+             System.out.println(drug.getIngredientIdentifier());
+
              //Query all allergy interactions between a drug and a list of allergies
              PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
-             "SELECT HICL_SEQNO, L1.HIC_SEQN, L1.HIC, HIC_DESC, C0.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
-                     "FROM RHICD5 AS D5 " +
-                     "JOIN RHICL1 AS L1 ON (D5.HIC_SEQN = L1.HIC_SEQN) " +
-                     "JOIN RDAMGHC0 AS C0 ON (D5.HIC_SEQN = C0.HIC_SEQN) " +
-                     "JOIN RDAMAGD1 AS GD1 ON (C0.DAM_ALRGN_GRP = GD1.DAM_ALRGN_GRP) " +
-                     "WHERE HICL_SEQNO = ? AND C0.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
+                "SELECT t3.HICL_SEQNO, t3.HIC_SEQN, t3.HIC, t4.HIC_DESC, t2.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
+                "FROM RDAMGHC0 AS t1 " +
+                "JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
+                "JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
+                "JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
+                "WHERE HICL_SEQNO = ? AND t1.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
              pStmtToQueryAllergyInteractions.setInt(1, drug.getIngredientIdentifier());
 
              ResultSet allergyInteractionsAsRst = pStmtToQueryAllergyInteractions.executeQuery();
