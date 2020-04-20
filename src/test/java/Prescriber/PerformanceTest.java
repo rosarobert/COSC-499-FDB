@@ -98,7 +98,7 @@ public class PerformanceTest {
             double time = (end - start) / Math.pow(10, 9);
             System.out.printf("%-20s: %f\n", nameOfTest, time);
         } catch (NullPointerException e) {
-            System.out.printf("%-20s: %f\n", "NA");
+            System.out.printf("%-20s: %s\n", nameOfTest, "NA");
         }
     }
 
