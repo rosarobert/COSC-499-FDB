@@ -18,7 +18,7 @@ This API uses the following technologies
   * Create a file `databaseConnectionConfig.txt` in `src/main/resources` and put your JDBC connection string to the FDB database
      * You will need a SDK of FDB, or a FDB backup file to do this
      * The backup file we used can be found [here](https://1drv.ms/u/s!AlrDWS4T-uh8l8czlIh6_oZ1fAjJPw?e=B8cDbD)
-     * Ours was something similar to `jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];`
+     * Ours was something similar to `jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];` Usually, username = 'sa' and password is your system admin password for your computer.
   * Run the code
   
 ## Organization of Code
@@ -53,7 +53,7 @@ There are 4 main components to our project:
 ## Testing 
 
   * The tests are based on what we think is the correct way to query the FDB database. Once we found what we think is a correct query for a function, we looked at all possible drugs and took that as the correct result
-  * Ethan coulde not run the code, so could not test code coverage
+  * Ethan could not run the code, so could not test code coverage
   * There are no tests based on another implementation of this interface
   * We do not see any other way to test this without input from doctors or another implementation to test against
  
