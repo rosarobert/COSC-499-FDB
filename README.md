@@ -14,7 +14,7 @@ This API uses the following technologies
 ## Install Steps
 
   * Install SQL Server 2017 or SQL Server 2019
-  * Clone this repository into a folder
+  * Clone this repository into a folder: https://github.com/rosarobert/COSC-499-FDB
   * Create a file `databaseConnectionConfig.txt` in `src/main/resources` and put your JDBC connection string to the FDB database
      * You will need a SDK of FDB, or a FDB backup file to do this
      * The backup file we used can be found [here](https://1drv.ms/u/s!AlrDWS4T-uh8l8czlIh6_oZ1fAjJPw?e=B8cDbD)
