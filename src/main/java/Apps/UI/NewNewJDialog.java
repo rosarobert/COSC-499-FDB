@@ -7,10 +7,7 @@ package UI;
 
 import Info.Patient;
 
-/**
- *
- * @author Sam
- */
+
 public class NewNewJDialog extends javax.swing.JDialog {
 
 

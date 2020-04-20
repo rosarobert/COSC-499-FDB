@@ -22,7 +22,7 @@ import java.util.SortedSet;
  * Note that there is a method to return a page, but it does this by first finding all drugs the taking a subset of
  * that. This is very costly
  */
-final class FdbPrescriberUnoptimized implements Prescriber {
+public final class FdbPrescriberUnoptimized implements Prescriber {
 
     private final Connection FDB_CONNECTION;
     private final int PAGE_SIZE;

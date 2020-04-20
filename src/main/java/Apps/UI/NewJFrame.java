@@ -15,10 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author Sam
- */
+
 public class NewJFrame extends javax.swing.JFrame {
 
     private List<Patient> patientsList;
@@ -291,7 +288,7 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jlPatientValueChanged
 
     private void jbnPatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbnPatientActionPerformed
-        NewNewJDialog dialog = new NewNewJDialog(this,true);
+        UI.NewNewJDialog dialog = new UI.NewNewJDialog(this,true);
         dialog.setVisible(true);
         if (dialog.hasNewPatient()){
             patientsList.add(dialog.getPatient());
@@ -321,13 +318,13 @@ public class NewJFrame extends javax.swing.JFrame {
     }
 
     private void jbnDrugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbnDrugActionPerformed
-        JDialog dialog = new newJDialog(this, true, patient, newJDialog.DRUGS);
+        JDialog dialog = new UI.newJDialog(this, true, patient, UI.newJDialog.DRUGS);
         dialog.setVisible(true);
         updateSelectedPatientItems(patient);
     }//GEN-LAST:event_jbnDrugActionPerformed
 
     private void jbnAllergyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbnAllergyActionPerformed
-        JDialog dialog = new newJDialog(this, true, patient, newJDialog.ALLERGIES);
+        JDialog dialog = new UI.newJDialog(this, true, patient, UI.newJDialog.ALLERGIES);
         dialog.setVisible(true);
         updateSelectedPatientItems(patient);
     }//GEN-LAST:event_jbnAllergyActionPerformed

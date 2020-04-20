@@ -59,7 +59,6 @@ public class PerformanceTest {
      * @param page    to consider
      */
     private static void timeQueryDrugsWithPage(String pattern, int page) {
-        System.out.println();
         System.out.println("Test Query Page of Drugs");
         System.out.println();
         time("Unoptimized", () -> UNOPTIMIZED_PRESCRIBER.queryDrugs(pattern, page));
@@ -76,7 +75,6 @@ public class PerformanceTest {
      * from querying interactions is usually very small
      */
     private static void timeFindDrugInteractions() {
-        System.out.println();
         System.out.println("Test Drug Interaction Time");
         System.out.println();
         List<Drug> queryDrugsResult = UNOPTIMIZED_PRESCRIBER.queryDrugs("ALERT TABLET");

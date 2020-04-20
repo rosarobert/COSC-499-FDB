@@ -7,10 +7,7 @@ package UI;
 
 import Info.Drug;
 
-/**
- *
- * @author Sam
- */
+
 public class WarningJDialog extends javax.swing.JDialog {
     private Boolean flag = false;
     /**

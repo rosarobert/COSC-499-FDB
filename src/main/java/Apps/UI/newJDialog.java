@@ -6,24 +6,21 @@
 package UI;
 
 import Info.*;
-import Prescriber.FdbPrescriber;
-import Prescriber.Prescriber;
+
+import Prescriber.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Sam
- */
+
 public class newJDialog extends javax.swing.JDialog {
     public static final int DRUGS = 0;
     public static final int ALLERGIES = 1;
 
     private final int flag;
-    private static FdbPrescriber garbage;
+    private static FdbPrescriberUnoptimized garbage;
     private final Patient patient;
     private List<? extends Displayable > list = new ArrayList<>();
     private Frame parent;
@@ -33,7 +30,7 @@ public class newJDialog extends javax.swing.JDialog {
     public newJDialog(java.awt.Frame parent, boolean modal, Patient patient, int flag) {
         super(parent, modal);
         //This is the most garbage this ever, don't put static in interfaces
-        if (garbage==null){ this.garbage = (FdbPrescriber) Prescriber.createFdbPrescriber();}
+        if (garbage==null){ this.garbage = (FdbPrescriberUnoptimized) Prescriber.createFdbPrescriberUnoptimized();}
         this.parent =parent;
         this.flag = flag;
         this.patient = patient;
@@ -122,7 +119,7 @@ public class newJDialog extends javax.swing.JDialog {
                 for(int i: jList1.getSelectedIndices()){
                     List<DrugInteraction> drugInteractions = garbage.findInteractions(((List<Drug>)list).get(i), patient);
                     if(drugInteractions.isEmpty() !=true){
-                        WarningJDialog warning = new WarningJDialog(parent,true, ((List<Drug>)list).get(i));
+                        UI.WarningJDialog warning = new UI.WarningJDialog(parent,true, ((List<Drug>)list).get(i));
                         warning.setVisible(true);
                         if(warning.clickedContinue()){
                             patient.addDrug(((List<Drug>)list).get(i));
