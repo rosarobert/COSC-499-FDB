@@ -3,7 +3,7 @@
 An API that uses the First Databank database to find the following things:
   * Query drugs 
   * Query Allergies
-  * Find harmful interactions that could occue with a drug
+  * Find harmful interactions that could occur with a drug
   
 ## Dependencies
 This API uses the following technologies
@@ -16,7 +16,7 @@ This API uses the following technologies
   * Install SQL Server 2017 or SQL Server 2019
   * Clone this repository into a folder
   * Create a file `databaseConnectionConfig.txt` in `src/main/resources` and put your JDBC connection string to the FDB database
-     * You will need a SDK to FDB or a FDB backup file to do this
+     * You will need a SDK of FDB, or a FDB backup file to do this
      * The backup file we used can be found [here](https://1drv.ms/u/s!AlrDWS4T-uh8l8czlIh6_oZ1fAjJPw?e=B8cDbD)
      * Ours was something similar to `jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];`
   * Run the code
