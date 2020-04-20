@@ -48,3 +48,4 @@ data/*
 metadata/*
 .gitattributes
 */databaseConnection.json
+src/main/resources/*
