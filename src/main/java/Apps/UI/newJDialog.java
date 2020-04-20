@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package UI;
+package Apps.UI;
 
 import Info.*;
 
@@ -141,18 +141,7 @@ public class newJDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldKeyTyped
-//        list = new ArrayList<>();
-//        switch (flag){
-//            case DRUGS:{
-//                list = garbage.queryDrugs(jTextField1.getText());
-//                break;
-//            }
-//            case ALLERGIES:{
-//                list = garbage.queryAllergies(jTextField1.getText());
-//                break;
-//            }
-//        }
-//        jList1.setListData(list.stream().map(Displayable::getDisplayName).toArray(String[]::new));
+
     }//GEN-LAST:event_jTextFieldKeyTyped
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
