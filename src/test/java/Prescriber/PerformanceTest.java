@@ -96,7 +96,7 @@ public class PerformanceTest {
             operation.run();
             long end = System.nanoTime();
             double time = (end - start) / Math.pow(10, 9);
-            System.out.printf("%-20s: %f\n", time);
+            System.out.printf("%-20s: %f\n", nameOfTest, time);
         } catch (NullPointerException e) {
             System.out.printf("%-20s: %f\n", "NA");
         }
