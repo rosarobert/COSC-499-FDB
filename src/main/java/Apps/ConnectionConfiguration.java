@@ -91,9 +91,9 @@ public final class ConnectionConfiguration {
     }
 
     /**
-     * Creates a JDBC conneciton  from a string
+     * Creates a JDBC connection  from a string
      *
-     * @param connectionString JDBC conneciton url
+     * @param connectionString JDBC connection url
      * @return the JDBC connection
      * @throws SQLException if the connection url is invalid
      */
@@ -142,7 +142,7 @@ public final class ConnectionConfiguration {
     }
 
     /**
-     * Propmts the user to check whether he/she wants to use integrated windows security
+     * Prompts the user to check whether he/she wants to use integrated windows security
      *
      * @param input stream to stdin for the user to input into
      * @return true if the user wants to use integrated security
@@ -157,5 +157,4 @@ public final class ConnectionConfiguration {
             }
         }
     }
-
 }
