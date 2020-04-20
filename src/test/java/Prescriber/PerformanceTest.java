@@ -75,6 +75,8 @@ public class PerformanceTest {
      * from querying interactions is usually very small
      */
     private static void timeFindDrugInteractions() {
+        System.out.println("Test Drug Interaction Time");
+        System.out.println();
         List<Drug> queryDrugsResult = UNOPTIMIZED_PRESCRIBER.queryDrugs("ALERT TABLET");
         Drug drug = queryDrugsResult.get(0);
         Patient dummyPatient = createTestPatient();
