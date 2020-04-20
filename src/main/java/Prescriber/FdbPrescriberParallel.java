@@ -18,7 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * A implementation of {@link PrescriberParallel.Prescriber} using the FDB database
+ * A implementation of prescriber where we only parallelize {@link #findInteractions(Drug, Patient)}. That is, we do not
+ * use pagination or manipulating relational algebra
  */
 final class FdbPrescriberParallel implements Prescriber {
 

@@ -16,11 +16,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 /**
- * An implementation of {@link Prescriber} using the FDB database with no optimization at all. That is, no parallel
- * programming, relational algebra manipulation, or pagination.
- * <p>
- * Note that there is a method to return a page, but it does this by first finding all drugs the taking a subset of
- * that. This is very costly
+ * An implementation of {@link Prescriber} where we only optimized by manipulating relational algebra in all queries
  */
 final class FdbPrescriberRelational implements Prescriber {
 

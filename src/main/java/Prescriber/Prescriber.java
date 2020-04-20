@@ -16,7 +16,7 @@ public interface Prescriber {
      * Creates a prescriber using the FDB database with a page size of 20
      */
     static Prescriber createFdbPrescriber() {
-        return new FdbPrescriberUnoptimized();
+        return new FdbPrescriberOptimized();
     }
 
     /**
@@ -25,7 +25,7 @@ public interface Prescriber {
      * @param pageSize the size of a page
      */
     static Prescriber createFdbPrescriber(int pageSize) {
-        return new FdbPrescriberUnoptimized(pageSize);
+        return new FdbPrescriberOptimized(pageSize);
     }
 
 
@@ -81,8 +81,7 @@ public interface Prescriber {
      * No other queries use pagination because their expected results are very very small
      */
     static Prescriber createFdbPrescriberParallelRelation() {
-        //TODO:Add
-        return null;
+      return new FdbPrescriberParallelRelational();
     }
 
 

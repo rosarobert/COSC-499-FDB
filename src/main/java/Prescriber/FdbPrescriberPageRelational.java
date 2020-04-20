@@ -18,6 +18,9 @@ import java.util.SortedSet;
 /**
  * An implementation of {@link Prescriber} using the FDB database with the use of pagination and manipulating relational
  * algebra. That is, no parallel programming.
+ *
+ * We parallelized paginated {@link #queryDrugs(String, int)} and manipulated
+ * relational algebra in all queries
  */
 final class FdbPrescriberPageRelational implements Prescriber {
 
