@@ -3,7 +3,7 @@
 An API that uses the First Databank database to find the following things:
   * Query drugs 
   * Query Allergies
-  * Find harmful interactions that could occue with a drug
+  * Find harmful interactions that could occur with a drug
   
 ## Dependencies
 This API uses the following technologies
@@ -14,15 +14,32 @@ This API uses the following technologies
 ## Install Steps
 
   * Install SQL Server 2017 or SQL Server 2019
-  * Find a way to gain access to FDB
-     * The backup we used can be found [here](https://1drv.ms/u/s!AlrDWS4T-uh8l8czlIh6_oZ1fAjJPw?e=B8cDbD)
-  * Clone this repository into some folder
+  * Clone this repository into a folder
   * Create a file `databaseConnectionConfig.txt` in `src/main/resources` and put your JDBC connection string to the FDB database
-     * Ours was something similar to `jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];`
+     * You will need a SDK of FDB, or a FDB backup file to do this
+     * The backup file we used can be found [here](https://1drv.ms/u/s!AlrDWS4T-uh8l8czlIh6_oZ1fAjJPw?e=B8cDbD)
+     * Ours was something similar to `jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];` Usually, username = 'sa' and password is your system admin password for your computer.
   * Run the code
   
 ## Organization of Code
-There are 3 many components to our project
+There are 4 main components to our project:
+  * The API
+    * This can be found in the folder `src/main/java/Prescriber
+    * You use the API by calling one of the static factories in the Prescriber interface, but preferable just `FdbPrescriber` to get all the optimizations we did
+  * Container Objects
+    * Found in the folder `src/main/java/Prescriber`
+    * These are objects used by the API to contain info about patients, drugs, and drug interactions
+  * UI
+    * Found in `src/main/java/Apps`
+    * Consists of the CLI and the GUI
+    * Both are not neccessary for using this API. They were only created to show our COSC 499 class
+    * There is also a `ConnectionConguration` file here, and this is used to create the JDBC connection based on your config file
+  * Tests
+    * Found in src/test
+    * As said above, do not include any real good tests
+    * These would need to be improved before using in production
+  
+ 
 
 ## Implementation Milestones 
 
@@ -36,7 +53,7 @@ There are 3 many components to our project
 ## Testing 
 
   * The tests are based on what we think is the correct way to query the FDB database. Once we found what we think is a correct query for a function, we looked at all possible drugs and took that as the correct result
-  * Ethan coulde not run the code, so could not test code coverage
+  * Our test coverage is over 80% 
   * There are no tests based on another implementation of this interface
   * We do not see any other way to test this without input from doctors or another implementation to test against
  
