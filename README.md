@@ -22,7 +22,24 @@ This API uses the following technologies
   * Run the code
   
 ## Organization of Code
-There are 3 many components to our project
+There are 5 many components to our project
+  * The API
+    * This can be found in the folder `src/main/java/Prescriber
+    * You use the API by calling one of the static factories in the Prescriber interface, but preferable just `FdbPrescriber` to get all the optimizations we did
+  * Container Objects
+    * Found in the folder `src/main/java/Prescriber`
+    * These are objects used by the API to contain info about patients, drugs, and drug interactions
+  * UI
+    * Found in `src/main/java/Apps`
+    * Consists of the CLI and the GUI
+    * Both are not neccessary for using this API. They were only created to show our COSC 499 class
+    * There is also a `ConnectionConguration` file here, and this is used to create the JDBC connection based on your config file
+  * Tests
+    * Found in src/test
+    * As said above, do not include any real good tests
+    * These would need to be improved before using in production
+  
+ 
 
 ## Implementation Milestones 
 
