@@ -36,7 +36,7 @@ There are 4 main components to our project:
     * There is also a `ConnectionConguration` file here, and this is used to create the JDBC connection based on your config file
   * Tests
     * Found in src/test
-    * As said above, do not include any real good tests
+    * As said below, do not include any real good tests
     * These would need to be improved before using in production
   
  
@@ -51,7 +51,7 @@ There are 4 main components to our project:
   - [x] Query allergies 
 
 ## Testing 
-
+  * Tests are in the folder `src/main`
   * The tests are based on what we think is the correct way to query the FDB database. Once we found what we think is a correct query for a function, we looked at all possible drugs and took that as the correct result
   * Our test coverage is over 80% 
   * There are no tests based on another implementation of this interface
