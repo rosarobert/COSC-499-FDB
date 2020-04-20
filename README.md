@@ -53,7 +53,7 @@ There are 4 main components to our project:
 ## Testing 
 
   * The tests are based on what we think is the correct way to query the FDB database. Once we found what we think is a correct query for a function, we looked at all possible drugs and took that as the correct result
-  * Ethan could not run the code, so could not test code coverage
+  * Our test coverage is over 80% 
   * There are no tests based on another implementation of this interface
   * We do not see any other way to test this without input from doctors or another implementation to test against
  
