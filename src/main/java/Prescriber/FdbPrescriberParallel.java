@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -60,7 +61,7 @@ final class FdbPrescriberParallel implements Prescriber {
 
     @Override
     public List<DrugInteraction> findInteractions(Drug drugBeingPrescribed, Patient patient) {
-        List<DrugInteraction> interactions = new ArrayList<>();
+        List<DrugInteraction> interactions = new CopyOnWriteArrayList<>();
         ExecutorService threadExecutor = Executors.newFixedThreadPool(3);
         threadExecutor.execute(() -> interactions.addAll(queryFoodInteractionsOfDrug(drugBeingPrescribed)));
         threadExecutor.execute(() -> interactions.addAll(queryAllergyInteractionsOfDrug(drugBeingPrescribed, patient)));
