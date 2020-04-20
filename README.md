@@ -14,10 +14,15 @@ This API uses the following technologies
 ## Install Steps
 
   * Install SQL Server 2017 or SQL Server 2019
-  * Download 
+  * Find a way to gain access to FDB
+     * The backup we used can be found [here](https://1drv.ms/u/s!AlrDWS4T-uh8l8czlIh6_oZ1fAjJPw?e=B8cDbD)
   * Clone this repository into some folder
+  * Create a file `databaseConnectionConfig.txt` in `src/main/resources` and put your JDBC connection string to the FDB database
+     * Ours was something similar to jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];
+  * Run the code
   
-  * Create a file `databaseConnectionConfig.txt` in `src/main/resources` and put 
+## Organization of Code
+There are 3 many components to our project
 
 ## Implementation Milestones 
 
