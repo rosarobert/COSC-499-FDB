@@ -22,7 +22,7 @@ This API uses the following technologies
   * Run the code
   
 ## Organization of Code
-There are 4 many components to our project
+There are 4 main components to our project:
   * The API
     * This can be found in the folder `src/main/java/Prescriber
     * You use the API by calling one of the static factories in the Prescriber interface, but preferable just `FdbPrescriber` to get all the optimizations we did
