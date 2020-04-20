@@ -84,7 +84,7 @@ final class FdbPrescriberParallelRelational implements Prescriber {
     @Override
     public List<DrugInteraction> findInteractions(Drug drugBeingPrescribed, Patient patient) {
         List<DrugInteraction> interactions = new CopyOnWriteArrayList<>();
-        ExecutorService threadExecutor = Executors.newFixedThreadPool(3);
+        ExecutorService threadExecutor = Executors.newFixedThreadPool(2);
         threadExecutor.execute(() -> interactions.addAll(queryFoodInteractionsOfDrug(drugBeingPrescribed)));
         threadExecutor.execute(() -> interactions.addAll(queryAllergyInteractionsOfDrug(drugBeingPrescribed, patient)));
         threadExecutor.execute(() -> interactions.addAll(queryDrugInteractionsWithOtherDrugs(drugBeingPrescribed, patient)));

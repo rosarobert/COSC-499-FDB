@@ -14,6 +14,9 @@ public interface Prescriber {
 
     /**
      * Creates a prescriber using the FDB database with a page size of 20
+     * <p>
+     * * Note that this method uses all the optimizations that we implemented. This includes parallelizing the finding
+     * of * drug interactions, using pagination to query drugs, and manipulating relational algebra in an optimal way
      */
     static Prescriber createFdbPrescriber() {
         return new FdbPrescriberOptimized();
@@ -21,6 +24,9 @@ public interface Prescriber {
 
     /**
      * Creates a prescriber with a given page size
+     * <p>
+     * Note that this method uses all the optimizations that we implemented. This includes parallelizing the finding of
+     * drug interactions, using pagination to query drugs, and manipulating relational algebra in an optimal way
      *
      * @param pageSize the size of a page
      */
@@ -30,7 +36,7 @@ public interface Prescriber {
 
 
     /**
-     * Creates an presciber that is not optimized at all. That is, not parallel programming, relation algebra
+     * Creates an presciber with a page size of 20 that is not optimized at all. That is, not parallel programming, relation algebra
      * manipulation, or pagination
      */
     static Prescriber createFdbPrescriberUnoptimized() {
@@ -38,7 +44,7 @@ public interface Prescriber {
     }
 
     /**
-     * Creates a prescriber that is only optimized by adding parallel programming to {@link #findInteractions(Drug,
+     * Creates an presciber with a page size of 20 that is only optimized by adding parallel programming to {@link #findInteractions(Drug,
      * Patient)}. The rest of the implementation is not parallelizable
      */
     static Prescriber createFdbPrescriberParallel() {
@@ -46,7 +52,7 @@ public interface Prescriber {
     }
 
     /**
-     * Creates a prescriber that is only optimized by manipulating the relational algebra of all queries  in a optimal
+     * Creates an presciber with a page size of 20 that is only optimized by manipulating the relational algebra of all queries  in a optimal
      * way.
      * <p>
      * By optimal way, we mean that way described in our COSC 404 textbook, which is the way many DBMSs do it
@@ -56,7 +62,7 @@ public interface Prescriber {
     }
 
     /**
-     * Creates a prescriber that is only optimized by adding pagination to {@link #queryDrugs(String, int)}
+     * Creates an presciber with a page size of 20 that is only optimized by adding pagination to {@link #queryDrugs(String, int)}
      * <p>
      * No other queries use pagination because their expected results are very very small
      */
@@ -65,7 +71,7 @@ public interface Prescriber {
     }
 
     /**
-     * Creates a prescriber that is optimized by using pagination on {@link #queryDrugs(String, int)} and manipulating
+     * Creates an presciber with a page size of 20 that is optimized by using pagination on {@link #queryDrugs(String, int)} and manipulating
      * relational algebra on all queries
      * <p>
      * No other queries use pagination because their expected results are very very small
@@ -75,13 +81,13 @@ public interface Prescriber {
     }
 
     /**
-     * Creates a prescriber that is optimized by using parallel programming on {@link #findInteractions(Drug, Patient)}
+     * Creates an presciber with a page size of 20 that is optimized by using parallel programming on {@link #findInteractions(Drug, Patient)}
      * and manipulating relational algebra on all queries
      * <p>
      * No other queries use pagination because their expected results are very very small
      */
     static Prescriber createFdbPrescriberParallelRelation() {
-      return new FdbPrescriberParallelRelational();
+        return new FdbPrescriberParallelRelational();
     }
 
 

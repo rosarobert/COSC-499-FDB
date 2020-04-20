@@ -1,23 +1,59 @@
-## Connecting to Local FDB Database Instance
+# FDB Prescriber API
 
-Note that these instructions are specific to Windows, but should not be far off from Mac/Docker
+An API that uses the First Databank database to find the following things:
+  * Query drugs 
+  * Query Allergies
+  * Find harmful interactions that could occur with a drug
+  
+## Dependencies
+This API uses the following technologies
+  * Gradle
+  * JDBC SQL Server Driver for SQL Server 2017
+  * Testng
 
-1) Download the SQL Server Driver from [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-ver15)
-2) Determine whether you have a 32-bit version of Java or a 64-bit version of java
-   - On windows, if you have a Java folder under C:\\Program Files(x86), then it is a 32-bit version. If its in C:\\Program Files, it is probably 64-bit, but its the opposite of the other Program Files folder. If its only C:\\Program Files, its 32-bit
-3) If you installiation is a 64-bit version, go to your downloaded SQL Server driver and then go enu > auth > x64 and copy that file. If its a 32-bit version, do the same thing except copy the file in the x86 folder.
-4) Find your Java folder again, and look for the \jdk, and copy this file into the \bin and \lib folders. If you have multiple jdks, make sure you check which version your IDE is using.
-5) Use the following code by removing the optional `[:portNumber]`. If you are connecting to this using Docker, you might need to include the port number in the url. There is more infomation [here](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver15)
-```
-public class ConnectTest {
-    public static void main(String[] args) {
-        String url = "jdbc:sqlserver://localhost[:portNumber]; databaseName=FDB;integratedSecurity=true";
-        try {
-            Connection connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-}
+## Install Steps
 
-```
+  * Install SQL Server 2017 or SQL Server 2019
+  * Clone this repository into a folder
+  * Create a file `databaseConnectionConfig.txt` in `src/main/resources` and put your JDBC connection string to the FDB database
+     * You will need a SDK of FDB, or a FDB backup file to do this
+     * The backup file we used can be found [here](https://1drv.ms/u/s!AlrDWS4T-uh8l8czlIh6_oZ1fAjJPw?e=B8cDbD)
+     * Ours was something similar to `jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];` Usually, username = 'sa' and password is your system admin password for your computer.
+  * Run the code
+  
+## Organization of Code
+There are 4 main components to our project:
+  * The API
+    * This can be found in the folder `src/main/java/Prescriber
+    * You use the API by calling one of the static factories in the Prescriber interface, but preferable just `FdbPrescriber` to get all the optimizations we did
+  * Container Objects
+    * Found in the folder `src/main/java/Prescriber`
+    * These are objects used by the API to contain info about patients, drugs, and drug interactions
+  * UI
+    * Found in `src/main/java/Apps`
+    * Consists of the CLI and the GUI
+    * Both are not neccessary for using this API. They were only created to show our COSC 499 class
+    * There is also a `ConnectionConguration` file here, and this is used to create the JDBC connection based on your config file
+  * Tests
+    * Found in src/test
+    * As said above, do not include any real good tests
+    * These would need to be improved before using in production
+  
+ 
+
+## Implementation Milestones 
+
+  - [x] Query drugs based on a keyword
+  - [x] Query drugs based on a keyword, page, and page size
+  - [x] Find all harmful interactions between a drug and a list of prescribed drugs
+  - [x] Find all harmful interactions between a drug and a list of patient allergies
+  - [x] Find all harmful food interactions that could occur when prescribed a drug
+  - [x] Query allergies 
+
+## Testing 
+
+  * The tests are based on what we think is the correct way to query the FDB database. Once we found what we think is a correct query for a function, we looked at all possible drugs and took that as the correct result
+  * Ethan could not run the code, so could not test code coverage
+  * There are no tests based on another implementation of this interface
+  * We do not see any other way to test this without input from doctors or another implementation to test against
+ 
