@@ -27,11 +27,16 @@ final class FdbPrescriberPage implements Prescriber {
     private final Connection FDB_CONNECTION;
     private final int PAGE_SIZE;
 
+    /**
+     * @see #createFdbPrescriber()
+     */
     FdbPrescriberPage() {
         this(20);
     }
 
-
+    /**
+     * @see #createFdbPrescriber(int)
+     */
     FdbPrescriberPage(int pageSize) {
         PAGE_SIZE = pageSize;
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
@@ -53,9 +58,9 @@ final class FdbPrescriberPage implements Prescriber {
                             + "WHERE t1.LN LIKE ? "
                             + "ORDER BY t1.LN "
                             + "OFFSET ? ROWS "
-                            + "FETCH NEXT ? ROWS ONLY" );
+                            + "FETCH NEXT ? ROWS ONLY");
             pStmtToQueryDrugsBasedOnPrefix.setString(1, "%" + pattern + "%");
-            pStmtToQueryDrugsBasedOnPrefix.setInt(2, page*PAGE_SIZE);
+            pStmtToQueryDrugsBasedOnPrefix.setInt(2, page * PAGE_SIZE);
             pStmtToQueryDrugsBasedOnPrefix.setInt(3, PAGE_SIZE);
             ResultSet drugsAsRst = pStmtToQueryDrugsBasedOnPrefix.executeQuery();
 
@@ -97,6 +102,13 @@ final class FdbPrescriberPage implements Prescriber {
         patient.addDrug(drug);
     }
 
+    /**
+     * Finds all interactions between a drug being prescribed and the drugs currently prescribed to a patient
+     *
+     * @param drug    drying being prescribed
+     * @param patient patient being prescribed
+     * @return a list of harmful drug interactions
+     */
     public List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Patient patient) {
         try {
             SortedSet<Drug> currentDrugs = patient.getDrugsPrescribed();
@@ -163,6 +175,12 @@ final class FdbPrescriberPage implements Prescriber {
         }
     }
 
+    /**
+     * Finds all harmful food interactions that could occur when prescribed a given dryg
+     *
+     * @param drug drug being prescribed
+     * @return a list of harmful interactions that could occur if you combine a food with the drug
+     */
     public List<DrugInteraction> queryFoodInteractionsOfDrug(Drug drug) {
         try {
             PreparedStatement pStmtToQueryFoodInteractions = FDB_CONNECTION.prepareStatement(
@@ -187,6 +205,13 @@ final class FdbPrescriberPage implements Prescriber {
         }
     }
 
+    /**
+     * Finds all interactions between a drug being prescribed and the allergies a patient has
+     *
+     * @param drug    drug being prescribed
+     * @param patient patient being prescribed a drug
+     * @return a list of harmful interactions between the patient's allergies and the drug being prescribed
+     */
     public List<DrugInteraction> queryAllergyInteractionsOfDrug(Drug drug, Patient patient) {
         try {
             //Create a coma separated string of allergy codes to use in prepared statement
@@ -225,6 +250,9 @@ final class FdbPrescriberPage implements Prescriber {
         }
     }
 
+    /**
+     * A specific class of drugs in FDB
+     */
     private List<Drug> queryManufacturerDrugs(String prefix) {
         try {
             PreparedStatement pStmtToQueryDrugsBasedOnPrefix = FDB_CONNECTION.prepareStatement(

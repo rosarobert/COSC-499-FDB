@@ -27,11 +27,16 @@ final class FdbPrescriberRelational implements Prescriber {
     private final Connection FDB_CONNECTION;
     private final int PAGE_SIZE;
 
+    /**
+     * @see #createFdbPrescriber()
+     */
     FdbPrescriberRelational() {
         this(20);
     }
 
-
+    /**
+     * @see #createFdbPrescriber(int)
+     */
     FdbPrescriberRelational(int pageSize) {
         PAGE_SIZE = pageSize;
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
@@ -78,6 +83,13 @@ final class FdbPrescriberRelational implements Prescriber {
         patient.addDrug(drug);
     }
 
+    /**
+     * Finds all interactions between a drug being prescribed and the drugs currently prescribed to a patient
+     *
+     * @param drug    drying being prescribed
+     * @param patient patient being prescribed
+     * @return a list of harmful drug interactions
+     */
     public List<DrugInteraction> queryDrugInteractionsWithOtherDrugs(Drug drug, Patient patient) {
         try {
             SortedSet<Drug> currentDrugs = patient.getDrugsPrescribed();
@@ -144,14 +156,20 @@ final class FdbPrescriberRelational implements Prescriber {
         }
     }
 
+    /**
+     * Finds all harmful food interactions that could occur when prescribed a given dryg
+     *
+     * @param drug drug being prescribed
+     * @return a list of harmful interactions that could occur if you combine a food with the drug
+     */
     public List<DrugInteraction> queryFoodInteractionsOfDrug(Drug drug) {
         try {
             PreparedStatement pStmtToQueryFoodInteractions = FDB_CONNECTION.prepareStatement(
-                "SELECT DISTINCT RESULT " +
-                "FROM RDFIMGC0 AS t1 " +
-                "LEFT JOIN RDFIMMA0 AS t2 ON (t1.FDCDE = t2.FDCDE) " +
-                "LEFT JOIN RGCNSEQ4 AS t3 ON (t1.GCN_SEQNO = t3.GCN_SEQNO)" +
-                "WHERE GC.GCN_SEQNO = ?");
+                    "SELECT DISTINCT RESULT " +
+                            "FROM RDFIMGC0 AS t1 " +
+                            "LEFT JOIN RDFIMMA0 AS t2 ON (t1.FDCDE = t2.FDCDE) " +
+                            "LEFT JOIN RGCNSEQ4 AS t3 ON (t1.GCN_SEQNO = t3.GCN_SEQNO)" +
+                            "WHERE GC.GCN_SEQNO = ?");
             pStmtToQueryFoodInteractions.setInt(1, drug.getGcnSeqno());
 
             ResultSet foodInteractionsAsRst = pStmtToQueryFoodInteractions.executeQuery();
@@ -168,6 +186,13 @@ final class FdbPrescriberRelational implements Prescriber {
         }
     }
 
+    /**
+     * Finds all interactions between a drug being prescribed and the allergies a patient has
+     *
+     * @param drug    drug being prescribed
+     * @param patient patient being prescribed a drug
+     * @return a list of harmful interactions between the patient's allergies and the drug being prescribed
+     */
     public List<DrugInteraction> queryAllergyInteractionsOfDrug(Drug drug, Patient patient) {
         try {
             //Create a coma separated string of allergy codes to use in prepared statement
@@ -185,12 +210,12 @@ final class FdbPrescriberRelational implements Prescriber {
 
             //Query all allergy interactions between a drug and a list of allergies
             PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
-                "SELECT t3.HICL_SEQNO, t3.HIC_SEQN, t3.HIC, t4.HIC_DESC, t2.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
-                "FROM RDAMGHC0 AS t1 " +
-                "LEFT JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
-                "LEFT JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
-                "LEFT JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
-                "WHERE HICL_SEQNO = ? AND t1.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
+                    "SELECT t3.HICL_SEQNO, t3.HIC_SEQN, t3.HIC, t4.HIC_DESC, t2.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
+                            "FROM RDAMGHC0 AS t1 " +
+                            "LEFT JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
+                            "LEFT JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
+                            "LEFT JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
+                            "WHERE HICL_SEQNO = ? AND t1.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
             pStmtToQueryAllergyInteractions.setInt(1, drug.getIngredientIdentifier());
 
             ResultSet allergyInteractionsAsRst = pStmtToQueryAllergyInteractions.executeQuery();
@@ -206,6 +231,9 @@ final class FdbPrescriberRelational implements Prescriber {
         }
     }
 
+    /**
+     * A specific class of drugs in FDB
+     */
     private List<Drug> queryManufacturerDrugs(String prefix) {
         try {
             PreparedStatement pStmtToQueryDrugsBasedOnPrefix = FDB_CONNECTION.prepareStatement(

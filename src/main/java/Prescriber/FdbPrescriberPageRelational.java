@@ -16,13 +16,10 @@ import java.util.List;
 import java.util.SortedSet;
 
 /**
- * An implementation of {@link Prescriber} using the FDB database with no optimization at all. That is, no parallel
- * programming, relational algebra manipulation, or pagination.
- * <p>
- * Note that there is a method to return a page, but it does this by first finding all drugs the taking a subset of
- * that. This is very costly
+ * An implementation of {@link Prescriber} using the FDB database with the use of pagination and manipulating relational
+ * algebra. That is, no parallel programming.
  */
-final class FdbPrescriberUnoptimized implements Prescriber {
+final class FdbPrescriberPageRelational implements Prescriber {
 
     private final Connection FDB_CONNECTION;
     private final int PAGE_SIZE;
@@ -30,14 +27,14 @@ final class FdbPrescriberUnoptimized implements Prescriber {
     /**
      * @see #createFdbPrescriber()
      */
-    FdbPrescriberUnoptimized() {
+    FdbPrescriberPageRelational() {
         this(20);
     }
 
     /**
      * @see #createFdbPrescriber(int)
      */
-    FdbPrescriberUnoptimized(int pageSize) {
+    FdbPrescriberPageRelational(int pageSize) {
         PAGE_SIZE = pageSize;
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
     }
@@ -49,14 +46,33 @@ final class FdbPrescriberUnoptimized implements Prescriber {
 
     @Override
     public List<Drug> queryDrugs(String pattern, int page) {
-        List<Drug> allDrugs = queryDrugs(pattern);
-        int startIndex = (page - 1) * PAGE_SIZE;
-        int endIndex = page * PAGE_SIZE - 1;
-        List<Drug> pageList = new ArrayList<>(20);
-        for (int i = startIndex; i < endIndex; i++) {
-            pageList.add(allDrugs.get(i));
+        try {
+            PreparedStatement pStmtToQueryDrugsBasedOnPrefix = FDB_CONNECTION.prepareStatement(
+                    "SELECT t1.LN, t3.HICL_SEQNO, t1.GCN_SEQNO, t1.DIN, t1.IADDDTE, t1.IOBSDTE, t2.MFG "
+                            + "FROM RICAIDC1 AS t1 "
+                            + "JOIN RLBLRCA1 AS t2 ON (t1.ILBLRID = t2.ILBLRID) "
+                            + "JOIN RGCNSEQ4 AS t3 ON (t1.GCN_SEQNO = t3.GCN_SEQNO) "
+                            + "WHERE t1.LN LIKE ? "
+                            + "ORDER BY t1.LN "
+                            + "OFFSET ? ROWS "
+                            + "FETCH NEXT ? ROWS ONLY");
+            pStmtToQueryDrugsBasedOnPrefix.setString(1, "%" + pattern + "%");
+            pStmtToQueryDrugsBasedOnPrefix.setInt(2, page * PAGE_SIZE);
+            pStmtToQueryDrugsBasedOnPrefix.setInt(3, PAGE_SIZE);
+            ResultSet drugsAsRst = pStmtToQueryDrugsBasedOnPrefix.executeQuery();
+
+            List<Drug> drugsAsObjects = new ArrayList<>();
+
+            // For each SQL result, create a Java object representing that drug
+            while (drugsAsRst.next()) {
+                Drug drug = Drug.createFdbDrug(drugsAsRst.getInt(4), drugsAsRst.getInt(2), drugsAsRst.getInt(3), drugsAsRst.getString(1).trim());
+                drugsAsObjects.add(drug);
+            }
+            return drugsAsObjects;
+        } catch (SQLException e) {
+            throw new IllegalStateException("SQL is bad for querying drugs.\n" +
+                    e.getSQLState());
         }
-        return pageList;
     }
 
     @Override
@@ -123,9 +139,9 @@ final class FdbPrescriberUnoptimized implements Prescriber {
                             + "CROSS JOIN "
                             + "(SELECT DISTINCT HICL_SEQNO AS HICL2, DIN, LN ,GCN.GCN_SEQNO ,C4.DDI_CODEX AS CODEX2 ,DDI_MONOX AS MONOX2 ,DDI_DES "
                             + "FROM RGCNSEQ4 AS GCN "
-                            + "JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) "
-                            + "JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) "
-                            + "JOIN RICAIDC1 AS RIC ON (RIC.GCN_SEQNO = GCN.GCN_SEQNO)"
+                            + "LEFT JOIN RICAIDC1 AS RIC ON (RIC.GCN_SEQNO = GCN.GCN_SEQNO)"
+                            + "LEFT JOIN RADIMGC4 AS C4 ON (GCN.GCN_SEQNO = C4.GCN_SEQNO) "
+                            + "LEFT JOIN RADIMMA5 AS A5 ON (C4.DDI_CODEX = A5.DDI_CODEX) "
                             + "WHERE HICL_SEQNO IN (" + ingredientIdentifiers.toString() + ") AND DIN IN (" + identifiers.toString() + ")"
                             + ") AS TABLE2 "
                             + "JOIN RADIMIE4 AS E4 ON (CODEX1 = E4.DDI_CODEX) "
@@ -166,9 +182,9 @@ final class FdbPrescriberUnoptimized implements Prescriber {
         try {
             PreparedStatement pStmtToQueryFoodInteractions = FDB_CONNECTION.prepareStatement(
                     "SELECT DISTINCT RESULT " +
-                            "FROM RDFIMGC0 AS DF " +
-                            "JOIN RGCNSEQ4 AS GC ON (DF.GCN_SEQNO = GC.GCN_SEQNO)" +
-                            "JOIN RDFIMMA0 AS DFI ON (DF.FDCDE = DFI.FDCDE) " +
+                            "FROM RDFIMGC0 AS t1 " +
+                            "LEFT JOIN RDFIMMA0 AS t2 ON (t1.FDCDE = t2.FDCDE) " +
+                            "LEFT JOIN RGCNSEQ4 AS t3 ON (t1.GCN_SEQNO = t3.GCN_SEQNO)" +
                             "WHERE GC.GCN_SEQNO = ?");
             pStmtToQueryFoodInteractions.setInt(1, drug.getGcnSeqno());
 
@@ -212,9 +228,9 @@ final class FdbPrescriberUnoptimized implements Prescriber {
             PreparedStatement pStmtToQueryAllergyInteractions = FDB_CONNECTION.prepareStatement(
                     "SELECT t3.HICL_SEQNO, t3.HIC_SEQN, t3.HIC, t4.HIC_DESC, t2.DAM_ALRGN_GRP, DAM_ALRGN_GRP_DESC " +
                             "FROM RDAMGHC0 AS t1 " +
-                            "JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
-                            "JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
-                            "JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
+                            "LEFT JOIN RDAMAGD1 AS t2 ON (t1.DAM_ALRGN_GRP = t2.DAM_ALRGN_GRP) " +
+                            "LEFT JOIN RHICL1 AS t3 ON (t1.HIC_SEQN = t3.HIC_SEQN) " +
+                            "LEFT JOIN RHICD5 AS t4 ON (t3.HIC_SEQN = t4.HIC_SEQN) " +
                             "WHERE HICL_SEQNO = ? AND t1.DAM_ALRGN_GRP IN (" + testers.toString() + ")");
             pStmtToQueryAllergyInteractions.setInt(1, drug.getIngredientIdentifier());
 
