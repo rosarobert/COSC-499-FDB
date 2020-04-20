@@ -165,7 +165,7 @@ public class PatientCli {
     private static List<Drug> queryDrugs(Prescriber prescriber, Scanner input) {
         System.out.println("Enter a prefix:");
         String prefix = input.nextLine();
-        return prescriber.queryDrugs(prefix);
+        return prescriber.queryDrugs(prefix, 1);
     }
 
     private static Drug chooseADrug(List<Drug> drugs, Scanner input) {

@@ -12,20 +12,20 @@ import java.util.SortedSet;
 /**
  * A implementation of {@link Prescriber} using the FDB database
  */
-public class FdbPrescriber implements Prescriber {
+public class FdbPrescriberPaged implements Prescriber {
 
     private final Connection FDB_CONNECTION;
 
     /**
      * Creates an FdbPrescriber from the file resources/config.json
      */
-    FdbPrescriber() {
+    FdbPrescriberPaged() {
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
     }
 
     @Override
-    public List<Drug> queryDrugs(String prefix) {
-        return queryManufacturerDrugs(prefix);
+    public List<Drug> queryDrugs(String prefix, int page) {
+        return queryManufacturerDrugs(prefix, page);
     }
 
     @Override
@@ -186,16 +186,21 @@ public class FdbPrescriber implements Prescriber {
          }
      }
 
-     private List<Drug> queryManufacturerDrugs(String prefix) {
+     private List<Drug> queryManufacturerDrugs(String prefix, int page) {
          try {
+             int limitPerPage = 20; 
              PreparedStatement pStmtToQueryDrugsBasedOnPrefix = FDB_CONNECTION.prepareStatement(
                 "SELECT t1.LN, t3.HICL_SEQNO, t1.GCN_SEQNO, t1.DIN, t1.IADDDTE, t1.IOBSDTE, t2.MFG "
                         + "FROM RICAIDC1 AS t1 "
                         + "JOIN RLBLRCA1 AS t2 ON (t1.ILBLRID = t2.ILBLRID) "
                         + "JOIN RGCNSEQ4 AS t3 ON (t1.GCN_SEQNO = t3.GCN_SEQNO) "
                         + "WHERE t1.LN LIKE ? "
-                        + "ORDER BY t1.LN");
+                        + "ORDER BY t1.LN "
+                        + "OFFSET ? ROWS "
+                        + "FETCH NEXT ? ROWS ONLY" );
              pStmtToQueryDrugsBasedOnPrefix.setString(1, "%" + prefix + "%");
+             pStmtToQueryDrugsBasedOnPrefix.setInt(2, page*limitPerPage);
+             pStmtToQueryDrugsBasedOnPrefix.setInt(3, limitPerPage);
              ResultSet drugsAsRst = pStmtToQueryDrugsBasedOnPrefix.executeQuery();
 
              List<Drug> drugsAsObjects = new ArrayList<>();
@@ -204,7 +209,8 @@ public class FdbPrescriber implements Prescriber {
              while (drugsAsRst.next()) {
                  Drug drug = Drug.createFdbDrug(drugsAsRst.getInt(4), drugsAsRst.getInt(2), drugsAsRst.getInt(3), drugsAsRst.getString(1).trim());
                  drugsAsObjects.add(drug);
-             }
+                 System.out.println(drugsAsRst.getString(1).trim());
+             } 
              return drugsAsObjects;
          } catch (SQLException e) {
              throw new IllegalStateException("SQL is bad for querying drugs.\n" +

@@ -1,5 +1,8 @@
 package Apps;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,25 +12,20 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Class for constructing a JDBC connection from different systems.
  * <p>
  * This is so the poor soul who has to use linux can run the tests.
  * <p>
- * The class will create a connection from the configuration in
- * resources/databaseConnection.json if it exists. If it doesn't, creates a the
- * file databaseConnection.json in resources from the default settings below,
- * and uses those default settings to create the connection
+ * The class will create a connection from the configuration in resources/databaseConnection.json if it exists. If it
+ * doesn't, creates a the file databaseConnection.json in resources from the default settings below, and uses those
+ * default settings to create the connection
  * <p>
- * Note, no one should change this class. If you want to change your connection
- * settings, change them in resources/databaseConnection.json
+ * Note, no one should change this class. If you want to change your connection settings, change them in
+ * resources/databaseConnection.json
  * <p>
- * Another solution to this problem is everyone have the same sa password for
- * SQL Server, but I did not want to have to bring that up since everyone uses
- * integrated security
+ * Another solution to this problem is everyone have the same sa password for SQL Server, but I did not want to have to
+ * bring that up since everyone uses integrated security
  */
 public final class ConnectionConfiguration {
 
@@ -48,7 +46,7 @@ public final class ConnectionConfiguration {
     @SerializedName("password")
     private String password;
 
-    static Connection getJdbcConnection() {
+    public static final Connection getJdbcConnection() {
         ConnectionConfiguration config = null;
         try {
             File configFile = new File("src/main/resources/databaseConnection.json");

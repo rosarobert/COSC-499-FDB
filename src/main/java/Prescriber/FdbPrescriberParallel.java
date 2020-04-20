@@ -1,5 +1,6 @@
-package PrescriberParallel;
+package Prescriber;
 
+import Apps.ConnectionConfiguration;
 import Info.*;
 
 import java.sql.*;
@@ -11,21 +12,21 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * A implementation of {@link Prescriber} using the FDB database
+ * A implementation of {@link PrescriberParallel.Prescriber} using the FDB database
  */
-public class FdbPrescriber implements Prescriber {
+public class FdbPrescriberParallel implements Prescriber {
 
     private final Connection FDB_CONNECTION;
 
     /**
      * Creates an FdbPrescriber from the file resources/config.json
      */
-    FdbPrescriber() {
+    FdbPrescriberParallel() {
         FDB_CONNECTION = ConnectionConfiguration.getJdbcConnection();
     }
 
     @Override
-    public List<Drug> queryDrugs(String prefix) {
+    public List<Drug> queryDrugs(String prefix, int page) {
         return queryManufacturerDrugs(prefix);
     }
 
