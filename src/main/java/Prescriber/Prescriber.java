@@ -71,13 +71,12 @@ public interface Prescriber {
      * No other queries use pagination because their expected results are very very small
      */
     static Prescriber createFdbPrescriberPageRelation() {
-        //TODO:Add
-        return null;
+        return new FdbPrescriberPageRelational();
     }
 
     /**
-     * Creates a prescriber that is optimized by using parallel programming on {@link #findInteractions(Drug, Patient)} and manipulating
-     * relational algebra on all queries
+     * Creates a prescriber that is optimized by using parallel programming on {@link #findInteractions(Drug, Patient)}
+     * and manipulating relational algebra on all queries
      * <p>
      * No other queries use pagination because their expected results are very very small
      */
@@ -85,7 +84,6 @@ public interface Prescriber {
         //TODO:Add
         return null;
     }
-
 
 
     /**
