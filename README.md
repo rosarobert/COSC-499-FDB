@@ -18,7 +18,7 @@ This API uses the following technologies
      * The backup we used can be found [here](https://1drv.ms/u/s!AlrDWS4T-uh8l8czlIh6_oZ1fAjJPw?e=B8cDbD)
   * Clone this repository into some folder
   * Create a file `databaseConnectionConfig.txt` in `src/main/resources` and put your JDBC connection string to the FDB database
-     * Ours was something similar to jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];
+     * Ours was something similar to `jdbc:sqlserver://localhost;database=FDB;user=[your username];password=[your password];`
   * Run the code
   
 ## Organization of Code
